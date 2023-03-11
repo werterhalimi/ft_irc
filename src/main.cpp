@@ -6,11 +6,12 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:34 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/07 16:45:36 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/03/11 19:28:16 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+#include "Server.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,5 +23,7 @@ int main(int argc, char *argv[])
 	}
 	std::cout << GREEN << "Starting IRC server on port ";
 	std::cout << argv[1] << RESET_COLOR << std::endl;
+	Server server;
+	server.launch();
 	return (EXIT_SUCCESS);
 }

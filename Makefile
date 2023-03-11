@@ -6,11 +6,11 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/07 16:25:00 by ncotte           ###   ########.fr        #
+#    Updated: 2023/03/11 16:57:43 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		:=	main.cpp
+SRCS_FILES		:=	main.cpp Server.cpp Channel.cpp User.cpp
 SRCS_DIR		:=	./src/
 SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
 
@@ -19,7 +19,7 @@ OBJS_DIR		:=	./bin/
 #OBJS_SUB_DIR	:= 	$(OBJS_DIR)alloc
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
-INCS_FILES		:=	constants.h	ft_irc.hpp
+INCS_FILES		:=	constants.h	ft_irc.hpp Server.h Channel.h User.h
 INCS_DIR		:=	./inc/
 INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 
