@@ -16,7 +16,7 @@ SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
 
 OBJS_FILES		:=	$(SRCS_FILES:.cpp=.o)
 OBJS_DIR		:=	./bin/
-#OBJS_SUB_DIR	:= 	$(OBJS_DIR)alloc
+OBJS_SUB_DIR	:= 	$(OBJS_DIR)cmd
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
 INCS_FILES		:=	constants.h	ft_irc.hpp
@@ -27,7 +27,7 @@ TMP				:=	.tmp.txt
 
 CXX				:=	@c++-12
 CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -pedantic -I $(INCS_DIR)
-DEBUG			:=	-g3 -fsanitize=address
+DEBUG			:=	-g3 -fsanitize=undefined
 RM				:=	@rm -f
 LEAKS			:=	@leaks -atExit --
 
@@ -56,7 +56,7 @@ BOLD_WHITE		:=	"\033[1;37m"
 all:			$(NAME)
 
 $(OBJS_DIR)%.o:	$(SRCS_DIR)%.cpp $(INCS)
-				@mkdir -p $(OBJS_DIR) #$(OBJS_SUB_DIR)
+				@mkdir -p $(OBJS_DIR) $(OBJS_SUB_DIR)
 				$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(NAME):		$(OBJS)
