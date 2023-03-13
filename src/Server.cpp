@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.h"
-#include "cmd.hpp"
+#include "Cmd.hpp"
 
 Server::Server(void) : users(new std::vector<User *>()), channels(new std::vector<Channel *>())
 {

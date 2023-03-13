@@ -12,7 +12,7 @@
 
 #include "ft_irc.hpp"
 
-static int	count_sep(std::string str, std::string sep)
+static int	count_sep(std::string &str, std::string &sep)
 {
 	size_t	i = 0;
 	int	n = 0;
@@ -27,7 +27,7 @@ static int	count_sep(std::string str, std::string sep)
 	return (n);
 }
 
-std::string	*	split(std::string str, std::string sep)
+std::string	*	split(std::string &str, std::string &sep)
 {
 	int	n = count_sep(str, sep);
 	std::string *ret = new std::string[n];

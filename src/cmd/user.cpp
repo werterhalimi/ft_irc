@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "cmd.hpp"
+#include "Cmd.hpp"
 
 void	user(Cmd * cmd, Server & server, User & usr)
 {

@@ -22,7 +22,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
                     cmd/error.cpp		cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
                     cmd/privmsg.cpp  	cmd/servlist.cpp	cmd/time.cpp		cmd/users.cpp \
                     cmd/whowas.cpp \
-					cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
+					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			utils/split.cpp
 SRCS_DIR		:=	./src/
 SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
@@ -32,7 +32,7 @@ OBJS_DIR		:=	./bin/
 OBJS_SUB_DIR	:= 	$(OBJS_DIR)utils $(OBJS_DIR)cmd
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
-INCS_FILES		:=	constants.h	cmd.h	cmd.hpp	ft_irc.hpp Server.h Channel.h User.h
+INCS_FILES		:=	constants.h	cmd.h	Cmd.hpp	ft_irc.hpp Server.h Channel.h User.h
 INCS_DIR		:=	./inc/
 INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 

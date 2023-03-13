@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmd.hpp"
+#include "Cmd.hpp"
 
 void	admin(Cmd *cmd, Server &server, User &currentUser)
 {

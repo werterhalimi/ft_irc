@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
-#include "cmd.hpp"
+#include "Cmd.hpp"
 
 void	nick(Cmd * cmd, Server & server, User & usr)
 {
