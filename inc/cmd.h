@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:58:47 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/13 13:58:48 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/03/13 15:43:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,8 @@
 # define CMD_H
 
 # include "constants.h"
-
-class Cmd;
-
-class Server;
-
-class User;
-
+# include "Server.h"
+/*
 void	admin(Cmd *cmd, Server &server, User &currentUser);
 
 void	away(Cmd *cmd, Server &server, User &currentUser);
@@ -110,5 +105,5 @@ void	who(Cmd *cmd, Server &server, User &currentUser);
 void	whois(Cmd *cmd, Server &server, User &currentUser);
 
 void	whowas(Cmd *cmd, Server &server, User &currentUser);
-
+*/
 #endif

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/11 20:44:28 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/13 16:00:18 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ User::~User(void)
 
 void	User::log(char *buff)
 {
+	(void) buff;
 	this->logged = true;
-	std::cout << buff << std::endl;
+//	std::cout << buff << std::endl;
 	std::string hello = ":servername 001 shalimi :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:servername 002 shalimi :Your host is test.salut.com, running version 0.0.1\r\n:servername 003 shalimi :This server was created 20:12:31 Jan 16 2013\r\n:servername 004 shalimi :test.salut.com 2.0 ras\r\n";
 	send(this->fd, hello.c_str(), strlen(hello.c_str()), 0);
 }

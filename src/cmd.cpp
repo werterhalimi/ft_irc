@@ -6,11 +6,12 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/12 14:12:31 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/03/13 16:07:18 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmd.hpp"
+#include "cmd.h"
 
 Cmd::Cmd(std::string const &msg, Server &server, User &user)
 {
@@ -58,7 +59,7 @@ void	Cmd::parse(std::string const &msg)
 	size_t	i;
 
 	index = 0;
-	end = msg.find("\r\n", 0);
+	end = msg.find("\0", 0);
 	if (end == std::string::npos)
 		return;
 	if (msg[index] == ':')
@@ -68,13 +69,13 @@ void	Cmd::parse(std::string const &msg)
 	index += length;
 	for (i = 0; i < NB_PARAMS - 1; ++i)
 	{
-		if (msg[index + 1] == ':' || msg[index] == '\r')
+		if (msg[index + 1] == ':' || msg[index] == '\0')
 			break;
 		length = findLength(msg, index, end);
 		_params[i] = msg.substr(index, length);
 		index += length;
 	}
-	if (msg[index] == '\r')
+	if (msg[index] == '\0')
 		return;
 	_params[i] = msg.substr(index, end - index);
 }
@@ -103,8 +104,11 @@ std::string	Cmd::reply(User &user)
 
 void	Cmd::execute(Server &server, User &currentUser)
 {
-	static void	(*executeFct[NB_CMD])(Cmd *cmd, Server &server, User &currentUser) = {
-		&pass,		&nick,		&user,		&oper,
+	static void	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
+		&pass,		&nick,		&user
+	};
+	/*
+	 * ,		&oper,
 		&mode,		&service,	&quit,		&squit,
 		&join,		&part,		&topic,	&names,
 		&list,		&invite,	&kick,		&privmsg,
@@ -116,7 +120,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 		&away,	&rehash,	&die,		&restart,
 		&summon,	&users,	&wallops,	&usehost,
 		&ison
-	};
+	};*/
 
 	for (size_t i = 0; i < NB_CMD; ++i)
 	{
@@ -126,13 +130,16 @@ void	Cmd::execute(Server &server, User &currentUser)
 			break;
 		}
 	}
-	throw std::exception();
+	//throw std::exception();
 }
 
 std::string const	&Cmd::getCmdNames(size_t i) const
 {
 	static std::string	cmdNames[NB_CMD] = {
-		"PASS",	"NICK",		"USER",		"OPER",
+		"PASS",	"NICK",		"USER"
+	};
+	/*
+	"OPER",
 		"MODE",	"SERVICE",	"QUIT",	"SQUIT",
 		"JOIN",	"PART",	"TOPIC",	"NAMES",
 		"LIST",	"INVITE",	"KICK",	"PRIVMSG",
@@ -144,7 +151,7 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 		"AWAY",	"REHASH",	"DIE",	"RESTART",
 		"SUMMON",	"USERS",	"WALLOPS",	"USERHOST",
 		"ISON"
-	};
+	};*/
 
 	return (cmdNames[i]);
 }

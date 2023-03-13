@@ -6,11 +6,12 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/11 20:43:13 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/13 16:44:25 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.h"
+#include "cmd.hpp"
 
 Server::Server(void) : users(new std::vector<User *>()), channels(new std::vector<Channel *>())
 {
@@ -93,6 +94,7 @@ void	Server::launch(void)
 	User	empty;
 	empty.setFd(-2);
 	EV_SET(&event, server_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &empty);
+	int bonjour = 0;
 	while(1)
 	{
 		struct timespec timeout = {3, 0};
@@ -105,6 +107,11 @@ void	Server::launch(void)
 				User * user = (User *)event.udata;
 				if ((user->getFd()) == -2)
 				{ 
+					char	buff[513];
+					buff_len = read((user->getFd()), buff, 513);
+
+					buff[buff_len] = 0;
+					std::cout << bonjour++ << " " <<buff << std::endl;
 					User *usr = new User();
 					usr->setFd(server_fd);
 					handleLogin(*usr, &event);
@@ -114,6 +121,12 @@ void	Server::launch(void)
 					char buff[513];
 					buff_len = read((user->getFd()), buff, 513);
 					buff[buff_len] = 0;
+					std::cout << bonjour++ << " " << buff << std::endl;
+					std::string		*sp = split(buff, "\r\n");
+					int	iter = 0;
+					while (sp[iter] != "")
+						Cmd cmd(sp[iter++], *this, *user);
+					delete sp;
 					if (!user->isLog())
 						user->log(buff);
 				}
