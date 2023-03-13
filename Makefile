@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/13 15:23:15 by shalimi          ###   ########.fr        #
+#    Updated: 2023/03/13 16:23:02 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,13 +23,13 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
                     cmd/privmsg.cpp  	cmd/servlist.cpp	cmd/time.cpp		cmd/users.cpp \
                     cmd/whowas.cpp \
 					cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
-					User.cpp
+					User.cpp			utils/split.cpp
 SRCS_DIR		:=	./src/
 SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
 
 OBJS_FILES		:=	$(SRCS_FILES:.cpp=.o)
 OBJS_DIR		:=	./bin/
-OBJS_SUB_DIR	:= 	$(OBJS_DIR)cmd
+OBJS_SUB_DIR	:= 	$(OBJS_DIR)utils $(OBJS_DIR)cmd
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
 INCS_FILES		:=	constants.h	cmd.h	cmd.hpp	ft_irc.hpp Server.h Channel.h User.h
@@ -39,7 +39,7 @@ INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 TMP				:=	.tmp.txt
 
 CXX				:=	@c++-12
-CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++98 -pedantic -I $(INCS_DIR)
+CXXFLAGS		:=	-g -Wall -Wextra -Werror -std=c++98 -pedantic -I $(INCS_DIR)
 DEBUG			:=	-g3 -fsanitize=undefined
 RM				:=	@rm -f
 LEAKS			:=	@leaks -atExit --

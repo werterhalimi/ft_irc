@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:21 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/11 18:07:15 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/13 16:26:57 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,7 @@
 # include <unistd.h>
 
 
+/* Utils */
 
+std::string	*	split(std::string str, std::string sep);
 #endif
