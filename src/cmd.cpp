@@ -80,7 +80,7 @@ void	Cmd::parse(std::string const &msg)
 	_params[i] = msg.substr(index, end - index);
 }
 
-std::string	Cmd::reply(User &user)
+std::string	reply(User &user, std::string const & cmd, std::string const & msg)
 {
 	std::string	toSend;
 
@@ -91,12 +91,8 @@ std::string	Cmd::reply(User &user)
 	toSend.append("!");
 	toSend.append(user.getHostname());
 	toSend.append(" ");
-	toSend.append(this->_cmd);
-	for (size_t i = 0; i < NB_PARAMS; ++i)
-	{
-		toSend.append(" ");
-		toSend.append(this->_params[i]);
-	}
+	toSend.append(cmd);
+	toSend.append(msg);
 	toSend.append("\r\n");
 	return (toSend);
 }

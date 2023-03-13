@@ -35,8 +35,6 @@ class Cmd
 
 		~Cmd();
 
-		std::string			reply(User &user);
-
 		std::string const	&getCmdNames(size_t i) const;
 
 		std::string const	&getCmd() const;
@@ -55,6 +53,7 @@ class Cmd
 		void	execute(Server &server, User &currentUser);
 };
 
+std::string	reply(User &user, std::string const & cmd, std::string const & msg);
 
 void	pass(Cmd *cmd, Server &server, User &currentUser);
 

@@ -10,4 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Cmd.hpp"
+
+void	privmsg(Cmd * cmd, Server & server, User & usr)
+{
+	if (cmd->getParams(0).empty())
+	{
+		reply(usr, ERR_NORECIPIENT, std::string(":No recipient given ").append(cmd->getCmd()));
+		return;
+	}
+}
 
