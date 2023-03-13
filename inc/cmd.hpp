@@ -14,11 +14,17 @@
 # define CMD_HPP
 
 # include "constants.h"
+# include "cmd.h"
 # include <iostream>
 //# include <cstdio>
 
 # define NB_PARAMS	15
-# define NB_CMD		46
+# define NB_CMD		45
+
+// TODO
+class User;
+
+class Server;
 
 class Cmd
 {
@@ -27,7 +33,7 @@ class Cmd
 		std::string			_params[NB_PARAMS];
 
 	public:
-		Cmd(std::string const &msg);
+		Cmd(std::string const &msg, Server &server, User &user);
 
 		~Cmd();
 
@@ -48,7 +54,7 @@ class Cmd
 
 		void	parse(std::string const &msg);
 
-		void	execute();
+		void	execute(Server &server, User &currentUser);
 };
 
 #endif

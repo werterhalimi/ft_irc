@@ -10,7 +10,19 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		:=	main.cpp
+SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
+					cmd/part.cpp		cmd/quit.cpp		cmd/squery.cpp		cmd/topic.cpp \
+					cmd/version.cpp		cmd/away.cpp		cmd/invite.cpp		cmd/links.cpp \
+					cmd/names.cpp		cmd/pass.cpp		cmd/rehash.cpp		cmd/squit.cpp \
+					cmd/trace.cpp		cmd/wallops.cpp		cmd/connect.cpp		cmd/ison.cpp \
+					cmd/list.cpp		cmd/nick.cpp		cmd/ping.cpp		cmd/restart.cpp \
+					cmd/stats.cpp		cmd/user.cpp		cmd/who.cpp			cmd/die.cpp \
+					cmd/join.cpp		cmd/luser.cpp		cmd/notice.cpp		cmd/pong.cpp \
+					cmd/service.cpp		cmd/summon.cpp		cmd/userhost.cpp	cmd/whois.cpp \
+                    cmd/error.cpp		cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
+                    cmd/privmsg.cpp  	cmd/servlist.cpp	cmd/time.cpp		cmd/users.cpp \
+                    cmd/whowas.cpp \
+					cmd.cpp				main.cpp
 SRCS_DIR		:=	./src/
 SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
 
@@ -19,7 +31,7 @@ OBJS_DIR		:=	./bin/
 OBJS_SUB_DIR	:= 	$(OBJS_DIR)cmd
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
-INCS_FILES		:=	constants.h	ft_irc.hpp
+INCS_FILES		:=	constants.h	cmd.h	cmd.hpp	ft_irc.hpp
 INCS_DIR		:=	./inc/
 INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 
