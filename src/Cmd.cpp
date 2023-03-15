@@ -49,13 +49,9 @@ std::string 	Cmd::toString() const
 {
 	std::ostringstream stream;
 	stream << this->_prefix << this->_cmd << " ";
-	std::vector<std::string>::const_iterator it = this->_params.begin();
 	std::vector<std::string>::const_iterator ite = this->_params.end();
-	while (it != ite)
-	{
+	for (std::vector<std::string>::const_iterator it = this->_params.begin(); it < ite; ++it)
 		stream << *it << " ";
-		it++;
-	}
 	stream << "\r\n";
 	std::string str = stream.str();
 	return (str);

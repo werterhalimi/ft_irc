@@ -15,19 +15,28 @@
 std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 {
 	Cmd reply(usr);
+	std::vector<std::string> params = cmd->getParams();
 	(void) server;
-	if (cmd->getParams().empty())
+	if (params.empty())
 	{
 		reply.setCmd(ERR_NORECIPIENT);
 		reply.addParams(":No recipient given");
 		reply.addParams(cmd->getCmd());
+		return (reply.toString());
 	}
-	else if (cmd->getParams().back().empty())
+	if (params.back().empty())
 	{
 		reply.setCmd(ERR_NOTEXTTOSEND);
 		reply.addParams(":No text to send");
+		return (reply.toString());
 	}
+	std::vector<std::string>::const_iterator ite = params.end();
+	for (std::vector<std::string>::const_iterator it = params.begin(); it < ite; ++it)
+	{
+
+	}
+
 //	server.send(user, reply.)
-	return (reply.toString());
+	return ("");
 }
 
