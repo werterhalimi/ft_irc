@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/13 15:51:48 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/15 19:50:21 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,13 @@ class Cmd
 	private:
 		std::string					_prefix;
 		std::string					_cmd;
-		std::vector<std::string>	_params;
+		std::vector<std::string>& 	_params;
 
 	public:
 		explicit Cmd(std::string const &msg);
 
 		explicit Cmd(User const &user);
+		explicit Cmd(Server const &server);
 
 		~Cmd();
 

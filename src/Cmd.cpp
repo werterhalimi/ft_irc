@@ -6,30 +6,40 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/13 16:07:18 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/15 19:54:12 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmd.hpp"
 #include "cmd.h"
 
-Cmd::Cmd(std::string const &msg)
+Cmd::Cmd(std::string const &msg) :_params(*(new std::vector<std::string>()))
 {
+	std::cout << "Test 1 " << msg << std::endl;
 	this->parse(msg);
+	std::cout << "Test 2 " << _cmd << std::endl;
 }
 
-Cmd::Cmd(User const &user) : _prefix(user.prefix())
+Cmd::Cmd(User const &user) : _prefix(user.prefix()), _params(*(new std::vector<std::string>()))
 {
 
 }
+
+Cmd::Cmd(Server const &server) : _prefix(server.prefix()), _params(*(new std::vector<std::string>()))
+{
+
+}
+
 
 Cmd::~Cmd()
+{
+	delete &(this->_params);
+}
+
+Cmd::Cmd()  :  _params(*(new std::vector<std::string>()))
 {}
 
-Cmd::Cmd()
-{}
-
-Cmd::Cmd(Cmd const &cmd)
+Cmd::Cmd(Cmd const &cmd) : _params(*(new std::vector<std::string>()))
 {
 	*this = cmd;
 }
@@ -40,7 +50,7 @@ Cmd	&Cmd::operator=(Cmd const &cmd)
 	{
 		this->_cmd = cmd.getCmd();
 		for (size_t i = 0; i < NB_PARAMS; ++i)
-			this->_params[i] = cmd.getOneParam(i);
+			this->_params.push_back(cmd.getOneParam(i));
 	}
 	return (*this);
 }
@@ -75,28 +85,28 @@ void	Cmd::parse(std::string const &msg)
 	size_t	i;
 
 	index = 0;
-	end = msg.find('\0', 0);
-	if (end == std::string::npos)
+	end = msg.size();
+	if (msg.empty())
 		return;
 	if (msg[index] == ':')
 	{
 		index = msg.find(' ', 0);
-		_prefix = msg.substr(0, index);
+		this->_prefix = msg.substr(0, index);
 	}
 	length = findLength(msg, index, end);
-	_cmd = msg.substr(index, length);
+	this->_cmd = msg.substr(index, length);
 	index += length;
 	for (i = 0; i < NB_PARAMS - 1; ++i)
 	{
 		if (msg[index + 1] == ':' || msg[index] == '\0')
 			break;
 		length = findLength(msg, index, end);
-		_params[i] = msg.substr(index, length);
+		this->_params.push_back(msg.substr(index, length));
 		index += length;
 	}
 	if (msg[index] == '\0')
 		return;
-	_params[i] = msg.substr(index, end - index);
+	this->_params.push_back( msg.substr(index, end - index));
 }
 /*
 std::string	reply(User &user, std::string const & cmd, std::string const & msg)
@@ -139,7 +149,18 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 	for (size_t i = 0; i < NB_CMD; ++i)
 	{
 		if (_cmd == this->getCmdNames(i))
-			return (executeFct[i](this, server, currentUser));
+		{
+			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
+			{
+				Cmd reply(*this);
+				reply.setCmd(ERR_PASSWDMISMATCH);
+				reply.addParams(":Password incorrect");
+				currentUser.sendReply(reply.toString());
+				continue ;
+			}
+			currentUser.sendReply(executeFct[i](this, server, currentUser));
+
+		}
 	}
 	return ("");
 	//throw std::exception();
