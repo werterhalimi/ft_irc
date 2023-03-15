@@ -12,9 +12,10 @@
 
 #include "Cmd.hpp"
 
-void	nick(Cmd * cmd, Server & server, User & usr)
+std::string	nick(Cmd * cmd, Server & server, User & usr)
 {
 	(void) cmd;
 	(void) server;
 	(void) usr;
+	return ("");
 }

@@ -17,7 +17,8 @@
 # include <vector>
 # include <netinet/in.h>
 # include <stdio.h>
-# include <string.h>
+# include <iostream>
+# include <sstream>
 # include <sys/socket.h>
 # include <unistd.h>
 
@@ -34,6 +35,8 @@ class User
 
 		User &	operator=(User const & src);
 		bool	operator==(User const & src);
+
+		std::string	prefix() const;
 
 		std::string	getUsername(void) const;
 		std::string getNickname(void) const;

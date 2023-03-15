@@ -12,10 +12,11 @@
 
 #include "Cmd.hpp"
 
-void	pass(Cmd * cmd, Server & server, User & usr)
+std::string	pass(Cmd * cmd, Server & server, User & usr)
 {
-	std::cout << cmd->getParams(0) << std::endl;
+	std::cout << cmd->getOneParam(0) << std::endl;
 	(void) cmd;
 	(void) server;
 	(void) usr;
+	return ("");
 }

@@ -51,6 +51,14 @@ void	User::log(char *buff)
 	send(this->fd, hello.c_str(), strlen(hello.c_str()), 0);
 }
 
+std::string	User::prefix() const
+{
+	std::ostringstream stream;
+	stream << ":" << this->nickname << "@" << this->username << "!" << this->hostname << " ";
+	std::string str = stream.str();
+	return (str);
+}
+
 User &	User::operator=(User const & src)
 {
 	this->username = src.getUsername();

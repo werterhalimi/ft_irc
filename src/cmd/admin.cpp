@@ -12,9 +12,10 @@
 
 #include "Cmd.hpp"
 
-void	admin(Cmd *cmd, Server &server, User &currentUser)
+std::string	admin(Cmd *cmd, Server &server, User &currentUser)
 {
 	(void) cmd;
 	(void) server;
 	(void) currentUser;
+	return ("");
 }

@@ -12,12 +12,22 @@
 
 #include "Cmd.hpp"
 
-void	privmsg(Cmd * cmd, Server & server, User & usr)
+std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 {
-	if (cmd->getParams(0).empty())
+	Cmd reply(usr);
+	(void) server;
+	if (cmd->getParams().empty())
 	{
-		reply(usr, ERR_NORECIPIENT, std::string(":No recipient given ").append(cmd->getCmd()));
-		return;
+		reply.setCmd(ERR_NORECIPIENT);
+		reply.addParams(":No recipient given");
+		reply.addParams(cmd->getCmd());
 	}
+	else if (cmd->getParams().back().empty())
+	{
+		reply.setCmd(ERR_NOTEXTTOSEND);
+		reply.addParams(":No text to send");
+	}
+//	server.send(user, reply.)
+	return (reply.toString());
 }
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd.hpp                                            :+:      :+:    :+:   */
+/*   Cmd.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -27,19 +27,32 @@
 class Cmd
 {
 	private:
-		std::string			_cmd;
-		std::string			_params[NB_PARAMS];
+		std::string					_prefix;
+		std::string					_cmd;
+		std::vector<std::string>	_params;
 
 	public:
-		Cmd(std::string const &msg, Server &server, User &user);
+		explicit Cmd(std::string const &msg);
+
+		explicit Cmd(User const &user);
 
 		~Cmd();
 
-		std::string const	&getCmdNames(size_t i) const;
+		std::string 					toString() const;
 
-		std::string const	&getCmd() const;
+		std::string 					execute(Server &server, User &currentUser);
 
-		std::string const	&getParams(size_t i) const;
+		std::string const				&getCmdNames(size_t i) const;
+
+		std::string const				&getCmd() const;
+
+		std::vector<std::string> const	&getParams() const;
+
+		std::string const				&getOneParam(size_t i) const;
+
+		void							setCmd(std::string const &cmd);
+
+		void							addParams(std::string const &param);
 
 	private:
 		Cmd();
@@ -49,17 +62,15 @@ class Cmd
 		Cmd		&operator=(Cmd const &cmd);
 
 		void	parse(std::string const &msg);
-
-		void	execute(Server &server, User &currentUser);
 };
 
-std::string	reply(User &user, std::string const & cmd, std::string const & msg);
+//std::string	reply(User &user, std::string const & cmd, std::string const & msg);
 
-void	pass(Cmd *cmd, Server &server, User &currentUser);
+std::string	pass(Cmd *cmd, Server &server, User &currentUser);
 
-void	nick(Cmd *cmd, Server &server, User &currentUser);
+std::string	nick(Cmd *cmd, Server &server, User &currentUser);
 
-void	user(Cmd *cmd, Server &server, User &currentUser);
+std::string	user(Cmd *cmd, Server &server, User &currentUser);
 
 /*
 void	admin(Cmd *cmd, Server &server, User &currentUser);

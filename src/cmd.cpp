@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd.cpp                                            :+:      :+:    :+:   */
+/*   Cmd.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,10 +13,14 @@
 #include "cmd.hpp"
 #include "cmd.h"
 
-Cmd::Cmd(std::string const &msg, Server &server, User &user)
+Cmd::Cmd(std::string const &msg)
 {
 	this->parse(msg);
-	this->execute(server, user);
+}
+
+Cmd::Cmd(User const &user) : _prefix(user.prefix())
+{
+
 }
 
 Cmd::~Cmd()
@@ -36,9 +40,25 @@ Cmd	&Cmd::operator=(Cmd const &cmd)
 	{
 		this->_cmd = cmd.getCmd();
 		for (size_t i = 0; i < NB_PARAMS; ++i)
-			this->_params[i] = cmd.getParams(i);
+			this->_params[i] = cmd.getOneParam(i);
 	}
 	return (*this);
+}
+
+std::string 	Cmd::toString() const
+{
+	std::ostringstream stream;
+	stream << this->_prefix << this->_cmd << " ";
+	std::vector<std::string>::const_iterator it = this->_params.begin();
+	std::vector<std::string>::const_iterator ite = this->_params.end();
+	while (it != ite)
+	{
+		stream << *it << " ";
+		it++;
+	}
+	stream << "\r\n";
+	std::string str = stream.str();
+	return (str);
 }
 
 static size_t	findLength(std::string const &msg, size_t index, size_t end)
@@ -59,11 +79,14 @@ void	Cmd::parse(std::string const &msg)
 	size_t	i;
 
 	index = 0;
-	end = msg.find("\0", 0);
+	end = msg.find('\0', 0);
 	if (end == std::string::npos)
 		return;
 	if (msg[index] == ':')
+	{
 		index = msg.find(' ', 0);
+		_prefix = msg.substr(0, index);
+	}
 	length = findLength(msg, index, end);
 	_cmd = msg.substr(index, length);
 	index += length;
@@ -79,7 +102,7 @@ void	Cmd::parse(std::string const &msg)
 		return;
 	_params[i] = msg.substr(index, end - index);
 }
-
+/*
 std::string	reply(User &user, std::string const & cmd, std::string const & msg)
 {
 	std::string	toSend;
@@ -96,11 +119,10 @@ std::string	reply(User &user, std::string const & cmd, std::string const & msg)
 	toSend.append("\r\n");
 	return (toSend);
 }
-
-
-void	Cmd::execute(Server &server, User &currentUser)
+*/
+std::string	Cmd::execute(Server &server, User &currentUser)
 {
-	static void	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
+	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
 		&pass,		&nick,		&user
 	};
 	/*
@@ -121,11 +143,9 @@ void	Cmd::execute(Server &server, User &currentUser)
 	for (size_t i = 0; i < NB_CMD; ++i)
 	{
 		if (_cmd == this->getCmdNames(i))
-		{
-			executeFct[i](this, server, currentUser);
-			break;
-		}
+			return (executeFct[i](this, server, currentUser));
 	}
+	return ("");
 	//throw std::exception();
 }
 
@@ -157,7 +177,23 @@ std::string const	&Cmd::getCmd() const
 	return (this->_cmd);
 }
 
-std::string const	&Cmd::getParams(size_t i) const
+std::vector<std::string> const	&Cmd::getParams() const
+{
+	return (this->_params);
+}
+
+std::string const	&Cmd::getOneParam(size_t i) const
 {
 	return (this->_params[i]);
 }
+
+void	Cmd::setCmd(std::string const &cmd)
+{
+	this->_cmd = cmd;
+}
+
+void	Cmd::addParams(std::string const &param)
+{
+	this->_params.push_back(param);
+}
+

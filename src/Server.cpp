@@ -125,7 +125,10 @@ void	Server::launch(void)
 					std::string		*sp = split(buff, "\r\n");
 					int	iter = 0;
 					while (sp[iter] != "")
-						Cmd cmd(sp[iter++], *this, *user);
+					{
+						Cmd cmd(sp[iter++]);
+						std::string reply = cmd.execute(*this, *user);
+					}
 					delete sp;
 					if (!user->isLog())
 						user->log(buff);
