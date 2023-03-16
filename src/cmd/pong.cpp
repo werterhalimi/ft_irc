@@ -10,4 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Cmd.hpp"
 
+std::string	pong(Cmd * cmd, Server & server, User & usr)
+{
+	(void) cmd;
+	(void) server;
+	(void) usr;
+	return ("");
+}

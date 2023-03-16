@@ -180,3 +180,23 @@ std::vector<Channel *> &	Server::getChannels() const
 {
 	return *(this->channels);
 }
+
+int	Server::getChannelID(std::string const & name) const
+{
+	int	id = 0;
+	std::vector<Channel *>::const_iterator ite = this->channels->end();
+	for (std::vector<Channel *>::const_iterator it = this->channels->begin(); it < ite; ++it)
+		if (++id && (*it)->getName() == name)
+			return (id);
+	return (-1);
+}
+
+int	Server::getUserID(std::string const & nickname) const
+{
+	int	id = 0;
+	std::vector<User *>::const_iterator ite = this->users->end();
+	for (std::vector<User *>::const_iterator it = this->users->begin(); it < ite; ++it)
+		if (++id && (*it)->getNickname() == nickname)
+			return (id);
+	return (-1);
+}

@@ -16,11 +16,11 @@
 # include <vector>
 # include "Channel.h"
 # include "User.h"
-#include <string>
-#include <iomanip>
-#include <utility>
-#include <iostream>
-#include <stdexcept>
+# include <string>
+# include <iomanip>
+# include <utility>
+# include <iostream>
+# include <stdexcept>
 # include <netinet/in.h>
 # include <stdio.h>
 # include <string.h>
@@ -46,6 +46,8 @@ class Server
 		std::string					getHostname(void) const;
 		std::vector<User *> &		getUsers(void) const;
 		std::vector<Channel *> &	getChannels(void) const;
+		int 						getChannelID(std::string const & name) const;
+		int 						getUserID(std::string const & nickname) const;
 
 	private:
 		std::string			port;
