@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/15 19:33:58 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 17:43:34 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,20 @@ User::~User(void)
 void	User::welcome(void) 
 {
 
-	std::string hello = ":servername 001 shalimi :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:servername 002 shalimi :Your host is test.salut.com, running version 0.0.1\r\n:servername 003 shalimi :This server was created 20:12:31 Jan 16 2013\r\n:servername 004 shalimi :test.salut.com 2.0 ras\r\n";
+	std::string hello = ":Default 001 " + this->getNickname() + " :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:Default 002 "+ this->getNickname()+" :Your host is test.salut.com, running version 0.0.1\r\n:Default 003 "+ this->getNickname()+" :This server was created 20:12:31 Jan 16 2013\r\n:Default 004 "+ this->getNickname() +" :test.salut.com 2.0 ras\r\n";
 	this->sendReply(hello);
 }
 
 void	User::sendReply(std::string buff) const
 {
+	std::cout << buff << " 123" << getUsername() << std::endl;
 	send(this->fd, buff.c_str(), strlen(buff.c_str()), 0);
 }
 
 std::string	User::prefix() const
 {
 	std::ostringstream stream;
-	stream << ":" << this->nickname << "@" << this->username << "!" << this->hostname << " ";
+	stream << ":" << this->nickname << " " ;//<< "@" << this->username << "!" << this->hostname << " ";
 	std::string str = stream.str();
 	return (str);
 }

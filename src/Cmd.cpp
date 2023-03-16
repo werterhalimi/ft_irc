@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 16:02:14 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 17:28:33 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ std::string 	Cmd::toString() const
 		stream << " " << *it;
 	stream << "\r\n";
 	std::string str = stream.str();
+	std::cout << "ToString" << str << std::endl;
 	return (str);
 }
 
@@ -99,7 +100,7 @@ void	Cmd::parse(std::string const &msg)
 		if (msg[index + 1] == ':' || msg[index] == '\0')
 			break;
 		length = findLength(msg, index, end);
-		this->_params.push_back(msg.substr(index + 1, length));
+		this->_params.push_back(msg.substr(index + 1, length - 1));
 		index += length;
 	}
 	if (msg[index] == '\0')
@@ -127,7 +128,7 @@ std::string	reply(User &user, std::string const & cmd, std::string const & msg)
 std::string	Cmd::execute(Server &server, User &currentUser)
 {
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
-		&pass,		&nick,		&user
+		&pass,		&nick,		&user,	&privmsg,	&ping,	&pong
 	};
 	/*
 	 * ,		&oper,
@@ -167,7 +168,7 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 std::string const	&Cmd::getCmdNames(size_t i) const
 {
 	static std::string	cmdNames[NB_CMD] = {
-		"PASS",	"NICK",		"USER"
+		"PASS",	"NICK",	"USER", "PRIVMSG", "PING", "PONG"
 	};
 	/*
 	"OPER",

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/16 16:05:32 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 17:21:33 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ bool	Server::hasNick(std::string nick) const
 
 std::string	Server::prefix() const
 {
-	return (":" + this->getName());
+	return (":" + this->getName() + " ");
 }
 
 int	Server::getPort() const
@@ -217,9 +217,13 @@ int	Server::getChannelID(std::string const & name) const
 int	Server::getUserID(std::string const & nickname) const
 {
 	int	id = 0;
+
 	std::vector<User *>::const_iterator ite = this->users->end();
 	for (std::vector<User *>::const_iterator it = this->users->begin(); it < ite; ++it)
-		if (++id && (*it)->getNickname() == nickname)
+	{
+		if ((*it)->getNickname() == nickname)
 			return (id);
+		id++;
+	}
 	return (-1);
 }

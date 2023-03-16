@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:40:35 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/13 13:40:36 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/03/16 17:21:46 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 //		params.push_back(std::string(":" + tmp));
 //	}
 	std::vector<std::string>::const_iterator ite = params.end();
-	for (std::vector<std::string>::const_iterator it = params.begin(); it < ite; ++it)
+	for (std::vector<std::string>::const_iterator it = params.begin(); it < ite - 1; ++it)
 	{
 		if ((*it)[0] == '#')
 		{

@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 15:59:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 16:58:37 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 //# include <cstdio>
 
 # define NB_PARAMS	15
-# define NB_CMD		3
+# define NB_CMD		6
 
 
 class Cmd
@@ -76,6 +76,12 @@ std::string	pass(Cmd *cmd, Server &server, User &currentUser);
 std::string	nick(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	user(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	ping(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	pong(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	privmsg(Cmd *cmd, Server &server, User &currentUser);
 
 /*
 void	admin(Cmd *cmd, Server &server, User &currentUser);
