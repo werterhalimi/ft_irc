@@ -10,4 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Cmd.hpp"
 
+std::string	ping(Cmd * cmd, Server & server, User & usr)
+{
+	Cmd reply(usr);
+	(void) server;
+	std::vector<std::string> params = cmd->getParams();
+	if (params.empty() || params[0].empty())
+	{
+		reply.setCmd(ERR_NOORIGIN);
+		reply.addParams(":No origin specified");
+		return (reply.toString());
+	}
+	reply.setCmd("PONG");
+	reply.addParams(params[0]);
+	return (reply.toString());
+}

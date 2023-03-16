@@ -56,10 +56,10 @@ Cmd	&Cmd::operator=(Cmd const &cmd)
 std::string 	Cmd::toString() const
 {
 	std::ostringstream stream;
-	stream << this->_prefix << this->_cmd << " ";
+	stream << this->_prefix << this->_cmd;
 	std::vector<std::string>::const_iterator ite = this->_params.end();
 	for (std::vector<std::string>::const_iterator it = this->_params.begin(); it < ite; ++it)
-		stream << *it << " ";
+		stream << " " << *it;
 	stream << "\r\n";
 	std::string str = stream.str();
 	return (str);
