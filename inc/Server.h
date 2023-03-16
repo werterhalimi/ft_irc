@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/15 19:00:55 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 16:05:54 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Server
 	public:
 		Server(void);
 		Server(std::string name);
+		Server(int port, std::string pass);
 		Server(Server const & src);
 		~Server(void);
 
@@ -42,7 +43,7 @@ class Server
 
 		bool						hasNick(std::string nick) const;
 		std::string					prefix() const;
-		std::string					getPort(void) const;
+		int							getPort(void) const;
 		std::string					getPass(void) const;
 		std::string					getName(void) const;
 		std::string					getHostname(void) const;
@@ -50,7 +51,7 @@ class Server
 		std::vector<Channel *> &	getChannels(void) const;
 
 	private:
-		std::string			port;
+		int					port;
 		std::string			pass;
 		std::string			servername;
 		std::string			hostname;
