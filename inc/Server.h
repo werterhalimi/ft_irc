@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/11 20:32:54 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/15 19:00:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Server
 		void						handleLogin(User & user, struct kevent * event);
 		void						handleLogout(User & user);
 
+		bool						hasNick(std::string nick) const;
+		std::string					prefix() const;
 		std::string					getPort(void) const;
 		std::string					getPass(void) const;
 		std::string					getName(void) const;

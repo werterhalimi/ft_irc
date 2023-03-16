@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:11:35 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/13 16:41:01 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/15 19:30:09 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@ static int	count_sep(std::string &str, std::string &sep)
 	return (n);
 }
 
-std::string	*	split(std::string &str, std::string &sep)
+std::string	*	split(char * s, std::string sep)
 {
+	std::string	str(s);
 	int	n = count_sep(str, sep);
 	std::string *ret = new std::string[n];
 	int	i = 0;

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/13 16:44:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/15 19:35:04 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	Server::launch(void)
 	User	empty;
 	empty.setFd(-2);
 	EV_SET(&event, server_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &empty);
-	int bonjour = 0;
+	int	no_cmd = 1;
 	while(1)
 	{
 		struct timespec timeout = {3, 0};
@@ -111,7 +111,6 @@ void	Server::launch(void)
 					buff_len = read((user->getFd()), buff, 513);
 
 					buff[buff_len] = 0;
-					std::cout << bonjour++ << " " <<buff << std::endl;
 					User *usr = new User();
 					usr->setFd(server_fd);
 					handleLogin(*usr, &event);
@@ -121,17 +120,15 @@ void	Server::launch(void)
 					char buff[513];
 					buff_len = read((user->getFd()), buff, 513);
 					buff[buff_len] = 0;
-					std::cout << bonjour++ << " " << buff << std::endl;
+					std::cout << no_cmd++ << " " << buff << std::endl;
 					std::string		*sp = split(buff, "\r\n");
 					int	iter = 0;
-					while (sp[iter] != "")
+					while (!sp[iter].empty())
 					{
 						Cmd cmd(sp[iter++]);
 						std::string reply = cmd.execute(*this, *user);
 					}
-					delete sp;
-					if (!user->isLog())
-						user->log(buff);
+					//delete sp;
 				}
 			}
 		}
@@ -149,6 +146,24 @@ void	Server::handleLogin(User & user, struct kevent * event)
 void	Server::handleLogout(User & user)
 {
 	std::remove(this->users->begin(), this->users->end(), &user);
+}
+
+bool	Server::hasNick(std::string nick) const
+{
+	std::vector<User *>::const_iterator it = this->users->begin();
+	std::vector<User *>::const_iterator ite = this->users->end();
+	while (it != ite)
+	{
+		if ((*it)->getNickname() == nick)
+			return (true);
+		it++;
+	}
+	return (false);
+}
+
+std::string	Server::prefix() const
+{
+	return (":" + this->getName());
 }
 
 std::string	Server::getPort() const
