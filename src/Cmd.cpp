@@ -6,18 +6,16 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/15 19:54:12 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 16:02:14 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
 #include "cmd.h"
 
-Cmd::Cmd(std::string const &msg) :_params(*(new std::vector<std::string>()))
+Cmd::Cmd(std::string const &msg, Server * server) :_params(*(new std::vector<std::string>())), _server(server)
 {
-	std::cout << "Test 1 " << msg << std::endl;
 	this->parse(msg);
-	std::cout << "Test 2 " << _cmd << std::endl;
 }
 
 Cmd::Cmd(User const &user) : _prefix(user.prefix()), _params(*(new std::vector<std::string>()))
@@ -101,7 +99,7 @@ void	Cmd::parse(std::string const &msg)
 		if (msg[index + 1] == ':' || msg[index] == '\0')
 			break;
 		length = findLength(msg, index, end);
-		this->_params.push_back(msg.substr(index, length));
+		this->_params.push_back(msg.substr(index + 1, length));
 		index += length;
 	}
 	if (msg[index] == '\0')
@@ -152,7 +150,7 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 		{
 			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
 			{
-				Cmd reply(*this);
+				Cmd reply(*(this->_server));
 				reply.setCmd(ERR_PASSWDMISMATCH);
 				reply.addParam(":Password incorrect");
 				currentUser.sendReply(reply.toString());

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/15 19:35:04 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 16:05:32 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@ Server::Server(void) : users(new std::vector<User *>()), channels(new std::vecto
 }
 
 Server::Server(std::string	name) : servername(name), users(new std::vector<User *>()), channels(new std::vector<Channel *>())
+{
+	#if LOG_LEVEL == 10
+	std::cout << "Server name constructor" << std::endl;
+	#endif
+}
+
+Server::Server(int	port, std::string pass) : port(port), pass(pass), servername("Default"), users(new std::vector<User *>()), channels(new std::vector<Channel *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "Server name constructor" << std::endl;
@@ -85,6 +92,7 @@ void	Server::launch(void)
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(6667);
+
 	if (bind(server_fd, (struct sockaddr *)(&address), sizeof(address)) < 0)
 		throw std::exception();
 	
@@ -125,7 +133,7 @@ void	Server::launch(void)
 					int	iter = 0;
 					while (!sp[iter].empty())
 					{
-						Cmd cmd(sp[iter++]);
+						Cmd cmd(sp[iter++], this);
 						std::string reply = cmd.execute(*this, *user);
 					}
 					//delete sp;
@@ -166,7 +174,7 @@ std::string	Server::prefix() const
 	return (":" + this->getName());
 }
 
-std::string	Server::getPort() const
+int	Server::getPort() const
 {
 	return this->port;
 }
