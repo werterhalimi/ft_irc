@@ -19,14 +19,14 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 	if (params.empty() || (params.size() == 1 && params[1][0] == ':'))
 	{
 		reply.setCmd(ERR_NORECIPIENT);
-		reply.addParams(":No recipient given");
-		reply.addParams(cmd->getCmd());
+		reply.addParam(":No recipient given");
+		reply.addParam(cmd->getCmd());
 		return (reply.toString());
 	}
 	if (params.size() == 1)
 	{
 		reply.setCmd(ERR_NOTEXTTOSEND);
-		reply.addParams(":No text to send");
+		reply.addParam(":No text to send");
 		return (reply.toString());
 	}
 //	std::string tmp = params.back();
@@ -42,9 +42,21 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 		{
 			int id = server.getChannelID(*it);
 			if (id < 0)
-				; // TODO No channel ?
+			{
+				reply.setCmd(ERR_NOSUCHNICK);
+				reply.addParam(*it);
+				reply.addParam(":No such nick/channel");
+				return (reply.toString());
+			}
 			else
-				; // TODO Send all user in channel
+			{
+				std::vector<User> userInChannel = server.getChannels()[id]->getUsers();
+				std::vector<User>::const_iterator ite = userInChannel.end();
+				reply.setCmd("PRIVMSG");
+				reply.addParams(params);
+				for (std::vector<User>::const_iterator it = userInChannel.begin(); it < ite; ++it)
+					(*it).sendReply(reply.toString());
+			}
 		}
 		else if ((*it)[0] != '$')
 		{
@@ -52,12 +64,16 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			if (id < 0)
 			{
 				reply.setCmd(ERR_NOSUCHNICK);
-				reply.addParams(*it);
-				reply.addParams(":No such nick/channel");
+				reply.addParam(*it);
+				reply.addParam(":No such nick/channel");
 				return (reply.toString());
 			}
 			else
-				; // TODO Send to user
+			{
+				reply.setCmd("PRIVMSG");
+				reply.addParams(params);
+				server.getUsers()[id]->sendReply(reply.toString());
+			}
 		}
 	}
 

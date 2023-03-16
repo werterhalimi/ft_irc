@@ -20,10 +20,10 @@ std::string	ping(Cmd * cmd, Server & server, User & usr)
 	if (params.empty() || params[0].empty())
 	{
 		reply.setCmd(ERR_NOORIGIN);
-		reply.addParams(":No origin specified");
+		reply.addParam(":No origin specified");
 		return (reply.toString());
 	}
 	reply.setCmd("PONG");
-	reply.addParams(params[0]);
+	reply.addParam(params[0]);
 	return (reply.toString());
 }

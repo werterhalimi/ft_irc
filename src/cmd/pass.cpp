@@ -18,20 +18,20 @@ std::string	pass(Cmd * cmd, Server & server, User & usr)
 	if (cmd->getParams().empty())
 	{
 		reply.setCmd(ERR_NEEDMOREPARAMS);
-		reply.addParams(cmd->getCmd());
-		reply.addParams(":Not enough parameters");
+		reply.addParam(cmd->getCmd());
+		reply.addParam(":Not enough parameters");
 		return (reply.toString());
 	}
 	else if (usr.hasPass())
 	{
 		reply.setCmd(ERR_ALREADYREGISTRED);
-		reply.addParams(":Unauthorized command (already registered");
+		reply.addParam(":Unauthorized command (already registered");
 		return (reply.toString());
 	}
 	else if (cmd->getParams().back() != server.getPass())
 	{
 		reply.setCmd(ERR_PASSWDMISMATCH);
-		reply.addParams(":Password incorrect");
+		reply.addParam(":Password incorrect");
 		return (reply.toString());
 	}
 	usr.auth();

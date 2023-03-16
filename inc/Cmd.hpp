@@ -53,7 +53,9 @@ class Cmd
 
 		void							setCmd(std::string const &cmd);
 
-		void							addParams(std::string const &param);
+		void							addParam(std::string const &param);
+
+		void							addParams(std::vector<std::string> const &params);
 
 	private:
 		Cmd();

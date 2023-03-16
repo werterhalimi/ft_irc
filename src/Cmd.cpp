@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmd.hpp"
+#include "Cmd.hpp"
 #include "cmd.h"
 
 Cmd::Cmd(std::string const &msg) :_params(*(new std::vector<std::string>()))
@@ -154,7 +154,7 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 			{
 				Cmd reply(*this);
 				reply.setCmd(ERR_PASSWDMISMATCH);
-				reply.addParams(":Password incorrect");
+				reply.addParam(":Password incorrect");
 				currentUser.sendReply(reply.toString());
 				continue ;
 			}
@@ -209,8 +209,12 @@ void	Cmd::setCmd(std::string const &cmd)
 	this->_cmd = cmd;
 }
 
-void	Cmd::addParams(std::string const &param)
+void	Cmd::addParam(std::string const &param)
 {
 	this->_params.push_back(param);
 }
 
+void	Cmd::addParams(std::vector<std::string> const &params)
+{
+	this->_params = params;
+}

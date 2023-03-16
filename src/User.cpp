@@ -48,7 +48,7 @@ void	User::welcome(void)
 	this->sendReply(hello);
 }
 
-void	User::sendReply(std::string buff)
+void	User::sendReply(std::string buff) const
 {
 	send(this->fd, buff.c_str(), strlen(buff.c_str()), 0);
 }

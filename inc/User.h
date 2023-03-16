@@ -31,7 +31,7 @@ class User
 		~User(void);
 
 
-		void				sendReply(std::string reply);
+		void				sendReply(std::string reply) const;
 
 		User &	operator=(User const & src);
 		bool	operator==(User const & src);
