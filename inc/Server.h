@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/16 16:05:54 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/20 19:06:13 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define SERVER_H
 # include "ft_irc.hpp"
 # include <vector>
-# include "Channel.h"
 # include "User.h"
+# include "Channel.h"
 # include <string>
 # include <iomanip>
 # include <utility>
@@ -42,6 +42,7 @@ class Server
 		void						handleLogout(User & user);
 
 		bool						hasNick(std::string nick) const;
+		Channel *					getChannelByName(std::string const & name);
 		std::string					prefix() const;
 		int							getPort(void) const;
 		std::string					getPass(void) const;

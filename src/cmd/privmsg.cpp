@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:40:35 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 18:52:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/20 20:43:16 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,10 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 				reply.setCmd("PRIVMSG");
 				reply.addParams(params);
 				for (std::vector<User *>::const_iterator it = userInChannel.begin(); it < ite; ++it)
+				{
+					if ((*it)->getNickname() != usr.getNickname())
 					(*it)->sendReply(reply.toString());
+				}
 			}
 		}
 		else if ((*it)[0] != '$')

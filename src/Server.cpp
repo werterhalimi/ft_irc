@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/16 17:21:33 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/20 20:30:57 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ Server::Server(std::string	name) : servername(name), users(new std::vector<User 
 
 Server::Server(int	port, std::string pass) : port(port), pass(pass), servername("Default"), users(new std::vector<User *>()), channels(new std::vector<Channel *>())
 {
+	this->channels->push_back(new Channel("#Default", 20));
 	#if LOG_LEVEL == 10
 	std::cout << "Server name constructor" << std::endl;
 	#endif
@@ -105,8 +106,7 @@ void	Server::launch(void)
 	int	no_cmd = 1;
 	while(1)
 	{
-		struct timespec timeout = {3, 0};
-		int n = kevent(kq, &event, 1, &event, 1, &timeout);
+		int n = kevent(kq, &event, 1, &event, 1, 0);
 		if (n < 0) continue ;
 		for(int i = 0; i < n; i++)
 		{
@@ -169,6 +169,19 @@ bool	Server::hasNick(std::string nick) const
 	return (false);
 }
 
+Channel	* Server::getChannelByName(std::string const & name)
+{
+	std::vector<Channel *>::const_iterator	it = this->channels->begin();
+	std::vector<Channel *>::const_iterator	ite = this->channels->end();
+	while (it != ite)
+	{
+		if ((*it)->getName() == name)
+			return (*it);
+		it++;
+	}
+	return (0);
+}
+
 std::string	Server::prefix() const
 {
 	return (":" + this->getName() + " ");
@@ -209,8 +222,11 @@ int	Server::getChannelID(std::string const & name) const
 	int	id = 0;
 	std::vector<Channel *>::const_iterator ite = this->channels->end();
 	for (std::vector<Channel *>::const_iterator it = this->channels->begin(); it < ite; ++it)
-		if (++id && (*it)->getName() == name)
+	{
+		if ((*it)->getName() == name)
 			return (id);
+		id++;
+	}
 	return (-1);
 }
 

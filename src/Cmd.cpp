@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 17:28:33 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/20 19:28:00 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 {
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
 		&pass,		&nick,		&user,	&privmsg,
-		&ping,		&pong, 	&mode
+		&ping,		&pong, 	&mode, &join
 	};
 	/*
 	 * ,		&oper,
@@ -171,7 +171,7 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 {
 	static std::string	cmdNames[NB_CMD] = {
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
-		"PING", 	"PONG",	"MODE"
+		"PING", 	"PONG",	"MODE", "JOIN"
 	};
 	/*
 	"OPER",

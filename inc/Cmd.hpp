@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 16:58:37 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/20 19:28:56 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 //# include <cstdio>
 
 # define NB_PARAMS	15
-# define NB_CMD		7
+# define NB_CMD		8
 
+class Server;
 
 class Cmd
 {
@@ -73,6 +74,8 @@ class Cmd
 //std::string	reply(User &user, std::string const & cmd, std::string const & msg);
 
 std::string	pass(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	join(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	nick(Cmd *cmd, Server &server, User &currentUser);
 

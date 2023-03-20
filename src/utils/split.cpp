@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:11:35 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/15 19:30:09 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/20 20:26:44 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,18 @@ static int	count_sep(std::string &str, std::string &sep)
 	return (n);
 }
 
-std::string	*	split(char * s, std::string sep)
+int	get_split_size(std::string * split)
 {
-	std::string	str(s);
+	int ret = 0;
+	if (!split) return (0);
+	while (!(*(split++)).empty()) ret++;
+	return (ret);
+}
+
+std::string	*	split(std::string str, std::string sep)
+{
 	int	n = count_sep(str, sep);
-	std::string *ret = new std::string[n];
+	std::string *ret = new std::string[n + 1];
 	int	i = 0;
 	size_t	start = 0;
 	size_t	index;
@@ -42,5 +49,19 @@ std::string	*	split(char * s, std::string sep)
 		start = index + sep.size();
 		i++;
 	}
+	ret[i] = std::string();
 	return ret;
+}
+
+
+std::string	*	split(char * s, std::string sep)
+{
+	std::string	str(s);
+	return split(str, sep);
+}
+
+std::string	*	split(char const * s, std::string sep)
+{
+	std::string	str(s);
+	return split(str, sep);
 }
