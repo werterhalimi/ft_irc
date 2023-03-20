@@ -62,7 +62,7 @@ std::string 	Cmd::toString() const
 		stream << " " << *it;
 	stream << "\r\n";
 	std::string str = stream.str();
-	std::cout << "ToString" << str << std::endl;
+//	std::cout << "ToString" << str << std::endl;
 	return (str);
 }
 
@@ -128,7 +128,8 @@ std::string	reply(User &user, std::string const & cmd, std::string const & msg)
 std::string	Cmd::execute(Server &server, User &currentUser)
 {
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
-		&pass,		&nick,		&user,	&privmsg,	&ping,	&pong
+		&pass,		&nick,		&user,	&privmsg,
+		&ping,		&pong, 	&mode
 	};
 	/*
 	 * ,		&oper,
@@ -157,8 +158,9 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 				currentUser.sendReply(reply.toString());
 				continue ;
 			}
-			currentUser.sendReply(executeFct[i](this, server, currentUser));
-
+			std::string reply = executeFct[i](this, server, currentUser);
+			std::cout << YELLOW << reply << RESET_COLOR << std::endl;
+			currentUser.sendReply(reply);
 		}
 	}
 	return ("");
@@ -168,7 +170,8 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 std::string const	&Cmd::getCmdNames(size_t i) const
 {
 	static std::string	cmdNames[NB_CMD] = {
-		"PASS",	"NICK",	"USER", "PRIVMSG", "PING", "PONG"
+		"PASS",	"NICK",		"USER",		"PRIVMSG",
+		"PING", 	"PONG",	"MODE"
 	};
 	/*
 	"OPER",

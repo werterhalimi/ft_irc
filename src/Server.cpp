@@ -134,7 +134,7 @@ void	Server::launch(void)
 					while (!sp[iter].empty())
 					{
 						Cmd cmd(sp[iter++], this);
-						std::string reply = cmd.execute(*this, *user);
+						std::string reply = cmd.execute(*this, *user); // TODO reply empty
 					}
 					//delete sp;
 				}

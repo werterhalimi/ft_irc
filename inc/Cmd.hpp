@@ -18,10 +18,11 @@
 # include "Server.h"
 //# include "cmd.h"
 # include <iostream>
+# include <sstream>
 //# include <cstdio>
 
 # define NB_PARAMS	15
-# define NB_CMD		6
+# define NB_CMD		7
 
 
 class Cmd
@@ -82,6 +83,8 @@ std::string	ping(Cmd *cmd, Server &server, User &currentUser);
 std::string	pong(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	privmsg(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	mode(Cmd *cmd, Server &server, User &currentUser);
 
 /*
 void	admin(Cmd *cmd, Server &server, User &currentUser);

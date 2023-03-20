@@ -99,7 +99,7 @@ debug:			$(OBJS)
 				$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 				@echo $(BOLD_BLUE)[BUILD][$(NAME)]$(BOLD_YELLOW)[DEBUG]$(BOLD_GREEN)" : DONE"$(RESET_COLOR)
 
-test:			$(NAME)
+run:			$(NAME)
 				./$(NAME) 6667 IRC4life
 
-.PHONY:			all sclean clean fclean re test leaks debug
+.PHONY:			all sclean clean fclean re run leaks debug

@@ -45,7 +45,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			{
 				reply.setCmd(ERR_NOSUCHNICK);
 				reply.addParam(*it);
-				reply.addParam(":No such nick/channel");
+				reply.addParam(":No such channel");
 				return (reply.toString());
 			}
 			else
@@ -65,7 +65,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			{
 				reply.setCmd(ERR_NOSUCHNICK);
 				reply.addParam(*it);
-				reply.addParam(":No such nick/channel");
+				reply.addParam(":No such nick");
 				return (reply.toString());
 			}
 			else
