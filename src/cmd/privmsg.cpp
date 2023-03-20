@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:40:35 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 17:21:46 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/16 18:52:25 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			}
 			else
 			{
-				std::vector<User> userInChannel = server.getChannels()[id]->getUsers();
-				std::vector<User>::const_iterator ite = userInChannel.end();
+				std::vector<User *> userInChannel = server.getChannels()[id]->getUsers();
+				std::vector<User *>::const_iterator ite = userInChannel.end();
 				reply.setCmd("PRIVMSG");
 				reply.addParams(params);
-				for (std::vector<User>::const_iterator it = userInChannel.begin(); it < ite; ++it)
-					(*it).sendReply(reply.toString());
+				for (std::vector<User *>::const_iterator it = userInChannel.begin(); it < ite; ++it)
+					(*it)->sendReply(reply.toString());
 			}
 		}
 		else if ((*it)[0] != '$')

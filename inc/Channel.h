@@ -27,9 +27,9 @@ class Channel
 
 		Channel &			operator=(Channel const & src);
 		std::string			getName(void) const;
-		std::vector<User> &	getUsers(void) const;
+		std::vector<User *> &	getUsers(void) const;
 	private:
-		std::string			name;
-		std::vector<User> *	users;	
+		std::string					name;
+		std::vector<User *> *		users;
 };
 #endif
