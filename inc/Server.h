@@ -16,6 +16,7 @@
 # include <vector>
 # include "Channel.h"
 # include "User.h"
+# include "Operator.hpp"
 # include <string>
 # include <iomanip>
 # include <utility>
@@ -48,6 +49,7 @@ class Server
 		std::string					getName(void) const;
 		std::string					getHostname(void) const;
 		std::vector<User *> &		getUsers(void) const;
+		std::vector<Operator *> &	getOperators() const;
 		std::vector<Channel *> &	getChannels(void) const;
 		int 						getChannelID(std::string const & name) const;
 		int 						getUserID(std::string const & nickname) const;
@@ -58,6 +60,7 @@ class Server
 		std::string			servername;
 		std::string			hostname;
 		std::vector<User *> *		users;
+		std::vector<Operator *> *	operators;
 		std::vector<Channel *> *	channels;
 };
 

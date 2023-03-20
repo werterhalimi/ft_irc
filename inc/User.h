@@ -14,6 +14,7 @@
 #ifndef USER_H
 # define USER_H
 # include "ft_irc.hpp"
+# include "Operator.hpp"
 # include <vector>
 # include <netinet/in.h>
 //# include <stdio.h>
@@ -21,6 +22,7 @@
 # include <iostream>
 # include <sstream>
 # include <sys/socket.h>
+# include <arpa/inet.h>
 # include <unistd.h>
 
 # define PASS_FLAG				0x00000001
@@ -57,14 +59,22 @@ class User
 		void				setFd(int i);
 		void				setUsername(std::string const &user);
 		void				setNickname(std::string const &nick);
+		void				setHostname();
+		void				setAway(bool flag);
+		void				setInvisible(bool flag);
+		void				setWallops(bool flag);
+		void				setRestricted(bool flag);
+		void				setGlobalOperator(bool flag);
+		void				setLocalOperator(bool flag);
+		bool				loginOperator(Operator const * op, std::string const &password);
 
 		/* Getters */
 		bool				hasNick() const;
 		bool				hasUser() const;
 		bool				isLog() const;
 		int &				getFd();
-		socklen_t &			getSocklen();
-		struct sockaddr_in &	getAddress();
+		socklen_t *			getSocklen();
+		struct sockaddr_in *	getAddress();
 		std::string getHostname() const;
 		std::string getNickname() const;
 		std::string	getUsername() const;
@@ -77,18 +87,12 @@ class User
 		bool				isGlobalOperator() const;
 		bool				isLocalOperator() const;
 		bool				isOperator() const;
-		void				setAway(bool flag);
-		void				setInvisible(bool flag);
-		void				setWallops(bool flag);
-		void				setRestricted(bool flag);
-		void				setGlobalOperator(bool flag);
-		void				setLocalOperator(bool flag);
 
 	private:
 		unsigned int 	boolFlags;
 //		bool			pass, user, nick, away, invisible, wallops, restricted, globalOperator, localOperator, _isOperator;
-		struct sockaddr_in	*addr;
-		socklen_t *		len;
+		struct sockaddr_in	addr;
+		socklen_t 		len;
 		int				fd;
 		std::string		username;
 		std::string		nickname;

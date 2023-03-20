@@ -142,11 +142,19 @@ void	Server::launch(void)
 		}
 	}
 }
-
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
 void	Server::handleLogin(User & user, struct kevent * event)
 {
 	this->users->push_back(&user);
-	user.setFd(accept(user.getFd(), (struct sockaddr*)&(user.getAddress()) , &(user.getSocklen())));
+//	std::cout << inet_ntoa(user.getAddress().sin_addr) << std::endl;
+	if (user.getAddress())
+		std::cout << inet_ntoa(user.getAddress()->sin_addr) << std::endl;
+	else
+		std::cout << "NON" << std::endl;
+	user.setFd(accept(user.getFd(),(struct sockaddr *) user.getAddress(), user.getSocklen()));
+
 	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &user);
 
 }
@@ -197,6 +205,11 @@ std::string	Server::getHostname() const
 std::vector<User *> &	Server::getUsers() const
 {
 	return *(this->users);
+}
+
+std::vector<Operator *> &	Server::getOperators() const
+{
+	return *(this->operators);
 }
 
 std::vector<Channel *> &	Server::getChannels() const

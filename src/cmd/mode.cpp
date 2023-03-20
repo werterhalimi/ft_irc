@@ -96,6 +96,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 	if (params.empty())
 	{
 		reply.setCmd(ERR_NEEDMOREPARAMS);
+		reply.addParam(usr.getNickname());
 		reply.addParam(cmd->getCmd());
 		reply.addParam(":Not enough parameters");
 		return (reply.toString());
@@ -106,6 +107,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		if (id < 0)
 		{
 			reply.setCmd(ERR_NOSUCHCHANNEL);
+			reply.addParam(usr.getNickname());
 			reply.addParam(params[0]);
 			reply.addParam(":No such channel");
 			return (reply.toString());
@@ -121,6 +123,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		if (id < 0)
 		{
 			reply.setCmd(ERR_NOSUCHNICK);
+			reply.addParam(usr.getNickname());
 			reply.addParam(params[0]);
 			reply.addParam(":No such nick");
 			return (reply.toString());
@@ -128,6 +131,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		else if (server.getUsers()[id]->getNickname() != usr.getNickname())
 		{
 			reply.setCmd(ERR_USERSDONTMATCH);
+			reply.addParam(usr.getNickname());
 			if (params.size() > 1)
 				reply.addParam(":Can't change mode for other users");
 			else

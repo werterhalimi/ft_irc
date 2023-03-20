@@ -36,18 +36,21 @@ std::string	nick(Cmd * cmd, Server & server, User & usr)
 	if (!usr.hasPass())
 	{
 		reply.setCmd(ERR_PASSWDMISMATCH);
+		reply.addParam(usr.getNickname());
 		reply.addParam(":Password incorrect");
 		return (reply.toString());
 	}
 	else if (params.empty())
 	{
 		reply.setCmd(ERR_NONICKNAMEGIVEN);
+		reply.addParam(usr.getNickname());
 		reply.addParam(":No nickname given");
 		return (reply.toString());
 	}
 	else if (server.hasNick(nick))
 	{
 		reply.setCmd(ERR_NICKNAMEINUSE);
+		reply.addParam(usr.getNickname());
 		reply.addParam(params.at(0));
 		reply.addParam(":Nickname is already in use");
 		return (reply.toString());
@@ -55,6 +58,7 @@ std::string	nick(Cmd * cmd, Server & server, User & usr)
 	else if (!validNickName(nick))
 	{
 		reply.setCmd(ERR_ERRONEUSNICKNAME);
+		reply.addParam(usr.getNickname());
 		reply.addParam(nick);
 		reply.addParam(":Erroneous nickname");
 		return (reply.toString());

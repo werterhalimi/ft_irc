@@ -19,6 +19,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 	if (params.empty() || (params.size() == 1 && params[1][0] == ':'))
 	{
 		reply.setCmd(ERR_NORECIPIENT);
+		reply.addParam(usr.getNickname());
 		reply.addParam(":No recipient given");
 		reply.addParam(cmd->getCmd());
 		return (reply.toString());
@@ -26,6 +27,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 	if (params.size() == 1)
 	{
 		reply.setCmd(ERR_NOTEXTTOSEND);
+		reply.addParam(usr.getNickname());
 		reply.addParam(":No text to send");
 		return (reply.toString());
 	}
@@ -44,6 +46,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			if (id < 0)
 			{
 				reply.setCmd(ERR_NOSUCHNICK);
+				reply.addParam(usr.getNickname());
 				reply.addParam(*it);
 				reply.addParam(":No such channel");
 				return (reply.toString());
@@ -64,6 +67,7 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			if (id < 0)
 			{
 				reply.setCmd(ERR_NOSUCHNICK);
+				reply.addParam(usr.getNickname());
 				reply.addParam(*it);
 				reply.addParam(":No such nick");
 				return (reply.toString());

@@ -43,8 +43,11 @@ User::~User()
 
 void	User::welcome()
 {
-
-	std::string hello = ":Default 001 " + this->getNickname() + " :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:Default 002 "+ this->getNickname()+" :Your host is test.salut.com, running version 0.0.1\r\n:Default 003 "+ this->getNickname()+" :This server was created 20:12:31 Jan 16 2013\r\n:Default 004 "+ this->getNickname() +" :test.salut.com 2.0 ras\r\n";
+	std::string hello = ":Default 001 " + this->getNickname() + " :Welcome to the BeyondIRC IRC Network " \
+		+ this->getNickname() + "!" + this->getUsername() + "@" + this->getHostname() + "\r\n:Default 002 " \
+		+ this->getNickname() + " :Your host is test.salut.com, running version 0.0.1\r\n:Default 003 " \
+		+ this->getNickname() + " :This server was created 20:12:31 Jan 16 2013\r\n:Default 004 " \
+		+ this->getNickname() + " :test.salut.com 2.0 ras\r\n";
 	this->sendReply(hello);
 }
 
@@ -93,14 +96,14 @@ std::string User::getHostname() const
 	return this->hostname;
 }
 
-struct sockaddr_in &	User::getAddress()
+struct sockaddr_in *	User::getAddress()
 {
-	return *(this->addr);
+	return &(this->addr);
 }
 
-socklen_t &	User::getSocklen()
+socklen_t 	*User::getSocklen()
 {
-	return *(this->len);
+	return &(this->len);
 }
 
 int &	User::getFd()
@@ -231,4 +234,22 @@ void	User::setNickname(std::string const & nickname)
 {
 	this->nickname = nickname;
 	this->boolFlags |= NICK_FLAG;
+}
+
+void	User::setHostname()
+{
+	std::cout << CYAN << "Hostname" << RESET_COLOR << std::endl;
+//	if (&(this->addr))
+//		std::cout << MAGENTA << inet_ntoa(this->addr->sin_addr) << RESET_COLOR << std::endl;
+//	else
+//		std::cout << MAGENTA << "NOPE" << RESET_COLOR << std::endl;
+	this->hostname = inet_ntoa(this->addr.sin_addr);
+	std::cout << RED <<hostname << RESET_COLOR << std::endl;
+}
+
+bool	User::loginOperator(Operator const * op, std::string const &password)
+{
+	if (op->isValidPassword(password))
+		this->boolFlags |= OPERATOR_FLAG;
+	return (this->isOperator());
 }

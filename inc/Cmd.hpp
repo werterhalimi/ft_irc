@@ -24,7 +24,6 @@
 # define NB_PARAMS	15
 # define NB_CMD		7
 
-
 class Cmd
 {
 	private:

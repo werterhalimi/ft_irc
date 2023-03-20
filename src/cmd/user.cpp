@@ -21,16 +21,19 @@ std::string	user(Cmd * cmd, Server & server, User & usr)
 	if (params.empty())
 	{
 		reply.setCmd(ERR_NONICKNAMEGIVEN);
+		reply.addParam(usr.getNickname());
 		reply.addParam(":No username given");
 		return (reply.toString());
 	}
 	else if (usr.hasUser())
 	{
 		reply.setCmd(ERR_ALREADYREGISTRED);
+		reply.addParam(usr.getNickname());
 		reply.addParam(":Unauthorized command (already registered");
 		return (reply.toString());
 	}
 	usr.setUsername(user);
+	usr.setHostname();
 	if (usr.isLog())
 		usr.welcome();
 	return ("");
