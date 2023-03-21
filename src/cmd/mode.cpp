@@ -61,6 +61,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		else
 		{
 			// TODO
+			return ("");
 		}
 	}
 	else

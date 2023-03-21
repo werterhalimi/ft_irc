@@ -156,7 +156,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 		{
 			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
 			{
-				currentUser.sendReply(err_passwdmismatch(server));
+				currentUser.sendReply(err_passwdmismatch(server, currentUser));
 				continue ;
 			}
 			currentUser.sendReply(executeFct[i](this, server, currentUser));
