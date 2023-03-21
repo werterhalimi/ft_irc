@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/20 19:39:03 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 16:16:16 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ void	Channel::addUser(Server const & server, User & user)
 	eof.addParam(this->getName());
 	eof.addParam(":End of Names list");
 
-	user.sendReply(join.toString());
+	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
+		(*i)->sendReply(join.toString());
 	user.sendReply(topic.toString());
 	user.sendReply(names.toString());
 	user.sendReply(eof.toString());
