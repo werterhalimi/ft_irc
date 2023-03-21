@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 16:16:16 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 16:50:53 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,26 @@ bool	Channel::isFull(void) const
 	return this->users->size() >= this->slots; 
 }
 
+void	Channel::removeUser(Server const & server, User & user, std::string * reason)
+{
+	std::remove(this->users->begin(), this->users->end(), &user);
+	Cmd	reply(server);
+	Cmd	mes(user);
+	reply.addParam("PART");
+	mes.addParam("PART");
+	reply.addParam(this->getName());
+	mes.addParam(this->getName());
+	if (reason)
+	{
+		reply.addParam(*reason);
+		mes.addParam(*reason);
+	}
+	user.sendReply(reply.toString());
+	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
+		(*i)->sendReply(mes.toString());
+
+}
+
 void	Channel::addUser(Server const & server, User & user)
 {
 	this->users->push_back(&user);
@@ -104,6 +124,12 @@ void	Channel::addUser(Server const & server, User & user)
 	user.sendReply(topic.toString());
 	user.sendReply(names.toString());
 	user.sendReply(eof.toString());
+}
+
+bool	Channel::hasUser(User & user) const
+{
+	std::vector<User *>::const_iterator it = find (this->users->begin(), this->users->end(), &user);
+	return (it != this->users->end());
 }
 
 Channel &	Channel::operator=(Channel const & src)
