@@ -32,7 +32,10 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
                     rpl/err_norecipient.cpp			rpl/rpl_welcome.cpp \
                     rpl/err_nosuchchannel.cpp		rpl/rpl_youreoper.cpp \
                     rpl/err_nosuchnick.cpp			rpl/rpl_yourhost.cpp \
-                    rpl/err_notexttosend.cpp		rpl/rpl_mode.cpp\
+                    rpl/err_notexttosend.cpp		rpl/rpl_mode.cpp \
+                    rpl/err_badchanmask.cpp			rpl/err_badchannelkey.cpp \
+                    rpl/err_bannedfromchan.cpp		rpl/err_notonchannel.cpp \
+                    rpl/err_cannotsendtochan.cpp	rpl/rpl_privmsg.cpp \
                     utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			Operator.cpp

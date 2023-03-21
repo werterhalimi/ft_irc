@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
+#include "Server.h"
 
 std::string	oper(Cmd * cmd, Server & server, User & usr)
 {

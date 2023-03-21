@@ -12,11 +12,11 @@
 
 #ifndef SERVER_H
 # define SERVER_H
+
 # include "ft_irc.hpp"
 # include <vector>
 # include "User.h"
 # include "Channel.h"
-# include "Operator.hpp"
 # include <string>
 # include <iomanip>
 # include <utility>
@@ -27,6 +27,7 @@
 //# include <string.h>
 # include <sys/socket.h>
 # include <unistd.h>
+
 class Server
 {
 	public:

@@ -11,26 +11,15 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
+#include "Server.h"
 
 std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 {
-	Cmd reply(usr);
 	std::vector<std::string> params = cmd->getParams();
 	if (params.empty() || (params.size() == 1 && params[1][0] == ':'))
-	{
-		reply.setCmd(ERR_NORECIPIENT);
-		reply.addParam(usr.getNickname());
-		reply.addParam(":No recipient given");
-		reply.addParam(cmd->getCmd());
-		return (reply.toString());
-	}
+		return (err_norecipient(usr, *cmd));
 	if (params.size() == 1)
-	{
-		reply.setCmd(ERR_NOTEXTTOSEND);
-		reply.addParam(usr.getNickname());
-		reply.addParam(":No text to send");
-		return (reply.toString());
-	}
+		return (err_notexttosend(usr));
 //	std::string tmp = params.back();
 //	if (tmp[0] != ':')
 //	{
@@ -44,34 +33,18 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 		{
 			int id = server.getChannelID(*it);
 			if (id < 0)
-			{
-				reply.setCmd(ERR_NOSUCHNICK);
-				reply.addParam(usr.getNickname());
-				reply.addParam(*it);
-				reply.addParam(":No such channel");
-				return (reply.toString());
-			}
+				return (err_nosuchnick(usr, *it));
 			else
 			{
 				std::vector<User *> userInChannel = server.getChannels()[id]->getUsers();
 				if (std::find(userInChannel.begin(), userInChannel.end(), &usr) == userInChannel.end())
-				{
-					reply.setCmd(ERR_CANNOTSENDTOCHAN);
-					reply.addParam(usr.getNickname());
-					reply.addParam(server.getChannels()[id]->getName());
-					reply.addParam(":Cannot send to channel");
-					usr.sendReply(reply.toString());
-				}
+					usr.sendReply(err_cannotsendtochan(usr, server.getChannels()[id]->getName()));
 				else
 				{
 					std::vector<User *>::const_iterator ite = userInChannel.end();
-					reply.setCmd("PRIVMSG");
-					reply.addParams(params);
 					for (std::vector<User *>::const_iterator it = userInChannel.begin(); it < ite; ++it)
-					{
 						if ((*it)->getNickname() != usr.getNickname())
-							(*it)->sendReply(reply.toString());
-					}
+							(*it)->sendReply(rpl_privmsg(usr, params));
 				}
 			}
 		}
@@ -79,19 +52,9 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 		{
 			int id = server.getUserID(*it);
 			if (id < 0)
-			{
-				reply.setCmd(ERR_NOSUCHNICK);
-				reply.addParam(usr.getNickname());
-				reply.addParam(*it);
-				reply.addParam(":No such nick");
-				return (reply.toString());
-			}
+				return (err_nosuchnick(usr, *it));
 			else
-			{
-				reply.setCmd("PRIVMSG");
-				reply.addParams(params);
-				server.getUsers()[id]->sendReply(reply.toString());
-			}
+				server.getUsers()[id]->sendReply(rpl_privmsg(usr, params));
 		}
 	}
 
