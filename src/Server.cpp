@@ -13,44 +13,49 @@
 #include "Server.h"
 #include "Cmd.hpp"
 
-Server::Server(void) : users(new std::vector<User *>()), channels(new std::vector<Channel *>())
+Server::Server() : _users(new std::vector<User *>()), _operators(new std::vector<Operator *>()), _channels(new std::vector<Channel *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "Server default constructor" << std::endl;
 	#endif
 }
 
-Server::Server(std::string	name) : servername(name), users(new std::vector<User *>()), channels(new std::vector<Channel *>())
+Server::Server(std::string const & name) : _servername(name), _users(new std::vector<User *>()), _operators(new std::vector<Operator *>()), _channels(new std::vector<Channel *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "Server name constructor" << std::endl;
 	#endif
 }
 
-Server::Server(int	port, std::string pass) : port(port), pass(pass), servername("Default"), users(new std::vector<User *>()), channels(new std::vector<Channel *>())
+Server::Server(int port, std::string const & pass) : _port(port), _pass(pass), _servername("Default"), \
+	_users(new std::vector<User *>()), _operators(new std::vector<Operator *>()), _channels(new std::vector<Channel *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "Server name constructor" << std::endl;
 	#endif
+	time_t	time_now = time(NULL);
+	this->_time = gmtime(&time_now);
 }
 
 Server::Server(Server const & src) 
 {
-	this->port = src.getPort();
-	this->pass = src.getPass();
-	this->servername = src.getName();
-	this->hostname = src.getHostname();
-	this->users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
-	this->channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
+	this->_port = src.getPort();
+	this->_pass = src.getPass();
+	this->_servername = src.getName();
+	this->_hostname = src.getHostname();
+	this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
+	this->_channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
+	this->_operators = new std::vector<Operator *>(src.getOperators().begin(), src.getOperators().end());
 	#if LOG_LEVEL == 10
 	std::cout << "Server copy constructor" << std::endl;
 	#endif
 }
 
-Server::~Server(void)
+Server::~Server()
 {
-	delete this->users;
-	delete this->channels;
+	delete this->_users;
+	delete this->_channels;
+	delete this->_operators;
 	#if LOG_LEVEL == 10
 	std::cout << "Server default deconstructor" << std::endl;
 	#endif
@@ -59,26 +64,29 @@ Server::~Server(void)
 
 Server &	Server::operator=(Server const & src)
 {
-	this->port = src.getPort();
-	this->pass = src.getPass();
-	this->servername = src.getName();
-	this->hostname = src.getHostname();
-	delete this->users;
-	delete this->channels;
-	this->users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
-	this->channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
+	this->_port = src.getPort();
+	this->_pass = src.getPass();
+	this->_servername = src.getName();
+	this->_hostname = src.getHostname();
+	delete this->_users;
+	delete this->_channels;
+	delete this->_operators;
+	this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
+	this->_channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
+	this->_operators = new std::vector<Operator *>(src.getOperators().begin(), src.getOperators().end());
 	return *this;
 }
 
 
 
-void	Server::launch(void)
+void	Server::launch()
 {
 	int					server_fd;
 	int					buff_len;
 	int					opt;
     struct sockaddr_in	address;
 	struct kevent		event;
+	socklen_t			sizeofAddress = sizeof(address);
 	int					kq;
 
 	opt = 1;
@@ -91,19 +99,33 @@ void	Server::launch(void)
 		throw std::exception();
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(6667);
+	address.sin_port = htons(this->_port);
 
-	if (bind(server_fd, (struct sockaddr *)(&address), sizeof(address)) < 0)
+	std::cout << YELLOW << &address << std::endl;
+	std::cout << "Family : " << (int)address.sin_family << std::endl;
+	std::cout << "Port : " << address.sin_port << std::endl;
+	std::cout << "Port : " << ntohs(address.sin_port) << std::endl;
+	std::cout << "IP : " << inet_ntoa(address.sin_addr) << std::endl;
+	std::cout << "Length : " << (int)address.sin_len << std::endl;
+	std::cout << "Zeros : " << address.sin_zero << std::endl;
+	std::cout << "Sizeof Addr : " << sizeofAddress << std::endl;
+	std::cout << RESET_COLOR << std::endl;
+
+	if (bind(server_fd, (struct sockaddr *)(&address), sizeofAddress) < 0)
 		throw std::exception();
-	
+
+	Operator *	admin = new Operator("ncotte", "127.0.0.1", "Born2beroot");
+	this->_operators->push_back(admin);
+
 	kq = kqueue();
 	// 1024 is out buffersize
-	listen(server_fd, 1024);
+	if (listen(server_fd, 1024) < 0)
+		throw std::exception();
 	User	empty;
 	empty.setFd(-2);
 	EV_SET(&event, server_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &empty);
-	int	no_cmd = 1;
-	while(1)
+//	int	no_cmd = 1;
+	while (1)
 	{
 		struct timespec timeout = {3, 0};
 		int n = kevent(kq, &event, 1, &event, 1, &timeout);
@@ -128,13 +150,14 @@ void	Server::launch(void)
 					char buff[513];
 					buff_len = read((user->getFd()), buff, 513);
 					buff[buff_len] = 0;
-					std::cout << no_cmd++ << " " << buff << std::endl;
+//					std::cout << no_cmd++ << " " << buff << std::endl;
 					std::string		*sp = split(buff, "\r\n");
 					int	iter = 0;
 					while (!sp[iter].empty())
 					{
-						Cmd cmd(sp[iter++], this);
-						std::string reply = cmd.execute(*this, *user); // TODO reply empty
+//						Cmd cmd(sp[iter++], this);
+						Cmd cmd(sp[iter++]);
+						cmd.execute(*this, *user);
 					}
 					//delete sp;
 				}
@@ -142,32 +165,27 @@ void	Server::launch(void)
 		}
 	}
 }
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
+
 void	Server::handleLogin(User & user, struct kevent * event)
 {
-	this->users->push_back(&user);
-//	std::cout << inet_ntoa(user.getAddress().sin_addr) << std::endl;
-	if (user.getAddress())
-		std::cout << inet_ntoa(user.getAddress()->sin_addr) << std::endl;
-	else
-		std::cout << "NON" << std::endl;
-	user.setFd(accept(user.getFd(),(struct sockaddr *) user.getAddress(), user.getSocklen()));
+	this->_users->push_back(&user);
 
+	int fd = accept(user.getFd(), (struct sockaddr *) user.getAddressPtr(), user.getSocklenPtr());
+	if (fd < 0)
+		return ;
+	user.setFd(fd);
 	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &user);
-
 }
 
 void	Server::handleLogout(User & user)
 {
-	std::remove(this->users->begin(), this->users->end(), &user);
+	std::remove(this->_users->begin(), this->_users->end(), &user);
 }
 
-bool	Server::hasNick(std::string nick) const
+bool	Server::hasNick(std::string const & nick) const
 {
-	std::vector<User *>::const_iterator it = this->users->begin();
-	std::vector<User *>::const_iterator ite = this->users->end();
+	std::vector<User *>::const_iterator it = this->_users->begin();
+	std::vector<User *>::const_iterator ite = this->_users->end();
 	while (it != ite)
 	{
 		if ((*it)->getNickname() == nick)
@@ -184,44 +202,44 @@ std::string	Server::prefix() const
 
 int	Server::getPort() const
 {
-	return this->port;
+	return this->_port;
 }
 
 std::string	Server::getPass() const
 {
-	return this->pass;
+	return this->_pass;
 }
 
 std::string	Server::getName() const
 {
-	return this->servername;
+	return this->_servername;
 }
 
 std::string	Server::getHostname() const
 {
-	return this->hostname;
+	return this->_hostname;
 }
 
 std::vector<User *> &	Server::getUsers() const
 {
-	return *(this->users);
+	return *(this->_users);
 }
 
 std::vector<Operator *> &	Server::getOperators() const
 {
-	return *(this->operators);
+	return *(this->_operators);
 }
 
 std::vector<Channel *> &	Server::getChannels() const
 {
-	return *(this->channels);
+	return *(this->_channels);
 }
 
 int	Server::getChannelID(std::string const & name) const
 {
 	int	id = 0;
-	std::vector<Channel *>::const_iterator ite = this->channels->end();
-	for (std::vector<Channel *>::const_iterator it = this->channels->begin(); it < ite; ++it)
+	std::vector<Channel *>::const_iterator ite = this->_channels->end();
+	for (std::vector<Channel *>::const_iterator it = this->_channels->begin(); it < ite; ++it)
 		if (++id && (*it)->getName() == name)
 			return (id);
 	return (-1);
@@ -231,12 +249,17 @@ int	Server::getUserID(std::string const & nickname) const
 {
 	int	id = 0;
 
-	std::vector<User *>::const_iterator ite = this->users->end();
-	for (std::vector<User *>::const_iterator it = this->users->begin(); it < ite; ++it)
+	std::vector<User *>::const_iterator ite = this->_users->end();
+	for (std::vector<User *>::const_iterator it = this->_users->begin(); it < ite; ++it)
 	{
 		if ((*it)->getNickname() == nickname)
 			return (id);
 		id++;
 	}
 	return (-1);
+}
+
+struct tm *	Server::getTime() const
+{
+	return (this->_time);
 }

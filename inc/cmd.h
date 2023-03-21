@@ -58,7 +58,7 @@ void	oper(Cmd *cmd, Server &server, User &currentUser);
 
 void	part(Cmd *cmd, Server &server, User &currentUser);
 
-void	pass(Cmd *cmd, Server &server, User &currentUser);
+void	_pass(Cmd *cmd, Server &server, User &currentUser);
 
 void	ping(Cmd *cmd, Server &server, User &currentUser);
 
@@ -94,7 +94,7 @@ void	user(Cmd *cmd, Server &server, User &currentUser);
 
 void	usehost(Cmd *cmd, Server &server, User &currentUser);
 
-void	users(Cmd *cmd, Server &server, User &currentUser);
+void	_users(Cmd *cmd, Server &server, User &currentUser);
 
 void	version(Cmd *cmd, Server &server, User &currentUser);
 

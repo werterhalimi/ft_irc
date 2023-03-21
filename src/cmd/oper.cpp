@@ -18,13 +18,7 @@ std::string	oper(Cmd * cmd, Server & server, User & usr)
 	std::vector<std::string> params = cmd->getParams();
 
 	if (params.size() < 2)
-	{
-		reply.setCmd(ERR_NEEDMOREPARAMS);
-		reply.addParam(usr.getNickname());
-		reply.addParam(cmd->getCmd());
-		reply.addParam(":Not enough parameters");
-		return (reply.toString());
-	}
+		return (err_needmoreparams(usr, *cmd));
 	std::vector<Operator *>	operators = server.getOperators();
 	std::vector<Operator *>::const_iterator ite = operators.end();
 	for (std::vector<Operator *>::const_iterator it = operators.begin(); it < ite; ++it)
@@ -34,26 +28,10 @@ std::string	oper(Cmd * cmd, Server & server, User & usr)
 			if (!(*it)->isValidHost(usr.getHostname()))
 				break;
 			if (!usr.loginOperator(*it, params[1]))
-			{
-				reply.setCmd(ERR_PASSWDMISMATCH);
-				reply.addParam(usr.getNickname());
-				reply.addParam(":Password incorrect");
-				return (reply.toString());
-			}
-			Cmd replyOK(usr);
-			replyOK.setCmd(RPL_YOUREOPER);
-			replyOK.addParam(usr.getNickname());
-			replyOK.addParam(":You are now an IRC operator");
-			usr.sendReply(replyOK.toString());
-			usr.setGlobalOperator(true);
-			reply.setCmd("MODE");
-			reply.addParam(usr.getNickname());
-			reply.addParam(":+o");
-			return (reply.toString());
+				return (err_passwdmismatch(server, usr));
+			usr.sendReply(rpl_youreoper(usr));
+			return (rpl_mode(usr, LOCAL_OPERATOR_FLAG, 0));
 		}
 	}
-	reply.setCmd(ERR_NOOPERHOST);
-	reply.addParam(usr.getNickname());
-	reply.addParam(":No O-lines for your host");
-	return (reply.toString());
+	return (err_nooperhost(usr));
 }

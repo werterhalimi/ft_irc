@@ -14,7 +14,7 @@ int main(int argc, char const* argv[])
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = { 0 };
-    char* hello = ":servername 001 shalimi :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:servername 002 shalimi :Your host is test.salut.com, running version 0.0.1\r\n:servername 003 shalimi :This server was created 20:12:31 Jan 16 2013\r\n:servername 004 shalimi :test.salut.com 2.0 ras\r\n";
+    char* hello = ":_servername 001 shalimi :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:_servername 002 shalimi :Your host is test.salut.com, running version 0.0.1\r\n:_servername 003 shalimi :This server was created 20:12:31 Jan 16 2013\r\n:_servername 004 shalimi :test.salut.com 2.0 ras\r\n";
 	char *hello2  = "221    RPL_UMODEIS fuck off";
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -22,7 +22,7 @@ int main(int argc, char const* argv[])
         exit(EXIT_FAILURE);
     }
   
-    // Forcefully attaching socket to the port 8080
+    // Forcefully attaching socket to the _port 8080
 
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR , &opt, sizeof(opt)))
 	{
@@ -33,7 +33,7 @@ int main(int argc, char const* argv[])
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
   
-    // Forcefully attaching socket to the port 8080
+    // Forcefully attaching socket to the _port 8080
     if (bind(server_fd, (struct sockaddr*)&address,
              sizeof(address))
         < 0) {
@@ -71,7 +71,7 @@ int main(int argc, char const* argv[])
 		if (strncmp("PING", buffer, 4) == 0)
 		{
 			printf("pong\n");
-			send(new_socket, ":servername PONG 127.0.0.1\r\n", strlen(":servername PONG 127.0.0.1\r\n"), 0);
+			send(new_socket, ":_servername PONG 127.0.0.1\r\n", strlen(":_servername PONG 127.0.0.1\r\n"), 0);
 		}
 		char * msg = "@account=hax0r :user PRIVMSG #atheme :Now I'm logged in\r\n";
 		send(new_socket, msg, strlen(msg), 0);

@@ -20,9 +20,10 @@
 # include <iostream>
 # include <sstream>
 //# include <cstdio>
+# include "reply.h"
 
 # define NB_PARAMS	15
-# define NB_CMD		7
+# define NB_CMD		8
 
 class Cmd
 {
@@ -30,12 +31,10 @@ class Cmd
 		std::string					_prefix;
 		std::string					_cmd;
 		std::vector<std::string>& 	_params;
-		Server *					_server;
-
 
 	public:
-		explicit Cmd(std::string const &msg, Server * server);
-
+//		explicit Cmd(std::string const &msg, Server * server);
+		explicit Cmd(std::string const &msg);
 		explicit Cmd(User const &user);
 		explicit Cmd(Server const &server);
 
@@ -43,7 +42,7 @@ class Cmd
 
 		std::string 					toString() const;
 
-		std::string 					execute(Server &server, User &currentUser);
+		void		 					execute(Server &server, User &currentUser);
 
 		std::string const				&getCmdNames(size_t i) const;
 
@@ -85,6 +84,8 @@ std::string	privmsg(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	mode(Cmd *cmd, Server &server, User &currentUser);
 
+std::string	oper(Cmd *cmd, Server &server, User &currentUser);
+
 /*
 void	admin(Cmd *cmd, Server &server, User &currentUser);
 
@@ -114,27 +115,13 @@ void	list(Cmd *cmd, Server &server, User &currentUser);
 
 void	luser(Cmd *cmd, Server &server, User &currentUser);
 
-void	mode(Cmd *cmd, Server &server, User &currentUser);
-
 void	motd(Cmd *cmd, Server &server, User &currentUser);
 
 void	names(Cmd *cmd, Server &server, User &currentUser);
 
-void	nick(Cmd *cmd, Server &server, User &currentUser);
-
 void	notice(Cmd *cmd, Server &server, User &currentUser);
 
-void	oper(Cmd *cmd, Server &server, User &currentUser);
-
 void	part(Cmd *cmd, Server &server, User &currentUser);
-
-void	pass(Cmd *cmd, Server &server, User &currentUser);
-
-void	ping(Cmd *cmd, Server &server, User &currentUser);
-
-void	pong(Cmd *cmd, Server &server, User &currentUser);
-
-void	privmsg(Cmd *cmd, Server &server, User &currentUser);
 
 void	quit(Cmd *cmd, Server &server, User &currentUser);
 
@@ -160,11 +147,9 @@ void	topic(Cmd *cmd, Server &server, User &currentUser);
 
 void	trace(Cmd *cmd, Server &server, User &currentUser);
 
-void	user(Cmd *cmd, Server &server, User &currentUser);
-
 void	usehost(Cmd *cmd, Server &server, User &currentUser);
 
-void	users(Cmd *cmd, Server &server, User &currentUser);
+void	_users(Cmd *cmd, Server &server, User &currentUser);
 
 void	version(Cmd *cmd, Server &server, User &currentUser);
 

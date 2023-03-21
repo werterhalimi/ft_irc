@@ -30,38 +30,40 @@
 class Server
 {
 	public:
-		Server(void);
-		Server(std::string name);
-		Server(int port, std::string pass);
+		Server();
+		explicit Server(std::string const & name); // TODO Used ?
+		Server(int port, std::string const & pass);
 		Server(Server const & src);
-		~Server(void);
+		~Server();
 
 		Server &					operator=(Server const & src);
 
-		void						launch(void);
+		void						launch();
 		void						handleLogin(User & user, struct kevent * event);
 		void						handleLogout(User & user);
 
-		bool						hasNick(std::string nick) const;
+		bool						hasNick(std::string const & nick) const;
 		std::string					prefix() const;
-		int							getPort(void) const;
-		std::string					getPass(void) const;
-		std::string					getName(void) const;
-		std::string					getHostname(void) const;
-		std::vector<User *> &		getUsers(void) const;
+		int							getPort() const;
+		std::string					getPass() const;
+		std::string					getName() const;
+		std::string					getHostname() const;
+		std::vector<User *> &		getUsers() const;
 		std::vector<Operator *> &	getOperators() const;
-		std::vector<Channel *> &	getChannels(void) const;
+		std::vector<Channel *> &	getChannels() const;
 		int 						getChannelID(std::string const & name) const;
 		int 						getUserID(std::string const & nickname) const;
+		struct tm *					getTime() const;
 
 	private:
-		int					port;
-		std::string			pass;
-		std::string			servername;
-		std::string			hostname;
-		std::vector<User *> *		users;
-		std::vector<Operator *> *	operators;
-		std::vector<Channel *> *	channels;
+		int							_port;
+		std::string					_pass;
+		std::string					_servername;
+		std::string					_hostname;
+		std::vector<User *> *		_users;
+		std::vector<Operator *> *	_operators;
+		std::vector<Channel *> *	_channels;
+		struct tm *					_time;
 };
 
 #endif

@@ -47,71 +47,17 @@ static void	updateUserFlag(int *flagToAdd, int *flagToRemove, char c, User & usr
 	}
 }
 
-static std::string	updateUserMode(int flags, User & usr, bool value)
-{
-	std::ostringstream stream;
-
-	if (flags && value)
-		stream << "+";
-	else if (flags)
-		stream << "-";
-//	if (flags & AWAY_FLAG)
-//	{
-//		usr.setAway(value);
-//		stream << "a";
-//	}
-	if (flags & INVISIBLE_FLAG)
-	{
-		usr.setInvisible(value);
-		stream << "i";
-	}
-	if (flags & WALLOPS_FLAG)
-	{
-		usr.setWallops(value);
-		stream << "w";
-	}
-	if (flags & RESTRICTED_FLAG)
-	{
-		usr.setRestricted(value);
-		stream << "r";
-	}
-	if (flags & GLOBAL_OPERATOR_FLAG)
-	{
-		usr.setGlobalOperator(value);
-		stream << "o";
-	}
-	if (flags & LOCAL_OPERATOR_FLAG)
-	{
-		usr.setLocalOperator(value);
-		stream << "O";
-	}
-	return (stream.str());
-}
-
 std::string	mode(Cmd * cmd, Server & server, User & usr)
 {
-	Cmd reply(usr);
 	std::vector<std::string> params = cmd->getParams();
 
 	if (params.empty())
-	{
-		reply.setCmd(ERR_NEEDMOREPARAMS);
-		reply.addParam(usr.getNickname());
-		reply.addParam(cmd->getCmd());
-		reply.addParam(":Not enough parameters");
-		return (reply.toString());
-	}
+		return (err_needmoreparams(usr, *cmd));
 	if (params[0][0] == '#')
 	{
 		int id = server.getChannelID(params[0]);
 		if (id < 0)
-		{
-			reply.setCmd(ERR_NOSUCHCHANNEL);
-			reply.addParam(usr.getNickname());
-			reply.addParam(params[0]);
-			reply.addParam(":No such channel");
-			return (reply.toString());
-		}
+			return (err_nosuchchannel(usr, params[0]));
 		else
 		{
 			// TODO
@@ -121,51 +67,19 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 	{
 		int id = server.getUserID(params[0]);
 		if (id < 0)
-		{
-			reply.setCmd(ERR_NOSUCHNICK);
-			reply.addParam(usr.getNickname());
-			reply.addParam(params[0]);
-			reply.addParam(":No such nick");
-			return (reply.toString());
-		}
+			return (err_nosuchnick(usr, params[0]));
 		else if (server.getUsers()[id]->getNickname() != usr.getNickname())
-		{
-			reply.setCmd(ERR_USERSDONTMATCH);
-			reply.addParam(usr.getNickname());
-			if (params.size() > 1)
-				reply.addParam(":Can't change mode for other users");
-			else
-				reply.addParam(":Can't view mode for other users");
-			return (reply.toString());
-		}
+			return (err_usersdontmatch(usr, params.size()));
 		else if (params.size() == 1)
-		{
-			reply.setCmd(RPL_UMODEIS);
-			reply.addParam(usr.getNickname());
-			std::ostringstream stream;
-			stream << "+";
-			if (usr.isAway())
-				stream << "a";
-			if (usr.isInvisible())
-				stream << "i";
-			if (usr.isWallops())
-				stream << "w";
-			if (usr.isRestricted())
-				stream << "r";
-			if (usr.isGlobalOperator())
-				stream << "o";
-			if (usr.isLocalOperator())
-				stream << "O";
-			reply.addParam(stream.str());
-			return (reply.toString());
-		}
+			return (rpl_umodeis(usr));
 		bool plusSign = true;
 		int modeToAdd = 0;
 		int modeToRemove = 0;
-		Cmd errorReply(usr);
-		errorReply.setCmd(ERR_UMODEUNKNOWNFLAG);
-		errorReply.addParam(usr.getNickname());
-		errorReply.addParam(":Unknown MODE flag");
+		std::string errorReply = err_umodeunknownflag(usr);
+//		Cmd errorReply(usr);
+//		errorReply.setCmd(ERR_UMODEUNKNOWNFLAG);
+//		errorReply.addParam(usr.getNickname());
+//		errorReply.addParam(":Unknown MODE flag");
 		std::string validFlags = std::string(USER_MODE_FLAG_LETTERS);
 		std::vector<std::string>::const_iterator ite = params.end();
 		for (std::vector<std::string>::const_iterator it = params.begin() + 1; it < ite; ++it)
@@ -177,7 +91,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 				else if ((*it)[i] == '-')
 					plusSign = false;
 				else if (validFlags.find((*it)[i]) == std::string::npos)
-					usr.sendReply(errorReply.toString());
+					usr.sendReply(errorReply);
 				else if (plusSign)
 					updateUserFlag(&modeToAdd, &modeToRemove, (*it)[i], usr, false);
 				else
@@ -186,13 +100,6 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		}
 		if (!modeToAdd && !modeToRemove)
 			return ("");
-		reply.setCmd("MODE");
-		reply.addParam(usr.getNickname());
-		std::ostringstream stream;
-		stream << ":";
-		stream << updateUserMode(modeToAdd, usr, true);
-		stream << updateUserMode(modeToRemove, usr, false);
-		reply.addParam(stream.str());
+		return (rpl_mode(usr, modeToAdd, modeToRemove));
 	}
-	return (reply.toString());
 }

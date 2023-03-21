@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ping.cpp                                           :+:      :+:    :+:   */
+/*   err_usersdontmatch.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:24 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 17:17:03 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/21 14:57:50 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/21 14:57:51 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
+# include "reply.h"
+# include "Cmd.hpp"
 
-std::string	ping(Cmd * cmd, Server & server, User & usr)
+std::string	err_usersdontmatch(User const & user, size_t size)
 {
-	Cmd reply(server);
-	(void) usr;
-	std::vector<std::string> params = cmd->getParams();
-	if (params.empty() || params[0].empty())
-		return (err_noorigin(server, usr));
-	reply.setCmd("PONG");
-	reply.addParam(params[0]);
+	Cmd reply(user);
+
+	reply.setCmd(ERR_USERSDONTMATCH);
+	reply.addParam(user.getNickname());
+	if (size > 1)
+		reply.addParam(":Can't change mode for other users");
+	else
+		reply.addParam(":Can't view mode for other users");
 	return (reply.toString());
 }
