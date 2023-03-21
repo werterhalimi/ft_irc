@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 16:50:53 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 17:43:29 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,19 +72,17 @@ bool	Channel::isFull(void) const
 
 void	Channel::removeUser(Server const & server, User & user, std::string * reason)
 {
-	std::remove(this->users->begin(), this->users->end(), &user);
-	Cmd	reply(server);
+	(void) server;
+	(void) user;
+	this->users->erase(std::find(this->users->begin(), this->users->end(), &user));
 	Cmd	mes(user);
-	reply.addParam("PART");
-	mes.addParam("PART");
-	reply.addParam(this->getName());
+	mes.setCmd("PART");
 	mes.addParam(this->getName());
 	if (reason)
 	{
-		reply.addParam(*reason);
 		mes.addParam(*reason);
 	}
-	user.sendReply(reply.toString());
+	user.sendReply(mes.toString());
 	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
 		(*i)->sendReply(mes.toString());
 

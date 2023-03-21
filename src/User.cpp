@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/16 17:43:34 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 17:43:19 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	User::sendReply(std::string const &buff) const
 std::string	User::prefix() const
 {
 	std::ostringstream stream;
-	stream << ":" << this->nickname << " " ;//<< "@" << this->username << "!" << this->hostname << " ";
+	stream << ":" << this->nickname << "@" << this->username << "!" << this->hostname << " ";
 	std::string str = stream.str();
 	return (str);
 }

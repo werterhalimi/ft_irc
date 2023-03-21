@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:40:35 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/20 20:43:16 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 17:31:09 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,24 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 			else
 			{
 				std::vector<User *> userInChannel = server.getChannels()[id]->getUsers();
-				std::vector<User *>::const_iterator ite = userInChannel.end();
-				reply.setCmd("PRIVMSG");
-				reply.addParams(params);
-				for (std::vector<User *>::const_iterator it = userInChannel.begin(); it < ite; ++it)
+				if (std::find(userInChannel.begin(), userInChannel.end(), &usr) == userInChannel.end())
 				{
-					if ((*it)->getNickname() != usr.getNickname())
-					(*it)->sendReply(reply.toString());
+					reply.setCmd(ERR_CANNOTSENDTOCHAN);
+					reply.addParam(usr.getNickname());
+					reply.addParam(server.getChannels()[id]->getName());
+					reply.addParam(":Cannot send to channel");
+					usr.sendReply(reply.toString());
+				}
+				else
+				{
+					std::vector<User *>::const_iterator ite = userInChannel.end();
+					reply.setCmd("PRIVMSG");
+					reply.addParams(params);
+					for (std::vector<User *>::const_iterator it = userInChannel.begin(); it < ite; ++it)
+					{
+						if ((*it)->getNickname() != usr.getNickname())
+							(*it)->sendReply(reply.toString());
+					}
 				}
 			}
 		}
