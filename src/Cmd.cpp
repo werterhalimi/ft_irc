@@ -6,14 +6,20 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/21 16:48:11 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 17:49:00 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
 #include "cmd.h"
+/*
+Cmd::Cmd(std::string const &msg, Server * server) :_params(*(new std::vector<std::string>()))
+{
+	this->parse(msg);
+}
+*/
 
-Cmd::Cmd(std::string const &msg, Server * server) :_params(*(new std::vector<std::string>())), _server(server)
+Cmd::Cmd(std::string const &msg) :_params(*(new std::vector<std::string>()))
 {
 	this->parse(msg);
 }
@@ -27,7 +33,6 @@ Cmd::Cmd(Server const &server) : _prefix(server.prefix()), _params(*(new std::ve
 {
 
 }
-
 
 Cmd::~Cmd()
 {
@@ -125,11 +130,11 @@ std::string	reply(User &user, std::string const & cmd, std::string const & msg)
 	return (toSend);
 }
 */
-std::string	Cmd::execute(Server &server, User &currentUser)
+void	Cmd::execute(Server &server, User &currentUser)
 {
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
 		&pass,		&nick,		&user,	&privmsg,
-		&ping,		&pong, 	&mode, &join, &part
+		&ping,		&pong, 	&mode, &join, &part, &oper
 	};
 	/*
 	 * ,		&oper,
@@ -142,28 +147,23 @@ std::string	Cmd::execute(Server &server, User &currentUser)
 		&squery,	&who,		&whois,	&whowas,
 		&kill,		&ping,	&pong,	&error,
 		&away,	&rehash,	&die,		&restart,
-		&summon,	&users,	&wallops,	&usehost,
+		&summon,	&_users,	&wallops,	&usehost,
 		&ison
 	};*/
-
 	for (size_t i = 0; i < NB_CMD; ++i)
 	{
 		if (_cmd == this->getCmdNames(i))
 		{
 			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
 			{
-				Cmd reply(*(this->_server));
-				reply.setCmd(ERR_PASSWDMISMATCH);
-				reply.addParam(":Password incorrect");
-				currentUser.sendReply(reply.toString());
+				currentUser.sendReply(err_passwdmismatch(server, currentUser));
 				continue ;
 			}
-			std::string reply = executeFct[i](this, server, currentUser);
-			std::cout << YELLOW << reply << RESET_COLOR << std::endl;
-			currentUser.sendReply(reply);
+			currentUser.sendReply(executeFct[i](this, server, currentUser));
+			return;
 		}
 	}
-	return ("");
+	currentUser.sendReply(err_unknowncommand(server, currentUser, *this));
 	//throw std::exception();
 }
 
@@ -171,18 +171,17 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 {
 	static std::string	cmdNames[NB_CMD] = {
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
-		"PING", 	"PONG",	"MODE", "JOIN", "PART"
+		"PING", 	"PONG",	"MODE", "JOIN", "PART", "OPER"
 	};
 	/*
-	"OPER",
-		"MODE",	"SERVICE",	"QUIT",	"SQUIT",
+		"SERVICE",	"QUIT",	"SQUIT",
 		"JOIN",	"PART",	"TOPIC",	"NAMES",
-		"LIST",	"INVITE",	"KICK",	"PRIVMSG",
+		"LIST",	"INVITE",	"KICK",
 		"NOTICE",	"MOTD",	"LUSERS",	"VERSION",
 		"STATS",	"LINKS",	"TIME",	"CONNECT",
 		"TRACE",	"ADMIN",	"INFO",	"SERVLIST",
 		"SQUERY",	"WHO",		"WHOIS",	"WHOWAS",
-		"KILL",	"PING",	"PONG",	"ERROR",
+		"KILL",		"ERROR",
 		"AWAY",	"REHASH",	"DIE",	"RESTART",
 		"SUMMON",	"USERS",	"WALLOPS",	"USERHOST",
 		"ISON"

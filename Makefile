@@ -22,17 +22,30 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
                     cmd/error.cpp		cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
                     cmd/privmsg.cpp  	cmd/servlist.cpp	cmd/time.cpp		cmd/users.cpp \
                     cmd/whowas.cpp \
+                    rpl/err_alreadyregistred.cpp	rpl/err_passwdmismatch.cpp \
+                    rpl/err_erroneusnickname.cpp	rpl/err_umodeunknownflag.cpp \
+                    rpl/err_needmoreparams.cpp		rpl/err_unknowncommand.cpp \
+                    rpl/err_nicknameinuse.cpp		rpl/err_usersdontmatch.cpp \
+                    rpl/err_nonicknamegiven.cpp		rpl/rpl_created.cpp \
+                    rpl/err_nooperhost.cpp			rpl/rpl_myinfo.cpp \
+                    rpl/err_noorigin.cpp			rpl/rpl_umodeis.cpp \
+                    rpl/err_norecipient.cpp			rpl/rpl_welcome.cpp \
+                    rpl/err_nosuchchannel.cpp		rpl/rpl_youreoper.cpp \
+                    rpl/err_nosuchnick.cpp			rpl/rpl_yourhost.cpp \
+                    rpl/err_notexttosend.cpp		rpl/rpl_mode.cpp\
+                    utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
-					User.cpp			utils/split.cpp		utils/stringUtils.cpp
+					User.cpp			Operator.cpp
 SRCS_DIR		:=	./src/
 SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
 
 OBJS_FILES		:=	$(SRCS_FILES:.cpp=.o)
 OBJS_DIR		:=	./bin/
-OBJS_SUB_DIR	:= 	$(OBJS_DIR)utils $(OBJS_DIR)cmd
+OBJS_SUB_DIR	:= 	$(OBJS_DIR)utils $(OBJS_DIR)cmd $(OBJS_DIR)rpl
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
-INCS_FILES		:=	constants.h	cmd.h	Cmd.hpp	ft_irc.hpp Server.h Channel.h User.h
+INCS_FILES		:=	constants.h	cmd.h	Cmd.hpp		ft_irc.hpp 	Server.h	Channel.h \
+					User.h		Operator.hpp	reply.h
 INCS_DIR		:=	./inc/
 INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 

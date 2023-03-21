@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ping.cpp                                           :+:      :+:    :+:   */
+/*   err_nonicknamegiven.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:24 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 17:17:03 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/21 14:56:01 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/21 14:56:03 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
+# include "reply.h"
+# include "Cmd.hpp"
 
-std::string	ping(Cmd * cmd, Server & server, User & usr)
+std::string	err_nonicknamegiven(Server const & server, User const & user)
 {
 	Cmd reply(server);
-	(void) usr;
-	std::vector<std::string> params = cmd->getParams();
-	if (params.empty() || params[0].empty())
-		return (err_noorigin(server, usr));
-	reply.setCmd("PONG");
-	reply.addParam(params[0]);
+
+	reply.setCmd(ERR_NONICKNAMEGIVEN);
+	reply.addParam(user.getNickname());
+	reply.addParam(":No nickname given");
 	return (reply.toString());
 }

@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
 	}
 	std::cout << GREEN << "Starting IRC server on port ";
 	std::cout << argv[1] << RESET_COLOR << std::endl;
-	Server server(std::atoi(argv[1]), std::string(argv[2]));
-	server.launch();
+	char * pEnd;
+	Server server((int)std::strtol(argv[1], &pEnd, 10), std::string(argv[2]));
+	server.launch(); // TODO Catch exception
 	return (EXIT_SUCCESS);
 }

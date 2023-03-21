@@ -14,26 +14,12 @@
 
 std::string	pass(Cmd * cmd, Server & server, User & usr)
 {
-	Cmd reply(usr);
 	if (cmd->getParams().empty())
-	{
-		reply.setCmd(ERR_NEEDMOREPARAMS);
-		reply.addParam(cmd->getCmd());
-		reply.addParam(":Not enough parameters");
-		return (reply.toString());
-	}
+		return (err_needmoreparams(usr, *cmd));
 	else if (usr.hasPass())
-	{
-		reply.setCmd(ERR_ALREADYREGISTRED);
-		reply.addParam(":Unauthorized command (already registered");
-		return (reply.toString());
-	}
+		return (err_alreadyregistred(usr));
 	else if (cmd->getParams().back() != server.getPass())
-	{
-		reply.setCmd(ERR_PASSWDMISMATCH);
-		reply.addParam(":Password incorrect");
-		return (reply.toString());
-	}
+		return (err_passwdmismatch(server, usr));
 	usr.auth();
 	return ("");
 }

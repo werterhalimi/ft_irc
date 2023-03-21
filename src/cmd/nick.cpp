@@ -29,39 +29,20 @@ static bool	validNickName(std::string nick)
 
 std::string	nick(Cmd * cmd, Server & server, User & usr)
 {
-	Cmd							reply(usr);
 	std::vector<std::string>	params = cmd->getParams();
 	std::string					nick = params.at(0);
 
 	if (!usr.hasPass())
-	{
-		reply.setCmd(ERR_PASSWDMISMATCH);
-		reply.addParam(":Password incorrect");
-		return (reply.toString());
-	}
+		return (err_passwdmismatch(server, usr));
 	else if (params.empty())
-	{
-		reply.setCmd(ERR_NONICKNAMEGIVEN);
-		reply.addParam(":No nickname given");
-		return (reply.toString());
-	}
+		return (err_nonicknamegiven(server, usr));
 	else if (server.hasNick(nick))
-	{
-		reply.setCmd(ERR_NICKNAMEINUSE);
-		reply.addParam(params.at(0));
-		reply.addParam(":Nickname is already in use");
-		return (reply.toString());
-	}
+		return (err_nicknameinuse(usr, nick));
 	else if (!validNickName(nick))
-	{
-		reply.setCmd(ERR_ERRONEUSNICKNAME);
-		reply.addParam(nick);
-		reply.addParam(":Erroneous nickname");
-		return (reply.toString());
-	}
+		return (err_erroneusnickname(usr, nick));
 	usr.setNickname(nick);
 	if (usr.isLog())
-		usr.welcome();
+		usr.welcome(server);
 	return ("");
 
 }

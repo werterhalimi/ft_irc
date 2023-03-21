@@ -6,28 +6,29 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 17:43:19 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 18:17:01 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.h"
 #include "Server.h"
+#include "reply.h"
 
-User::User()
+User::User() : _len(sizeof(struct sockaddr_in))
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User default constructor" << std::endl;
 	#endif
 }
 
-User::User(std::string const &username, std::string const &nickname, std::string const &hostname) : boolFlags(0), username(username), nickname(nickname), hostname(hostname)
+User::User(std::string const &username, std::string const &nickname, std::string const &hostname) : _boolFlags(0), _username(username), _nickname(nickname), _hostname(hostname)
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User params constructor" << std::endl;
 	#endif
 }
 
-User::User(User const & src) : boolFlags(0), username(src.getUsername()), nickname(src.getNickname()), hostname(src.getHostname())
+User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nickname(src.getNickname()), _hostname(src.getHostname())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User copy constructor" << std::endl;
@@ -41,11 +42,12 @@ User::~User()
 	#endif
 }
 
-void	User::welcome()
+void	User::welcome(Server const & server) const
 {
-
-	std::string hello = ":Default 001 " + this->getNickname() + " :Welcome to the BeyondIRC IRC Network shalimi!shalimi@127.0.0.1\r\n:Default 002 "+ this->getNickname()+" :Your host is test.salut.com, running version 0.0.1\r\n:Default 003 "+ this->getNickname()+" :This server was created 20:12:31 Jan 16 2013\r\n:Default 004 "+ this->getNickname() +" :test.salut.com 2.0 ras\r\n";
-	this->sendReply(hello);
+	this->sendReply(rpl_welcome(server, *this));
+	this->sendReply(rpl_yourhost(server, *this));
+	this->sendReply(rpl_created(server, *this));
+	this->sendReply(rpl_myinfo(server, *this));
 }
 
 void	User::sendReply(std::string const &buff) const
@@ -53,182 +55,194 @@ void	User::sendReply(std::string const &buff) const
 	if (!buff.empty())
 	{
 		std::cout << buff << " 123" << getUsername() << std::endl;
-		send(this->fd, buff.c_str(), strlen(buff.c_str()), 0);
+		send(this->_fd, buff.c_str(), strlen(buff.c_str()), 0);
 	}
 }
 
 std::string	User::prefix() const
 {
 	std::ostringstream stream;
-	stream << ":" << this->nickname << "@" << this->username << "!" << this->hostname << " ";
+	stream << ":" << this->_nickname << "!" << this->_username << "@" << this->_hostname << " ";
 	std::string str = stream.str();
 	return (str);
 }
 
 User &	User::operator=(User const & src)
 {
-	this->username = src.getUsername();
-	this->nickname = src.getNickname();
-	this->hostname = src.getHostname();
+	this->_username = src.getUsername();
+	this->_nickname = src.getNickname();
+	this->_hostname = src.getHostname();
 	return *this;
 }
 
 bool User::operator==(User const & src)
 {
-	return this->hostname == src.getHostname();
+	return this->_hostname == src.getHostname();
 }
 
 std::string User::getUsername() const
 {
-	return this->username;
+	return this->_username;
 }
 
 std::string User::getNickname() const
 {
-	return this->nickname;
+	return this->_nickname;
 }
 
 std::string User::getHostname() const
 {
-	return this->hostname;
+	return this->_hostname;
 }
 
-struct sockaddr_in &	User::getAddress()
+struct sockaddr_in *	User::getAddressPtr()
 {
-	return *(this->addr);
+	return &(this->_addr);
 }
 
-socklen_t &	User::getSocklen()
+socklen_t 	*User::getSocklenPtr()
 {
-	return *(this->len);
+	return &(this->_len);
 }
 
 int &	User::getFd()
 {
-	return (this->fd);
+	return (this->_fd);
 }
 
 void	User::setFd(int i)
 {
-	this->fd = i;
+	this->_fd = i;
 }
 
 bool	User::hasUser() const
 {
-	return (this->boolFlags & USER_FLAG);
+	return (this->_boolFlags & USER_FLAG);
 }
 
 bool	User::hasNick() const
 {
-	return (this->boolFlags & NICK_FLAG);
+	return (this->_boolFlags & NICK_FLAG);
 }
 
 bool	User::hasPass() const
 {
-	return (this->boolFlags & PASS_FLAG);
+	return (this->_boolFlags & PASS_FLAG);
 }
 
 bool	User::isLog() const
 {
-	return ((this->boolFlags & PASS_FLAG) && (this->boolFlags & NICK_FLAG) && (this->boolFlags & USER_FLAG));
+	return ((this->_boolFlags & PASS_FLAG) && (this->_boolFlags & NICK_FLAG) && (this->_boolFlags & USER_FLAG));
 }
 
 bool	User::isAway() const
 {
-	return (this->boolFlags & AWAY_FLAG);
+	return (this->_boolFlags & AWAY_FLAG);
 }
 
 bool	User::isInvisible() const
 {
-	return (this->boolFlags & INVISIBLE_FLAG);
+	return (this->_boolFlags & INVISIBLE_FLAG);
 }
 
 bool	User::isWallops() const
 {
-	return (this->boolFlags & WALLOPS_FLAG);
+	return (this->_boolFlags & WALLOPS_FLAG);
 }
 
 bool	User::isRestricted() const
 {
-	return (this->boolFlags & RESTRICTED_FLAG);
+	return (this->_boolFlags & RESTRICTED_FLAG);
 }
 
 bool	User::isGlobalOperator() const
 {
-	return (this->boolFlags & GLOBAL_OPERATOR_FLAG);
+	return (this->_boolFlags & GLOBAL_OPERATOR_FLAG);
 }
 
 bool	User::isLocalOperator() const
 {
-	return (this->boolFlags & LOCAL_OPERATOR_FLAG);
+	return (this->_boolFlags & LOCAL_OPERATOR_FLAG);
 }
 
 bool	User::isOperator() const
 {
-	return (this->boolFlags & OPERATOR_FLAG);
+	return (this->_boolFlags & OPERATOR_FLAG);
 }
 
 void	User::setAway(bool flag)
 {
 	if (flag)
-		this->boolFlags |= AWAY_FLAG;
+		this->_boolFlags |= AWAY_FLAG;
 	else
-		this->boolFlags &= ~AWAY_FLAG;
+		this->_boolFlags &= ~AWAY_FLAG;
 }
 
 void	User::setInvisible(bool flag)
 {
 	if (flag)
-		this->boolFlags |= INVISIBLE_FLAG;
+		this->_boolFlags |= INVISIBLE_FLAG;
 	else
-		this->boolFlags &= ~INVISIBLE_FLAG;
+		this->_boolFlags &= ~INVISIBLE_FLAG;
 }
 
 void	User::setWallops(bool flag)
 {
 	if (flag)
-		this->boolFlags |= WALLOPS_FLAG;
+		this->_boolFlags |= WALLOPS_FLAG;
 	else
-		this->boolFlags &= ~WALLOPS_FLAG;
+		this->_boolFlags &= ~WALLOPS_FLAG;
 }
 
 void	User::setRestricted(bool flag)
 {
 	if (flag)
-		this->boolFlags |= RESTRICTED_FLAG;
+		this->_boolFlags |= RESTRICTED_FLAG;
 	else
-		this->boolFlags &= ~RESTRICTED_FLAG;
+		this->_boolFlags &= ~RESTRICTED_FLAG;
 }
 
 void	User::setGlobalOperator(bool flag)
 {
 	if (flag)
-		this->boolFlags |= GLOBAL_OPERATOR_FLAG;
+		this->_boolFlags |= GLOBAL_OPERATOR_FLAG;
 	else
-		this->boolFlags &= ~GLOBAL_OPERATOR_FLAG;
+		this->_boolFlags &= ~GLOBAL_OPERATOR_FLAG;
 }
 
 void	User::setLocalOperator(bool flag)
 {
 	if (flag)
-		this->boolFlags |= LOCAL_OPERATOR_FLAG;
+		this->_boolFlags |= LOCAL_OPERATOR_FLAG;
 	else
-		this->boolFlags &= ~LOCAL_OPERATOR_FLAG;
+		this->_boolFlags &= ~LOCAL_OPERATOR_FLAG;
 }
 
 void	User::auth()
 {
-	this->boolFlags |= PASS_FLAG;
+	this->_boolFlags |= PASS_FLAG;
 }
 
 void	User::setUsername(std::string const & username)
 {
-	this->username = username;
-	this->boolFlags |= USER_FLAG;
+	this->_username = username;
+	this->_boolFlags |= USER_FLAG;
 }
 
 void	User::setNickname(std::string const & nickname)
 {
-	this->nickname = nickname;
-	this->boolFlags |= NICK_FLAG;
+	this->_nickname = nickname;
+	this->_boolFlags |= NICK_FLAG;
+}
+
+void	User::setHostname()
+{
+	this->_hostname = inet_ntoa(this->_addr.sin_addr);
+}
+
+bool	User::loginOperator(Operator const * op, std::string const &password)
+{
+	if (op->isValidPassword(password))
+		this->_boolFlags |= OPERATOR_FLAG;
+	return (this->isOperator());
 }

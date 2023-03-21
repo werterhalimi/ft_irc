@@ -14,24 +14,15 @@
 
 std::string	user(Cmd * cmd, Server & server, User & usr)
 {
-	(void) server;
-	Cmd					reply(usr);
 	std::vector<std::string>	params = cmd->getParams();
 	std::string			user = params.at(0);
 	if (params.empty())
-	{
-		reply.setCmd(ERR_NONICKNAMEGIVEN);
-		reply.addParam(":No username given");
-		return (reply.toString());
-	}
+		return (err_nonicknamegiven(server, usr));
 	else if (usr.hasUser())
-	{
-		reply.setCmd(ERR_ALREADYREGISTRED);
-		reply.addParam(":Unauthorized command (already registered");
-		return (reply.toString());
-	}
+		return (err_alreadyregistred(usr));
 	usr.setUsername(user);
+	usr.setHostname();
 	if (usr.isLog())
-		usr.welcome();
+		usr.welcome(server);
 	return ("");
 }

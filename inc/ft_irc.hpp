@@ -23,7 +23,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-
+# include <sstream>
+# include <iomanip>
 
 /* Utils */
 
@@ -34,4 +35,5 @@ std::string	*	split(char const * str, std::string sep);
 bool			isLetter(char const & c);
 bool			isDigit(char const & c);
 bool			isSpecial(char const & c);
+std::string		printTime(struct tm * time);
 #endif

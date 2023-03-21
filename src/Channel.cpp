@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 17:43:29 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/21 18:13:27 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ void	Channel::removeUser(Server const & server, User & user, std::string * reaso
 
 void	Channel::addUser(Server const & server, User & user)
 {
-	this->users->push_back(&user);
 	Cmd join(user);
 	Cmd topic(server);
 	Cmd names(server);
@@ -109,9 +108,12 @@ void	Channel::addUser(Server const & server, User & user)
 	names.addParam(user.getNickname());
 	names.addParam("="); //TODO all mode
 	names.addParam(this->getName());
-	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
-		names.addParam((*i)->getNickname());
-
+	if(this->users->size() > 0)
+	{
+		names.addParam(":" + this->users->at(0)->getNickname());
+		for(std::vector<User *>::iterator i = this->users->begin() + 1; i != this->users->end(); i++)
+			names.addParam((*i)->getNickname());
+	}
 	eof.setCmd(RPL_ENDOFNAMES);
 	eof.addParam(user.getNickname());
 	eof.addParam(this->getName());
@@ -122,6 +124,8 @@ void	Channel::addUser(Server const & server, User & user)
 	user.sendReply(topic.toString());
 	user.sendReply(names.toString());
 	user.sendReply(eof.toString());
+
+	this->users->push_back(&user);
 }
 
 bool	Channel::hasUser(User & user) const
