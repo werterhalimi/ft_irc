@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/15 19:33:57 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:07:48 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # define USER_MODE_FLAG_LETTERS	"aiwroO"
 
 class Server;
+class Channel;
 
 class User
 {
@@ -57,6 +58,7 @@ class User
 		void				welcome(Server const & server) const;
 
 		/* Setters */
+		void				setKEvent(struct kevent * event);
 		void				auth();
 		void				setFd(int i);
 		void				setUsername(std::string const &user);
@@ -71,12 +73,14 @@ class User
 		bool				loginOperator(Operator const * op, std::string const &password);
 
 		/* Getters */
+		struct kevent *		getKEvent() const;
 		bool				hasNick() const;
 		bool				hasUser() const;
 		bool				isLog() const;
 		int &				getFd();
 		socklen_t *			getSocklenPtr();
 		struct sockaddr_in *	getAddressPtr();
+		std::vector<Channel *>&	getChannels() const;
 		std::string getHostname() const;
 		std::string getNickname() const;
 		std::string	getUsername() const;
@@ -91,12 +95,14 @@ class User
 		bool				isOperator() const;
 
 	private:
-		unsigned int 		_boolFlags;
-		struct sockaddr_in	_addr;
-		socklen_t 			_len;
-		int					_fd;
-		std::string			_username;
-		std::string			_nickname;
-		std::string			_hostname;
+		unsigned int 			_boolFlags;
+		struct sockaddr_in		_addr;
+		socklen_t 				_len;
+		int						_fd;
+		std::string				_username;
+		std::string				_nickname;
+		std::string				_hostname;
+		struct kevent *			_event;
+		std::vector<Channel *>*	_channels;
 };
 #endif

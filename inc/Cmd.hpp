@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/21 17:50:05 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 11:32:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include "reply.h"
 
 # define NB_PARAMS	15
-# define NB_CMD		10
+# define NB_CMD		11
 
 class Server;
 
@@ -91,6 +91,8 @@ std::string	privmsg(Cmd *cmd, Server &server, User &currentUser);
 std::string	mode(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	oper(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	quit(Cmd *cmd, Server &server, User &currentUser);
 
 /*
 void	admin(Cmd *cmd, Server &server, User &currentUser);

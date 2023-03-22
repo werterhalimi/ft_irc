@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 18:17:01 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:09:14 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 #include "Server.h"
 #include "reply.h"
 
-User::User() : _len(sizeof(struct sockaddr_in))
+User::User() : _len(sizeof(struct sockaddr_in)), _channels(new std::vector<Channel *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User default constructor" << std::endl;
 	#endif
 }
 
-User::User(std::string const &username, std::string const &nickname, std::string const &hostname) : _boolFlags(0), _username(username), _nickname(nickname), _hostname(hostname)
+User::User(std::string const &username, std::string const &nickname, std::string const &hostname) : _boolFlags(0), _username(username), _nickname(nickname), _hostname(hostname), _channels(new std::vector<Channel *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User params constructor" << std::endl;
 	#endif
 }
 
-User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nickname(src.getNickname()), _hostname(src.getHostname())
+User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nickname(src.getNickname()), _hostname(src.getHostname()), _channels(&(src.getChannels()))
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User copy constructor" << std::endl;
@@ -37,9 +37,20 @@ User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nic
 
 User::~User()
 {
+	delete this->_channels;
 	#if LOG_LEVEL == 10
 	std::cout << "User default deconstructor" << std::endl;
 	#endif
+}
+
+void	User::setKEvent(struct kevent * event)
+{
+	this->_event = event;
+}
+
+struct kevent *	User::getKEvent(void) const
+{
+	return this->_event;
 }
 
 void	User::welcome(Server const & server) const
@@ -53,10 +64,7 @@ void	User::welcome(Server const & server) const
 void	User::sendReply(std::string const &buff) const
 {
 	if (!buff.empty())
-	{
-		std::cout << buff << " 123" << getUsername() << std::endl;
 		send(this->_fd, buff.c_str(), strlen(buff.c_str()), 0);
-	}
 }
 
 std::string	User::prefix() const
@@ -72,6 +80,7 @@ User &	User::operator=(User const & src)
 	this->_username = src.getUsername();
 	this->_nickname = src.getNickname();
 	this->_hostname = src.getHostname();
+	this->_channels = &src.getChannels();
 	return *this;
 }
 
@@ -245,4 +254,9 @@ bool	User::loginOperator(Operator const * op, std::string const &password)
 	if (op->isValidPassword(password))
 		this->_boolFlags |= OPERATOR_FLAG;
 	return (this->isOperator());
+}
+
+std::vector<Channel *>& User::getChannels() const
+{
+	return *this->_channels;
 }

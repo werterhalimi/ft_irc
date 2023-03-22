@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 17:51:03 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:11:12 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ void	Server::launch()
 	int					buff_len;
 	int					opt;
     struct sockaddr_in	address;
-	struct kevent		event;
+	struct kevent		event[1024];
+	struct kevent		event_set;
 	socklen_t			sizeofAddress = sizeof(address);
-	int					kq;
 
 	opt = 1;
 	// AF_INET == ipv4
@@ -118,39 +118,49 @@ void	Server::launch()
 	Operator *	admin = new Operator("ncotte", "127.0.0.1", "Born2beroot");
 	this->_operators->push_back(admin);
 
-	kq = kqueue();
+	this->_kq_fd = kqueue();
 	// 1024 is out buffersize
 	if (listen(server_fd, 1024) < 0)
 		throw std::exception();
 	User	empty;
 	empty.setFd(-2);
-	EV_SET(&event, server_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &empty);
+	EV_SET(&event_set, server_fd, EVFILT_READ, EV_ADD, 0, 0, &empty);
+	if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
+		throw std::exception();
 //	int	no_cmd = 1;
 	while (1)
 	{
-		int n = kevent(kq, &event, 1, &event, 1, 0);
+		int n = kevent(this->_kq_fd, NULL, 0, event, 1024, 0);
 		if (n < 0) continue ;
 		for(int i = 0; i < n; i++)
 		{
-			if (event.filter == EVFILT_READ)
+			User * user = (User *)event[i].udata;
+			if(event[i].flags & EV_EOF)
 			{
-				User * user = (User *)event.udata;
+				EV_SET(&event_set, (int) event[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+                if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
+                    throw std::exception();
+				close(user->getFd());
+			}
+			else if (event[i].filter == EVFILT_READ)
+			{
 				if ((user->getFd()) == -2)
 				{ 
 					char	buff[513];
 					buff_len = read((user->getFd()), buff, 513);
-
 					buff[buff_len] = 0;
 					User *usr = new User();
-					usr->setFd(server_fd);
-					handleLogin(*usr, &event);
+					usr->setFd((int)event[i].ident);
+					handleLogin(*usr, &event_set);
+					if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
+						throw std::exception();
 				}
 				else
 				{
 					char buff[513];
 					buff_len = read((user->getFd()), buff, 513);
 					buff[buff_len] = 0;
-//					std::cout << no_cmd++ << " " << buff << std::endl;
+
 					std::string		*sp = split(buff, "\r\n");
 					int	iter = 0;
 					while (!sp[iter].empty())
@@ -174,12 +184,24 @@ void	Server::handleLogin(User & user, struct kevent * event)
 	if (fd < 0)
 		return ;
 	user.setFd(fd);
-	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, &user);
+	user.setKEvent(event);
+	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD, 0, 0, &user);
 }
 
-void	Server::handleLogout(User & user)
+void	Server::handleLogout(User & user, std::vector<std::string> params)
 {
-	std::remove(this->_users->begin(), this->_users->end(), &user);
+	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
+
+	for(std::vector<Channel *>::iterator it = user.getChannels().begin(); it != user.getChannels().end(); it++)
+	{
+		(*it)->removeUser(*this, user, &params[0]);
+	}
+
+	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
+	int	ret = kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL);
+	if (ret == -1)
+		return ; // ERROR
+	close(user.getFd());
 }
 
 bool	Server::hasNick(std::string const & nick) const

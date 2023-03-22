@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 17:49:47 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:05:03 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class Server
 
 		void						launch();
 		void						handleLogin(User & user, struct kevent * event);
-		void						handleLogout(User & user);
+		void						handleLogout(User & user, std::vector<std::string> reason);
 
 		Channel *					getChannelByName(std::string const & name);
 		bool						hasNick(std::string const & nick) const;
@@ -65,6 +65,7 @@ class Server
 		std::vector<Operator *> *	_operators;
 		std::vector<Channel *> *	_channels;
 		struct tm *					_time;
+		int							_kq_fd;
 };
 
 #endif
