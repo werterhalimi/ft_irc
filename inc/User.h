@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:07:48 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:36:07 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ class User
 		int &				getFd();
 		socklen_t *			getSocklenPtr();
 		struct sockaddr_in *	getAddressPtr();
-		std::vector<Channel *>&	getChannels() const;
+		std::vector<Channel *>*	getChannels() const;
 		std::string getHostname() const;
 		std::string getNickname() const;
 		std::string	getUsername() const;

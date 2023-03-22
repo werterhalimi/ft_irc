@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:09:14 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:38:34 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ User::User(std::string const &username, std::string const &nickname, std::string
 	#endif
 }
 
-User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nickname(src.getNickname()), _hostname(src.getHostname()), _channels(&(src.getChannels()))
+User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nickname(src.getNickname()), _hostname(src.getHostname()), _channels((src.getChannels()))
 {
 	#if LOG_LEVEL == 10
 	std::cout << "User copy constructor" << std::endl;
@@ -80,7 +80,7 @@ User &	User::operator=(User const & src)
 	this->_username = src.getUsername();
 	this->_nickname = src.getNickname();
 	this->_hostname = src.getHostname();
-	this->_channels = &src.getChannels();
+	this->_channels = src.getChannels();
 	return *this;
 }
 
@@ -256,7 +256,7 @@ bool	User::loginOperator(Operator const * op, std::string const &password)
 	return (this->isOperator());
 }
 
-std::vector<Channel *>& User::getChannels() const
+std::vector<Channel *>* User::getChannels() const
 {
-	return *this->_channels;
+	return this->_channels;
 }

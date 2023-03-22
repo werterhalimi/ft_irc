@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:22:38 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:37:56 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void	Server::handleLogout(User & user, std::vector<std::string> params)
 {
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 
-	for(std::vector<Channel *>::iterator it = user.getChannels().begin(); it != user.getChannels().end(); it++)
+	for(std::vector<Channel *>::iterator it = user.getChannels()->begin(); it != user.getChannels()->end(); it++)
 	{
 		(*it)->removeUserQuit(*this, user, params);
 	}
