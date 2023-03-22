@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
+#include "Server.h"
 
 static bool	validNickName(std::string nick)
 {

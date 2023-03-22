@@ -13,9 +13,10 @@
 #ifndef REPLY_H
 # define REPLY_H
 
-# include "constants.h"
-# include "Server.h"
+# include "ft_irc.hpp"
 
+class Server;
+class User;
 class Cmd;
 
 std::string	err_passwdmismatch(Server const & server, User const & user);
@@ -57,5 +58,21 @@ std::string	rpl_mode(User & user, int modeToAdd, int modeToRemove);
 std::string	err_alreadyregistred(User const & user);
 
 std::string	err_noorigin(Server const & server, User const & user);
+
+std::string	err_badchanmask(User const & user, std::string const & name);
+
+std::string	err_badchannelkey(User const & user, std::string const & name);
+
+std::string	err_bannedfromchan(User const & user, std::string const & name, std::string const & mode);
+
+std::string	err_notonchannel(User const & user, std::string const & name);
+
+std::string	err_norecipient(User const & user, Cmd const & cmd);
+
+std::string	err_notexttosend(User const & user);
+
+std::string	err_cannotsendtochan(User const & user, std::string const & name);
+
+std::string	rpl_privmsg(User const & user, std::vector<std::string> const & params);
 
 #endif

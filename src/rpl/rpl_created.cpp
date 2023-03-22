@@ -12,6 +12,7 @@
 
 # include "reply.h"
 # include "Cmd.hpp"
+# include "Server.h"
 
 std::string	rpl_created(Server const & server, User const & user)
 {
