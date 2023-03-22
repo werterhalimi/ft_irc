@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:38:34 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:56:33 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,4 +259,14 @@ bool	User::loginOperator(Operator const * op, std::string const &password)
 std::vector<Channel *>* User::getChannels() const
 {
 	return this->_channels;
+}
+
+void	User::addChannel(Channel * chan)
+{
+	this->_channels->push_back(chan);
+}
+
+void	User::removeChannel(Channel * chan)
+{
+	this->_channels->erase(std::find(this->_channels->begin(), this->_channels->end(), chan));
 }

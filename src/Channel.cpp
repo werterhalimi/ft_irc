@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:38:10 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:56:05 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	Channel::removeUser(Server const & server, User & user, std::string * reaso
 	(void) server;
 	(void) user;
 	this->users->erase(std::find(this->users->begin(), this->users->end(), &user));
-	user.getChannels()->erase(std::find(user.getChannels()->begin(), user.getChannels()->end(), this));
+	user.removeChannel(this);
 	Cmd	mes(user);
 	mes.setCmd("PART");
 	mes.addParam(this->getName());
@@ -94,7 +94,7 @@ void	Channel::removeUserQuit(Server const & server, User & user, std::vector<std
 	(void) server;
 	(void) user;
 	this->users->erase(std::find(this->users->begin(), this->users->end(), &user));
-	user.getChannels()->erase(std::find(user.getChannels()->begin(), user.getChannels()->end(), this));
+	user.removeChannel(this);
 	Cmd	mes(user);
 	mes.setCmd("QUIT");
 	mes.addParam(":Quit:");
@@ -144,7 +144,7 @@ void	Channel::addUser(Server const & server, User & user)
 	user.sendReply(eof.toString());
 
 	this->users->push_back(&user);
-	user.getChannels()->push_back(this);
+	user.addChannel(this);
 }
 
 bool	Channel::hasUser(User & user) const

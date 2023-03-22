@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:36:07 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:54:42 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ class User
 		void				welcome(Server const & server) const;
 
 		/* Setters */
+		void				addChannel(Channel * chan);
+		void				removeChannel(Channel * chan);
 		void				setKEvent(struct kevent * event);
 		void				auth();
 		void				setFd(int i);

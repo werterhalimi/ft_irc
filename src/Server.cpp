@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:37:56 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:59:26 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,10 +192,10 @@ void	Server::handleLogout(User & user, std::vector<std::string> params)
 {
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 
-	for(std::vector<Channel *>::iterator it = user.getChannels()->begin(); it != user.getChannels()->end(); it++)
-	{
-		(*it)->removeUserQuit(*this, user, params);
-	}
+	std::vector<Channel *>::const_iterator it = user.getChannels()->begin();
+	std::vector<Channel *>::const_iterator ite = user.getChannels()->end();
+	while (it != ite)
+		(*(it++))->removeUserQuit(*this, user, params);
 
 	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
 	int	ret = kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL);
