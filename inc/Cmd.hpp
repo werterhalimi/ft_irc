@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/22 11:32:55 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:24:13 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <sstream>
 //# include <cstdio>
 # include "reply.h"
+# include "Server.h"
 
 # define NB_PARAMS	15
 # define NB_CMD		11
