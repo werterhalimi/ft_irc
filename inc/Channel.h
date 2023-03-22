@@ -31,6 +31,7 @@ class Channel
 
 		void				addUser(Server const & server, User & user);
 		void				removeUser(Server const & server, User & user, std::string * reason);
+		void				removeUserQuit(Server const & server, User & user, std::vector<std::string> & reason);
 		bool				isBanned(User const & user) const;
 		bool				hasUser(User & user) const;
 		bool				isFull(void) const;

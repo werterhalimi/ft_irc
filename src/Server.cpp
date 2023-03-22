@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:11:12 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:22:38 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ void	Server::launch()
 					char buff[513];
 					buff_len = read((user->getFd()), buff, 513);
 					buff[buff_len] = 0;
-
+					std::cout << buff << std::endl;
 					std::string		*sp = split(buff, "\r\n");
 					int	iter = 0;
 					while (!sp[iter].empty())
@@ -194,7 +194,7 @@ void	Server::handleLogout(User & user, std::vector<std::string> params)
 
 	for(std::vector<Channel *>::iterator it = user.getChannels().begin(); it != user.getChannels().end(); it++)
 	{
-		(*it)->removeUser(*this, user, &params[0]);
+		(*it)->removeUserQuit(*this, user, params);
 	}
 
 	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);

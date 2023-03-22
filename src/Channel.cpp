@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/21 18:13:27 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/22 18:20:59 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,21 @@ void	Channel::removeUser(Server const & server, User & user, std::string * reaso
 	{
 		mes.addParam(*reason);
 	}
+	user.sendReply(mes.toString());
+	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
+		(*i)->sendReply(mes.toString());
+
+}
+
+void	Channel::removeUserQuit(Server const & server, User & user, std::vector<std::string> & reason)
+{
+	(void) server;
+	(void) user;
+	this->users->erase(std::find(this->users->begin(), this->users->end(), &user));
+	Cmd	mes(user);
+	mes.setCmd("QUIT");
+	mes.addParam(":Quit:");
+	mes.addParams(reason);
 	user.sendReply(mes.toString());
 	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
 		(*i)->sendReply(mes.toString());
