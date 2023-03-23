@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/22 18:24:13 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/23 19:34:04 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ class Cmd
 //std::string	reply(User &user, std::string const & cmd, std::string const & msg);
 
 std::string	pass(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	who(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	join(Cmd *cmd, Server &server, User &currentUser);
 

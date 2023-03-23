@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/15 19:11:51 by shalimi          ###   ########.fr        #
+#    Updated: 2023/03/23 18:04:34 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,8 +40,9 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					rpl/rpl_quit.cpp				rpl/rpl_join.cpp \
 					rpl/rpl_topic.cpp				rpl/rpl_endofnames.cpp \
 					rpl/rpl_namreply.cpp			/rpl/rpl_channelmodeis.cpp \
-					rpl/err_chanoprivsneeded.cpp \
-                    utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
+					rpl/err_chanoprivsneeded.cpp	/rpl/rpl_whoreply.cpp \
+					rpl/rpl_endofwho.cpp \
+					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			Operator.cpp
 SRCS_DIR		:=	./src/

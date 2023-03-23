@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:54:42 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/23 17:03:09 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ class User
 		void				auth();
 		void				setFd(int i);
 		void				setUsername(std::string const &user);
+		void				setRealname(std::string const &user);
 		void				setNickname(std::string const &nick);
 		void				setHostname();
 		void				setAway(bool flag);
@@ -84,6 +85,7 @@ class User
 		struct sockaddr_in *	getAddressPtr();
 		std::vector<Channel *>*	getChannels() const;
 		std::string getHostname() const;
+		std::string getRealname() const;
 		std::string getNickname() const;
 		std::string	getUsername() const;
 		std::string	prefix() const;
@@ -104,6 +106,7 @@ class User
 		std::string				_username;
 		std::string				_nickname;
 		std::string				_hostname;
+		std::string				_realname;
 		struct kevent *			_event;
 		std::vector<Channel *>*	_channels;
 };
