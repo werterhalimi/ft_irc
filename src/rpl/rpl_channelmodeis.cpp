@@ -1,21 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quit.cpp                                           :+:      :+:    :+:   */
+/*   rpl_channelmodeis.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:42 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/22 18:30:08 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/23 13:28:45 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/23 13:28:48 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
-#include "Server.h"
+# include "reply.h"
+# include "Cmd.hpp"
+# include "Channel.h"
 
-std::string quit(Cmd * cmd, Server & server, User & usr)
+std::string	rpl_channelmodeis(Channel const & channel, User const & user)
 {
-	usr.sendReply(rpl_error(usr, *cmd));
-	server.handleLogout(usr, cmd->getParams());
-	return (""); // TODO ?
+	Cmd reply(user);
+	reply.setCmd(RPL_CHANNELMODEIS);
+	reply.addParam(user.getNickname());
+	reply.addParam(channel.getName());
+	std::ostringstream stream;
+	stream << "+";
+//	if (channel.is...)
+//		stream << "a";
+	reply.addParam(stream.str());
+	return (reply.toString());
 }

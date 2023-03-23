@@ -20,7 +20,6 @@
 # include <sstream>
 //# include <cstdio>
 # include "reply.h"
-# include "Server.h"
 
 # define NB_PARAMS	15
 # define NB_CMD		11
@@ -157,7 +156,7 @@ void	trace(Cmd *cmd, Server &server, User &currentUser);
 
 void	usehost(Cmd *cmd, Server &server, User &currentUser);
 
-void	_users(Cmd *cmd, Server &server, User &currentUser);
+void	users(Cmd *cmd, Server &server, User &currentUser);
 
 void	version(Cmd *cmd, Server &server, User &currentUser);
 

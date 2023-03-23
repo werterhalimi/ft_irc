@@ -36,6 +36,11 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
                     rpl/err_badchanmask.cpp			rpl/err_badchannelkey.cpp \
                     rpl/err_bannedfromchan.cpp		rpl/err_notonchannel.cpp \
                     rpl/err_cannotsendtochan.cpp	rpl/rpl_privmsg.cpp \
+					rpl/rpl_error.cpp				rpl/rpl_part.cpp \
+					rpl/rpl_quit.cpp				rpl/rpl_join.cpp \
+					rpl/rpl_topic.cpp				rpl/rpl_endofnames.cpp \
+					rpl/rpl_namreply.cpp			/rpl/rpl_channelmodeis.cpp \
+					rpl/err_chanoprivsneeded.cpp \
                     utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			Operator.cpp

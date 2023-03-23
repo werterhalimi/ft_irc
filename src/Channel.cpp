@@ -13,184 +13,146 @@
 #include "Cmd.hpp"
 #include "Channel.h"
 
-Channel::Channel(void) :
-	users(new std::vector<User *>()),
-	bannedUsers(new std::vector<User *>())
+Channel::Channel() :
+		_users(new std::vector<User *>()),
+		_bannedUsers(new std::vector<User *>())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "Channel default constructor" << std::endl;
 	#endif
 }
 
-Channel::Channel(std::string name, int slots) : 
-	name(name),
-	users(new std::vector<User *>()),
-	bannedUsers(new std::vector<User *>()),
-	slots(slots)
+Channel::Channel(std::string const & name, int slots) :
+		_name(name),
+		_users(new std::vector<User *>()),
+		_bannedUsers(new std::vector<User *>()),
+		_slots(slots)
 {
-	this->topic = "Default topic";
+	this->_topic = "Default _topic";
 	#if LOG_LEVEL == 10
 	std::cout << "Channel name  constructor" << std::endl;
 	#endif
 }
 
-Channel::Channel(Channel const & src) : 
-	name(src.getName()),
-	users(new std::vector<User *>(src.getUsers().begin(), src.getUsers().end())),
-	bannedUsers(new std::vector<User *>(src.getBannedUsers().begin(),src.getBannedUsers().end())),
-	slots(src.getSlots())
+Channel::Channel(Channel const & src) :
+		_name(src.getName()),
+		_users(new std::vector<User *>(src.getUsers().begin(), src.getUsers().end())),
+		_bannedUsers(new std::vector<User *>(src.getBannedUsers().begin(), src.getBannedUsers().end())),
+		_slots(src.getSlots())
 {
 	#if LOG_LEVEL == 10
 	std::cout << "Channel copy constructor" << std::endl;
 	#endif
 }
 
-Channel::~Channel(void)
+Channel::~Channel()
 {
-	delete this->users;
+	delete this->_users;
 	#if LOG_LEVEL == 10
 	std::cout << "Channel default deconstructor" << std::endl;
 	#endif
 
 }
 
-std::string 	Channel::getTopic(void) const
+std::string const &	Channel::getTopic() const
 {
-	return this->topic;
+	return this->_topic;
 }
 
 //TODO
-bool	Channel::isInviteOnly(void) const
+bool	Channel::isInviteOnly() const
 {
 	return false;
 }
 
-bool	Channel::isFull(void) const
+bool	Channel::isFull() const
 {
-	return this->users->size() >= this->slots; 
+	return this->_users->size() >= this->_slots;
 }
 
 void	Channel::removeUser(Server const & server, User & user, std::string * reason)
 {
 	(void) server;
-	(void) user;
-	this->users->erase(std::find(this->users->begin(), this->users->end(), &user));
+	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 	user.removeChannel(this);
-	Cmd	mes(user);
-	mes.setCmd("PART");
-	mes.addParam(this->getName());
-	if (reason)
-	{
-		mes.addParam(*reason);
-	}
-	user.sendReply(mes.toString());
-	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
-		(*i)->sendReply(mes.toString());
+	std::string reply = rpl_part(*this, user, reason);
+	user.sendReply(reply);
+	for(std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
+		(*i)->sendReply(reply);
 
 }
 
 void	Channel::removeUserQuit(Server const & server, User & user, std::vector<std::string> & reason)
 {
 	(void) server;
-	(void) user;
-	this->users->erase(std::find(this->users->begin(), this->users->end(), &user));
+	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 	user.removeChannel(this);
-	Cmd	mes(user);
-	mes.setCmd("QUIT");
-	mes.addParam(":Quit:");
-	mes.addParams(reason);
-	user.sendReply(mes.toString());
-	std::cout << mes.toString() << std::endl;
-	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
-		(*i)->sendReply(mes.toString());
+	std::string reply = rpl_quit(user, reason);
+	user.sendReply(reply);
+	std::cout << reply << std::endl;
+	for(std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
+		(*i)->sendReply(reply);
 
 }
 
 void	Channel::addUser(Server const & server, User & user)
 {
-	Cmd join(user);
-	Cmd topic(server);
-	Cmd names(server);
-	Cmd eof(server);
+	std::string reply = rpl_join(*this, user);
 
-	join.addParam("JOIN");
-	join.addParam(":" + this->getName());
-	
-	topic.setCmd(RPL_TOPIC);
-	topic.addParam(user.getNickname());
-	topic.addParam(this->getName());
-	topic.addParam(":" + this->getTopic());
+	for(std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
+		(*i)->sendReply(reply);
+	user.sendReply(rpl_topic(server, *this, user));
+	user.sendReply(rpl_namreply(server, *this, user));
+	user.sendReply(rpl_endofnames(server, *this, user));
 
-
-	names.setCmd(RPL_NAMREPLY);
-	names.addParam(user.getNickname());
-	names.addParam("="); //TODO all mode
-	names.addParam(this->getName());
-	if(this->users->size() > 0)
-	{
-		names.addParam(":" + this->users->at(0)->getNickname());
-		for(std::vector<User *>::iterator i = this->users->begin() + 1; i != this->users->end(); i++)
-			names.addParam((*i)->getNickname());
-	}
-	eof.setCmd(RPL_ENDOFNAMES);
-	eof.addParam(user.getNickname());
-	eof.addParam(this->getName());
-	eof.addParam(":End of Names list");
-
-	for(std::vector<User *>::iterator i = this->users->begin(); i != this->users->end(); i++)
-		(*i)->sendReply(join.toString());
-	user.sendReply(topic.toString());
-	user.sendReply(names.toString());
-	user.sendReply(eof.toString());
-
-	this->users->push_back(&user);
+	this->_users->push_back(&user);
 	user.addChannel(this);
 }
 
 bool	Channel::hasUser(User & user) const
 {
-	std::vector<User *>::const_iterator it = find (this->users->begin(), this->users->end(), &user);
-	return (it != this->users->end());
+	std::vector<User *>::const_iterator it = find (this->_users->begin(), this->_users->end(), &user);
+	return (it != this->_users->end());
 }
 
 Channel &	Channel::operator=(Channel const & src)
 {
-	this->name = src.getName();
-	delete this->users;
-	this->users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
-	this->bannedUsers = new std::vector<User *>(src.getBannedUsers().begin(), src.getBannedUsers().end());
-	this->slots = src.getSlots();
-	this->key = src.getKey();
+	this->_name = src.getName();
+	delete this->_users;
+	this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
+	this->_bannedUsers = new std::vector<User *>(src.getBannedUsers().begin(), src.getBannedUsers().end());
+	this->_slots = src.getSlots();
+	this->_key = src.getKey();
 	return *this;
 }
 
 bool	Channel::isBanned(User const & user) const
 {
-	std::vector<User *>::const_iterator it = find (this->bannedUsers->begin(), this->bannedUsers->end(), &user);
-	return (it != this->bannedUsers->end());
+	std::vector<User *>::const_iterator it = find (this->_bannedUsers->begin(), this->_bannedUsers->end(), &user);
+	return (it != this->_bannedUsers->end());
 }
 
-std::string	Channel::getName() const
+std::string const &	Channel::getName() const
 {
-	return this->name;
+	return this->_name;
 }
 
 std::vector<User *> &	Channel::getBannedUsers() const
 {
-	return *(this->bannedUsers);
+	return *(this->_bannedUsers);
 }
 
 std::vector<User *> &	Channel::getUsers() const
 {
-	return *(this->users);
+	return *(this->_users);
 }
 
 size_t	Channel::getSlots() const
 {
-	return (this->slots);
+	return (this->_slots);
 }
 
-std::string 	Channel::getKey(void) const
+std::string const &	Channel::getKey() const
 {
-	return this->key;
+	return this->_key;
 }

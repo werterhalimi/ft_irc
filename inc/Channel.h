@@ -24,31 +24,31 @@ class Server;
 class Channel
 {
 	public:
-		Channel(void);
-		Channel(std::string name, int slot);
+		Channel();
+		Channel(std::string const & name, int slot);
 		Channel(Channel const & src);
-		~Channel(void);
+		~Channel();
 
-		void				addUser(Server const & server, User & user);
-		void				removeUser(Server const & server, User & user, std::string * reason);
-		void				removeUserQuit(Server const & server, User & user, std::vector<std::string> & reason);
-		bool				isBanned(User const & user) const;
-		bool				hasUser(User & user) const;
-		bool				isFull(void) const;
-		bool				isInviteOnly(void) const;
-		Channel &			operator=(Channel const & src);
-		std::string			getName(void) const;
-		size_t					getSlots(void) const;
-		std::string  		getKey(void) const;
-		std::string  		getTopic(void) const;
-		std::vector<User *> &	getUsers(void) const;
-		std::vector<User *> &	getBannedUsers(void) const;
+		void					addUser(Server const & server, User & user);
+		void					removeUser(Server const & server, User & user, std::string * reason);
+		void					removeUserQuit(Server const & server, User & user, std::vector<std::string> & reason);
+		bool					isBanned(User const & user) const;
+		bool					hasUser(User & user) const;
+		bool					isFull() const;
+		bool					isInviteOnly() const;
+		Channel &				operator=(Channel const & src);
+		std::string	const &		getName() const;
+		size_t					getSlots() const;
+		std::string const &		getKey() const;
+		std::string const &		getTopic() const;
+		std::vector<User *> &	getUsers() const;
+		std::vector<User *> &	getBannedUsers() const;
 	private:
-		std::string					name;
-		std::string 				key;
-		std::vector<User *> *		users;
-		std::vector<User *> *		bannedUsers;
-		size_t							slots;
-		std::string 				topic;
+		std::string					_name;
+		std::string 				_key;
+		std::vector<User *> *		_users;
+		std::vector<User *> *		_bannedUsers;
+		size_t						_slots;
+		std::string 				_topic;
 };
 #endif

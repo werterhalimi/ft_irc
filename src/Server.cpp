@@ -227,7 +227,7 @@ Channel	* Server::getChannelByName(std::string const & name)
 			return (*it);
 		it++;
 	}
-	return (0);
+	return (NULL);
 }
 
 std::string	Server::prefix() const
@@ -280,7 +280,7 @@ int	Server::getChannelID(std::string const & name) const
 			return (id);
 		id++;
 	}
-	return (-1);
+	return (EXIT_ERROR_NEG);
 }
 
 int	Server::getUserID(std::string const & nickname) const
@@ -294,7 +294,7 @@ int	Server::getUserID(std::string const & nickname) const
 			return (id);
 		id++;
 	}
-	return (-1);
+	return (EXIT_ERROR_NEG);
 }
 
 struct tm *	Server::getTime() const

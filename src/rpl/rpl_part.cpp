@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quit.cpp                                           :+:      :+:    :+:   */
+/*   rpl_part.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:42 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/22 18:30:08 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/23 10:58:55 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/23 10:58:57 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
-#include "Server.h"
+# include "reply.h"
+# include "Cmd.hpp"
+# include "Channel.h"
 
-std::string quit(Cmd * cmd, Server & server, User & usr)
+std::string	rpl_part(Channel const & channel, User const & user, std::string * reason)
 {
-	usr.sendReply(rpl_error(usr, *cmd));
-	server.handleLogout(usr, cmd->getParams());
-	return (""); // TODO ?
+	Cmd reply(user);
+
+	reply.setCmd("PART");
+	reply.addParam(channel.getName());
+	if (reason)
+		reply.addParam(*reason);
+	return (reply.toString());
 }

@@ -16,6 +16,7 @@
 # include "ft_irc.hpp"
 
 class Server;
+class Channel;
 class User;
 class Cmd;
 
@@ -74,5 +75,23 @@ std::string	err_notexttosend(User const & user);
 std::string	err_cannotsendtochan(User const & user, std::string const & name);
 
 std::string	rpl_privmsg(User const & user, std::vector<std::string> const & params);
+
+std::string	rpl_error(User const & user, Cmd const & cmd);
+
+std::string	rpl_part(Channel const & channel, User const & user, std::string * reason);
+
+std::string	rpl_quit(User const & user, std::vector<std::string> const & reasons);
+
+std::string	rpl_join(Channel const & channel, User const & user);
+
+std::string	rpl_topic(Server const & server, Channel const & channel, User const & user);
+
+std::string	rpl_endofnames(Server const & server, Channel const & channel, User const & user);
+
+std::string	rpl_namreply(Server const & server, Channel const & channel, User const & user);
+
+std::string	rpl_channelmodeis(Channel const & channel, User const & user);
+
+std::string	err_chanoprivsneeded(Channel const & channel, User const & user);
 
 #endif

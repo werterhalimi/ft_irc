@@ -50,6 +50,9 @@ static void	updateUserFlag(int *flagToAdd, int *flagToRemove, char c, User & usr
 
 std::string	mode(Cmd * cmd, Server & server, User & usr)
 {
+	bool	plusSign = true;
+	int		modeToAdd = 0;
+	int		modeToRemove = 0;
 	std::vector<std::string> params = cmd->getParams();
 
 	if (params.empty())
@@ -59,11 +62,13 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		int id = server.getChannelID(params[0]);
 		if (id < 0)
 			return (err_nosuchchannel(usr, params[0]));
-		else
-		{
-			// TODO
-			return ("");
-		}
+		Channel channel = *server.getChannels()[id];
+		if (params.size() == 1)
+			return (rpl_channelmodeis(channel, usr));
+		if (!usr.isGlobalOperator()) // TODO which one ?
+			return (err_chanoprivsneeded(channel, usr));
+		// TODO
+		return ("");
 	}
 	else
 	{
@@ -74,12 +79,10 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 			return (err_usersdontmatch(usr, params.size()));
 		else if (params.size() == 1)
 			return (rpl_umodeis(usr));
-		bool plusSign = true;
-		int modeToAdd = 0;
-		int modeToRemove = 0;
 		std::string errorReply = err_umodeunknownflag(usr);
 //		Cmd errorReply(usr);
 //		errorReply.setCmd(ERR_UMODEUNKNOWNFLAG);
+
 //		errorReply.addParam(usr.getNickname());
 //		errorReply.addParam(":Unknown MODE flag");
 		std::string validFlags = std::string(USER_MODE_FLAG_LETTERS);
