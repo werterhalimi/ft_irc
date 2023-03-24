@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:56:33 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/23 18:46:29 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ void	User::welcome(Server const & server) const
 void	User::sendReply(std::string const &buff) const
 {
 	if (!buff.empty())
+	{
 		send(this->_fd, buff.c_str(), strlen(buff.c_str()), 0);
+		std::cout << RED << buff << RESET_COLOR << std::endl;
+	}
 }
 
 std::string	User::prefix() const
@@ -88,6 +91,13 @@ bool User::operator==(User const & src)
 {
 	return this->_hostname == src.getHostname();
 }
+
+
+std::string User::getRealname() const
+{
+	return this->_realname;
+}
+
 
 std::string User::getUsername() const
 {
@@ -243,6 +253,13 @@ void	User::setNickname(std::string const & nickname)
 	this->_nickname = nickname;
 	this->_boolFlags |= NICK_FLAG;
 }
+
+
+void	User::setRealname(std::string const & name)
+{
+	this->_realname = name.substr(2, name.size() - 1);
+}
+
 
 void	User::setHostname()
 {

@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   err_alreadyregistred.cpp                           :+:      :+:    :+:   */
+/*   rpl_endofwho.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
+/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/21 14:51:55 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/23 17:48:08 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/23 18:00:52 by shalimi           #+#    #+#             */
+/*   Updated: 2023/03/23 18:02:46 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
-# include "Cmd.hpp"
+#include "reply.h"
+#include "Server.h"
 
-std::string	err_alreadyregistred(User const & user)
+std::string rpl_endofwho(Server const & server, std::string client, std::string mask)
 {
-	Cmd reply(user);
-
-	reply.setCmd(ERR_ALREADYREGISTRED);
-	reply.addParam(user.getNickname());
-	reply.addParam(":Unauthorized command (already registered");
+	Cmd	reply(server);
+	reply.setCmd(RPL_ENDOFWHO);
+	reply.addParam(client);
+	reply.addParam(mask);
+	reply.addParam(":End of WHO list");
 	return (reply.toString());
 }

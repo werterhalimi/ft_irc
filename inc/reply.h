@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:59:16 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/21 14:59:18 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:05:34 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 # define REPLY_H
 
 # include "ft_irc.hpp"
-
 class Server;
 class Channel;
 class User;
 class Cmd;
 
+
+std::string rpl_endofwho(Server const & server, std::string client, std::string mask);
+std::string	rpl_whoreply(Server const & server, User const & user, User const * target);
 std::string	err_passwdmismatch(Server const & server, User const & user);
 
 std::string	err_unknowncommand(Server const & server, User const & user, Cmd const & cmd);
