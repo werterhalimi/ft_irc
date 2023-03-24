@@ -50,6 +50,8 @@ static void	updateUserFlag(int *flagToAdd, int *flagToRemove, char c, User & usr
 
 static void	updateChannelFlag(int *flagToAdd, int *flagToRemove, char c, Channel & channel, bool removeMode)
 {
+	(void) channel;
+	(void) removeMode;
 	switch (c)
 	{
 		case 'i':
