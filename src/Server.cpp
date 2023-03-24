@@ -13,33 +13,49 @@
 #include "Server.h"
 #include "Cmd.hpp"
 
-Server::Server() : _users(new std::vector<User *>()), _operators(new std::vector<Operator *>()), _channels(new std::vector<Channel *>())
+Server::Server() :
+	_users(new std::vector<User *>()),
+	_operators(new std::vector<Operator *>()),
+	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL == 10
-	std::cout << "Server default constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "Server default constructor @ " << this << std::endl;
 	#endif
 }
 
-Server::Server(std::string const & name) : _servername(name), _users(new std::vector<User *>()), _operators(new std::vector<Operator *>()), _channels(new std::vector<Channel *>())
+Server::Server(std::string const & name) :
+	_servername(name),
+	_users(new std::vector<User *>()),
+	_operators(new std::vector<Operator *>()),
+	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL == 10
-	std::cout << "Server name constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "Server name constructor @ " << this << std::endl;
 	#endif
 }
 
-Server::Server(int port, std::string const & pass) : _port(port), _pass(pass), _servername("Default"), \
-	_users(new std::vector<User *>()), _operators(new std::vector<Operator *>()), _channels(new std::vector<Channel *>())
+Server::Server(int port, std::string const & pass) :
+	_port(port),
+	_pass(pass),
+	_servername("Default"),
+	_users(new std::vector<User *>()),
+	_operators(new std::vector<Operator *>()),
+	_channels(new std::vector<Channel *>())
 {
-	this->_channels->push_back(new Channel("#Default", 20));
-	#if LOG_LEVEL == 10
-	std::cout << "Server name constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "Server port&path constructor @ " << this << std::endl;
 	#endif
+	Channel * channel = new Channel("#Default", 20);
+	this->_channels->push_back(channel);
 	time_t	time_now = time(NULL);
 	this->_time = gmtime(&time_now);
 }
 
 Server::Server(Server const & src) 
 {
+	#if LOG_LEVEL
+		std::cout << "Server copy constructor @ " << this << std::endl;
+	#endif
 	this->_port = src.getPort();
 	this->_pass = src.getPass();
 	this->_servername = src.getName();
@@ -47,20 +63,16 @@ Server::Server(Server const & src)
 	this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
 	this->_channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
 	this->_operators = new std::vector<Operator *>(src.getOperators().begin(), src.getOperators().end());
-	#if LOG_LEVEL == 10
-	std::cout << "Server copy constructor" << std::endl;
-	#endif
 }
 
 Server::~Server()
 {
+	#if LOG_LEVEL
+		std::cout << "Server default destructor @ " << this << std::endl;
+	#endif
 	delete this->_users;
 	delete this->_channels;
 	delete this->_operators;
-	#if LOG_LEVEL == 10
-	std::cout << "Server default deconstructor" << std::endl;
-	#endif
-
 }
 
 Server &	Server::operator=(Server const & src)
@@ -78,19 +90,24 @@ Server &	Server::operator=(Server const & src)
 	return *this;
 }
 
-
-
 void	Server::launch()
 {
 	int					server_fd;
-	int					buff_len;
-	int					opt;
-    struct sockaddr_in	address;
+	int 				buff_len;
+	int					opt = 1;
+    struct sockaddr_in	address = {};
 	struct kevent		event[1024];
-	struct kevent		event_set;
+	struct kevent		event_set = {};
 	socklen_t			sizeofAddress = sizeof(address);
 
-	opt = 1;
+	try
+	{
+		serverConfig("config/IRC.conf");
+	}
+	catch (std::exception &e)
+	{
+		throw std::exception();
+	}
 	// AF_INET == ipv4
 	// SOCK_STREAM == tcp
 	// 0 is the default protocol
@@ -102,15 +119,17 @@ void	Server::launch()
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->_port);
 
-	std::cout << YELLOW << &address << std::endl;
-	std::cout << "Family : " << (int)address.sin_family << std::endl;
-	std::cout << "Port : " << address.sin_port << std::endl;
-	std::cout << "Port : " << ntohs(address.sin_port) << std::endl;
-	std::cout << "IP : " << inet_ntoa(address.sin_addr) << std::endl;
-	std::cout << "Length : " << (int)address.sin_len << std::endl;
-	std::cout << "Zeros : " << address.sin_zero << std::endl;
-	std::cout << "Sizeof Addr : " << sizeofAddress << std::endl;
-	std::cout << RESET_COLOR << std::endl;
+	#if LOG_LEVEL
+		std::cout << YELLOW << &address << std::endl;
+		std::cout << "Family : " << (int)address.sin_family << std::endl;
+		std::cout << "Port : " << address.sin_port << std::endl;
+		std::cout << "Port : " << ntohs(address.sin_port) << std::endl;
+		std::cout << "IP : " << inet_ntoa(address.sin_addr) << std::endl;
+		std::cout << "Length : " << (int)address.sin_len << std::endl;
+		std::cout << "Zeros : " << address.sin_zero << std::endl;
+		std::cout << "Sizeof Addr : " << sizeofAddress << std::endl;
+		std::cout << RESET_COLOR << std::endl;
+	#endif
 
 	if (bind(server_fd, (struct sockaddr *)(&address), sizeofAddress) < 0)
 		throw std::exception();
@@ -128,9 +147,9 @@ void	Server::launch()
 	if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
 		throw std::exception();
 //	int	no_cmd = 1;
-	while (1)
+	while (true)
 	{
-		int n = kevent(this->_kq_fd, NULL, 0, event, 1024, 0);
+		int n = kevent(this->_kq_fd, NULL, 0, event, 1024, NULL);
 		if (n < 0) continue ;
 		for(int i = 0; i < n; i++)
 		{
@@ -147,7 +166,7 @@ void	Server::launch()
 				if ((user->getFd()) == -2)
 				{ 
 					char	buff[513];
-					buff_len = read((user->getFd()), buff, 513);
+					buff_len = read((user->getFd()), buff, 513); // TODO size_t < 0 ?
 					buff[buff_len] = 0;
 					User *usr = new User();
 					usr->setFd((int)event[i].ident);
@@ -158,15 +177,21 @@ void	Server::launch()
 				else
 				{
 					char buff[513];
-					buff_len = read((user->getFd()), buff, 513);
+					buff_len = read((user->getFd()), buff, 513); // TODO size_t < 0 ?
 					buff[buff_len] = 0;
 					std::cout << buff << std::endl;
-					std::string		*sp = split(buff, "\r\n");
-					int	iter = 0;
-					while (!sp[iter].empty())
+//					std::string		*sp = split(buff, "\r\n");
+					std::vector<std::string> sp = split(buff, "\r\n");
+//					int	iter = 0;
+//					while (!sp[iter].empty())
+					std::cout << CYAN << "Size : " << sp.size() << RESET_COLOR << std::endl;
+					std::vector<std::string>::const_iterator ite = sp.end();
+					for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
 					{
 //						Cmd cmd(sp[iter++], this);
-						Cmd cmd(sp[iter++]);
+//						Cmd cmd(sp[iter++]);
+						std::cout << CYAN << "Exec : \"" << *it << "\"" << RESET_COLOR << std::endl;
+						Cmd cmd(*it);
 						cmd.execute(*this, *user);
 					}
 					//delete sp;
@@ -300,4 +325,31 @@ int	Server::getUserID(std::string const & nickname) const
 struct tm *	Server::getTime() const
 {
 	return (this->_time);
+}
+
+void	Server::serverConfig(const char * path)
+{
+	std::ifstream	configFile;
+
+	configFile.open(path, std::fstream::in);
+	if (!configFile || !configFile.is_open())
+		throw std::exception();
+	std::string	fileStr((std::istreambuf_iterator<char>(configFile)), \
+                	std::istreambuf_iterator<char>());
+	configFile.close();
+	size_t	index;
+	std::vector<std::string> lines = split(fileStr, "\n");
+	std::string item;
+	std::vector<std::string>::const_iterator ite = lines.end();
+	for (std::vector<std::string>::const_iterator it = lines.begin(); it < ite; ++it)
+	{
+		index = it->find("#", 0);
+		if (index != std::string::npos)
+			item = it->substr(0, it->find("#", 0));
+		else
+			item = *it;
+
+//		std::cout << "\"" << *it << "\"" << std::endl;
+	}
+	throw std::exception();
 }

@@ -28,8 +28,8 @@ static bool	isNameValid(std::string const & name)
 std::string	join(Cmd * cmd, Server & server, User & usr)
 {
 	std::vector<std::string>	params = cmd->getParams();
-	std::string					*channels = NULL;
-	std::string					*keys = NULL;
+	std::vector<std::string>	channels;
+	std::vector<std::string>	keys;
 	Channel 					*channel;
 
 	if (params.empty())
@@ -37,30 +37,31 @@ std::string	join(Cmd * cmd, Server & server, User & usr)
 	channels = split(params.at(0), ",");
 	if (params.size() >= 2)
 		keys = split(params.at(1), ",");
-	int	i = 0;
-	int	no_keys = get_split_size(keys);
-	while (!channels[i].empty())
+	size_t i = 0;
+	size_t	no_keys = keys.size();
+	std::vector<std::string>::const_iterator ite = channels.end();
+	for (std::vector<std::string>::const_iterator it = channels.begin(); it < ite; ++it)
 	{
-		channel = server.getChannelByName(channels[i]);
+		channel = server.getChannelByName(*it);
 		if (!channel)
 		{
-			if (!isNameValid(channels[i]))
-				usr.sendReply(err_badchanmask(usr, channels[i]));
+			if (!isNameValid(*it))
+				usr.sendReply(err_badchanmask(usr, *it));
 			else
-				usr.sendReply(err_nosuchchannel(usr, channels[i]));
+				usr.sendReply(err_nosuchchannel(usr, *it));
 		}
-		// TOOMANYCHANNEL ?
+		// TODO TOOMANYCHANNEL ?
 		else if (!channel->getKey().empty())
 		{
 			if (!channel->getKey().empty() && i < no_keys && channel->getKey() != keys[i])
-				usr.sendReply(err_badchannelkey(usr, channels[i]));
+				usr.sendReply(err_badchannelkey(usr, *it));
 		}
 		else if (channel->isBanned(usr))
-			usr.sendReply(err_bannedfromchan(usr, channels[i], "b"));
+			usr.sendReply(err_bannedfromchan(usr, *it, "b"));
 		else if(channel->isFull())
-			usr.sendReply(err_bannedfromchan(usr, channels[i], "l"));
+			usr.sendReply(err_bannedfromchan(usr, *it, "l"));
 		else if(channel->isInviteOnly())
-			usr.sendReply(err_bannedfromchan(usr, channels[i], "i"));
+			usr.sendReply(err_bannedfromchan(usr, *it, "i"));
 		else
 			channel->addUser(server, usr);
 		i++;

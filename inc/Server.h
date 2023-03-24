@@ -14,19 +14,12 @@
 # define SERVER_H
 
 # include "ft_irc.hpp"
-# include <vector>
 # include "User.h"
 # include "Channel.h"
-# include <string>
-# include <iomanip>
 # include <utility>
-# include <iostream>
 # include <stdexcept>
-# include <netinet/in.h>
 //# include <stdio.h>
 //# include <string.h>
-# include <sys/socket.h>
-# include <unistd.h>
 
 class Server
 {
@@ -56,6 +49,8 @@ class Server
 		int 						getChannelID(std::string const & name) const;
 		int 						getUserID(std::string const & nickname) const;
 		struct tm *					getTime() const;
+
+		void						serverConfig(const char * path);
 
 	private:
 		int							_port;

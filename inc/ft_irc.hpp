@@ -12,28 +12,39 @@
 
 #ifndef FT_IRC_HPP
 # define FT_IRC_HPP
-# define LOG_LEVEL 0
+
+# ifndef LOG_LEVEL
+#  define LOG_LEVEL 0
+# endif
+
 # include "constants.h"
 # include <iostream>
 # include <string>
 # include <algorithm>
 # include <vector>
 # include <sys/event.h>
-# include <sys/time.h>
-# include <stdio.h>
-# include <stdlib.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+
+//# include <sys/time.h>
+//# include <stdio.h>
+//# include <stdlib.h>
+
+# include <ctime>
+# include <cstdio>
+# include <cstdlib>
+
 # include <unistd.h>
 # include <sstream>
+# include <fstream>
 # include <iomanip>
 
 /* Utils */
 
-int	get_split_size(std::string * split);
-std::string	*	split(std::string  str, std::string sep);
-std::string	*	split(char * str, std::string sep);
-std::string	*	split(char const * str, std::string sep);
-bool			isLetter(char const & c);
-bool			isDigit(char const & c);
-bool			isSpecial(char const & c);
-std::string		printTime(struct tm * time);
+std::vector<std::string>	split(std::string const & str, std::string const & sep);
+bool						isLetter(char const & c);
+bool						isDigit(char const & c);
+bool						isSpecial(char const & c);
+std::string					printTime(struct tm * time);
+
 #endif

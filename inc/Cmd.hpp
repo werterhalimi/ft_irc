@@ -13,11 +13,9 @@
 #ifndef CMD_HPP
 # define CMD_HPP
 
-# include "constants.h"
+# include "ft_irc.hpp"
 # include "User.h"
 //# include "cmd.h"
-# include <iostream>
-# include <sstream>
 //# include <cstdio>
 # include "reply.h"
 

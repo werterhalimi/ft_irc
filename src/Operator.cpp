@@ -12,12 +12,21 @@
 
 #include "Operator.hpp"
 
-Operator::Operator(std::string const & name, std::string const & host, std::string const & password) : _name(name), _host(host), _password(password)
+Operator::Operator(std::string const & name, std::string const & host, std::string const & password) :
+	_name(name),
+	_host(host),
+	_password(password)
 {
+	#if LOG_LEVEL
+		std::cout << "Operator name, host & password constructor @ " << this << std::endl;
+	#endif
 }
 
 Operator::~Operator()
 {
+	#if LOG_LEVEL
+		std::cout << "Operator default destructor @ " << this << std::endl;
+	#endif
 }
 
 bool	Operator::isValidHost(std::string const & host) const

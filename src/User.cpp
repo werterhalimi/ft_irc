@@ -14,33 +14,46 @@
 #include "Server.h"
 #include "reply.h"
 
-User::User() : _len(sizeof(struct sockaddr_in)), _channels(new std::vector<Channel *>())
+User::User() :
+	_boolFlags(0),
+	_len(sizeof(struct sockaddr_in)),
+	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL == 10
-	std::cout << "User default constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "User default constructor @ " << this << std::endl;
 	#endif
 }
 
-User::User(std::string const &username, std::string const &nickname, std::string const &hostname) : _boolFlags(0), _username(username), _nickname(nickname), _hostname(hostname), _channels(new std::vector<Channel *>())
+User::User(std::string const &username, std::string const &nickname, std::string const &hostname) :
+	_boolFlags(0),
+	_username(username),
+	_nickname(nickname),
+	_hostname(hostname),
+	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL == 10
-	std::cout << "User params constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "User username, nickname & hostname constructor @ " << this << std::endl;
 	#endif
 }
 
-User::User(User const & src) : _boolFlags(0), _username(src.getUsername()), _nickname(src.getNickname()), _hostname(src.getHostname()), _channels((src.getChannels()))
+User::User(User const & src) :
+	_boolFlags(0),
+	_username(src.getUsername()),
+	_nickname(src.getNickname()),
+	_hostname(src.getHostname()),
+	_channels((src.getChannels()))
 {
-	#if LOG_LEVEL == 10
-	std::cout << "User copy constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "User copy constructor @ " << this << std::endl;
 	#endif
 }
 
 User::~User()
 {
-	delete this->_channels;
-	#if LOG_LEVEL == 10
-	std::cout << "User default deconstructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "User default destructor @ " << this << std::endl;
 	#endif
+	delete this->_channels;
 }
 
 void	User::setKEvent(struct kevent * event)
@@ -48,7 +61,7 @@ void	User::setKEvent(struct kevent * event)
 	this->_event = event;
 }
 
-struct kevent *	User::getKEvent(void) const
+struct kevent *	User::getKEvent() const
 {
 	return this->_event;
 }

@@ -63,6 +63,7 @@ TMP				:=	.tmp.txt
 CXX				:=	@c++-12
 CXXFLAGS		:=	-g -Wall -Wextra -Werror -std=c++98 -pedantic -I $(INCS_DIR)
 DEBUG			:=	-g3 -fsanitize=undefined
+LOG_LEVEL		:= -D LOG_LEVEL=1
 RM				:=	@rm -f
 LEAKS			:=	@leaks -atExit --
 
@@ -116,12 +117,24 @@ re:				fclean all
 leaks:			$(NAME)
 				$(LEAKS) ./$(NAME) 6667 IRC4life
 
-debug:			CFLAGS += $(DEBUG)
+log:			CXXFLAGS += $(LOG_LEVEL)
+log:			$(OBJS)
+				$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+				@echo $(BOLD_BLUE)[BUILD][$(NAME)]$(BOLD_YELLOW)[LOG]$(BOLD_GREEN)" : DONE"$(RESET_COLOR)
+
+debug:			CXXFLAGS += $(DEBUG)
 debug:			$(OBJS)
 				$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 				@echo $(BOLD_BLUE)[BUILD][$(NAME)]$(BOLD_YELLOW)[DEBUG]$(BOLD_GREEN)" : DONE"$(RESET_COLOR)
 
+fdebug:			CXXFLAGS += $(LOG_LEVEL)
+fdebug:			CXXFLAGS += $(DEBUG)
+fdebug:			$(OBJS)
+				$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+				@echo $(BOLD_BLUE)[BUILD][$(NAME)]$(BOLD_YELLOW)[FULL_DEBUG]$(BOLD_GREEN)" : DONE"$(RESET_COLOR)
+				./$(NAME) 6667 IRC4life
+
 run:			$(NAME)
 				./$(NAME) 6667 IRC4life
 
-.PHONY:			all sclean clean fclean re run leaks debug
+.PHONY:			all sclean clean fclean re run leaks debug log fdebug

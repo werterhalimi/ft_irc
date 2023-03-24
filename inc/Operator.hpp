@@ -13,7 +13,7 @@
 #ifndef OPERATOR_HPP
 # define OPERATOR_HPP
 
-# include <iostream>
+# include "ft_irc.hpp"
 
 class Operator
 {

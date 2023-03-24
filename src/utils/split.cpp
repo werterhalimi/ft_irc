@@ -12,56 +12,19 @@
 
 #include "ft_irc.hpp"
 
-static int	count_sep(std::string &str, std::string &sep)
+std::vector<std::string> split(std::string const & str, std::string const & sep)
 {
-	size_t	i = 0;
-	int	n = 0;
-	while (1)
-	{
-		i = str.find(sep, i);
-		n++;
-		if (i == std::string::npos)
-			break ;
-		i += sep.size();
-	}
-	return (n);
-}
-
-int	get_split_size(std::string * split)
-{
-	int ret = 0;
-	if (!split) return (0);
-	while (!(*(split++)).empty()) ret++;
-	return (ret);
-}
-
-std::string	*	split(std::string str, std::string sep)
-{
-	int	n = count_sep(str, sep);
-	std::string *ret = new std::string[n + 1];
-	int	i = 0;
+	std::vector<std::string> ret;
+	std::string tmp;
 	size_t	start = 0;
-	size_t	index;
-	while (i < n)
+	size_t	index = str.find(sep, start);
+
+	do
 	{
-		index = str.find(sep, start);
-		ret[i] = str.substr((start > str.size()) ? str.size() : start, index - start);
+		tmp = str.substr((start > str.size()) ? str.size() : start, index - start);
 		start = index + sep.size();
-		i++;
-	}
-	ret[i] = std::string();
-	return ret;
-}
-
-
-std::string	*	split(char * s, std::string sep)
-{
-	std::string	str(s);
-	return split(str, sep);
-}
-
-std::string	*	split(char const * s, std::string sep)
-{
-	std::string	str(s);
-	return split(str, sep);
+		ret.push_back(tmp);
+		index = str.find(sep, start);
+	} while (index != std::string::npos);
+	return (ret);
 }

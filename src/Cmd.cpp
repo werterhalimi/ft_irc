@@ -19,31 +19,53 @@ Cmd::Cmd(std::string const &msg, Server * server) :_params(*(new std::vector<std
 }
 */
 
-Cmd::Cmd(std::string const &msg) :_params(*(new std::vector<std::string>()))
+Cmd::Cmd(std::string const &msg) :
+	_params(*(new std::vector<std::string>()))
 {
+	#if LOG_LEVEL
+		std::cout << "Cmd message constructor @ " << this << std::endl;
+	#endif
 	this->parse(msg);
 }
 
-Cmd::Cmd(User const &user) : _prefix(user.prefix()), _params(*(new std::vector<std::string>()))
+Cmd::Cmd(User const &user) :
+	_prefix(user.prefix()),
+	_params(*(new std::vector<std::string>()))
 {
-
+	#if LOG_LEVEL
+		std::cout << "Cmd user constructor @ " << this << std::endl;
+	#endif
 }
 
-Cmd::Cmd(Server const &server) : _prefix(server.prefix()), _params(*(new std::vector<std::string>()))
+Cmd::Cmd(Server const &server) :
+	_prefix(server.prefix()),
+	_params(*(new std::vector<std::string>()))
 {
-
+	#if LOG_LEVEL
+		std::cout << "Cmd server constructor @ " << this << std::endl;
+	#endif
 }
 
 Cmd::~Cmd()
 {
+	#if LOG_LEVEL
+		std::cout << "Cmd default destructor @ " << this << std::endl;
+	#endif
 	delete &(this->_params);
 }
 
 Cmd::Cmd()  :  _params(*(new std::vector<std::string>()))
-{}
+{
+	#if LOG_LEVEL
+		std::cout << "Cmd default constructor @ " << this << std::endl;
+	#endif
+}
 
 Cmd::Cmd(Cmd const &cmd) : _params(*(new std::vector<std::string>()))
 {
+	#if LOG_LEVEL
+		std::cout << "Cmd copy constructor @ " << this << std::endl;
+	#endif
 	*this = cmd;
 }
 
@@ -164,6 +186,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 			return;
 		}
 	}
+	std::cout << YELLOW << "UK" << RESET_COLOR << std::endl;
 	currentUser.sendReply(err_unknowncommand(server, currentUser, *this));
 	//throw std::exception();
 }

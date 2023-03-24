@@ -14,44 +14,43 @@
 #include "Channel.h"
 
 Channel::Channel() :
-		_users(new std::vector<User *>()),
-		_bannedUsers(new std::vector<User *>())
+	_users(new std::vector<User *>()),
+	_bannedUsers(new std::vector<User *>())
 {
-	#if LOG_LEVEL == 10
-	std::cout << "Channel default constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "Channel default constructor @ " << this << std::endl;
 	#endif
 }
 
 Channel::Channel(std::string const & name, int slots) :
-		_name(name),
-		_users(new std::vector<User *>()),
-		_bannedUsers(new std::vector<User *>()),
-		_slots(slots)
+	_name(name),
+	_users(new std::vector<User *>()),
+	_bannedUsers(new std::vector<User *>()),
+	_slots(slots)
 {
-	this->_topic = "Default _topic";
-	#if LOG_LEVEL == 10
-	std::cout << "Channel name  constructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "Channel name  constructor @ " << this << std::endl;
 	#endif
+	this->_topic = "Default _topic";
 }
 
 Channel::Channel(Channel const & src) :
-		_name(src.getName()),
-		_users(new std::vector<User *>(src.getUsers().begin(), src.getUsers().end())),
-		_bannedUsers(new std::vector<User *>(src.getBannedUsers().begin(), src.getBannedUsers().end())),
-		_slots(src.getSlots())
+	_name(src.getName()),
+	_users(new std::vector<User *>(src.getUsers().begin(), src.getUsers().end())),
+	_bannedUsers(new std::vector<User *>(src.getBannedUsers().begin(), src.getBannedUsers().end())),
+	_slots(src.getSlots())
 {
-	#if LOG_LEVEL == 10
-	std::cout << "Channel copy constructor" << std::endl;
+	#if LOG_LEVEL
+	std::cout << "Channel copy constructor @ " << this << std::endl;
 	#endif
 }
 
 Channel::~Channel()
 {
-	delete this->_users;
-	#if LOG_LEVEL == 10
-	std::cout << "Channel default deconstructor" << std::endl;
+	#if LOG_LEVEL
+		std::cout << "Channel default destructor @ " << this << std::endl;
 	#endif
-
+	delete this->_users;
 }
 
 std::string const &	Channel::getTopic() const
@@ -76,7 +75,7 @@ void	Channel::removeUser(Server const & server, User & user, std::string * reaso
 	user.removeChannel(this);
 	std::string reply = rpl_part(*this, user, reason);
 	user.sendReply(reply);
-	for(std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
+	for (std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
 		(*i)->sendReply(reply);
 
 }
@@ -89,7 +88,7 @@ void	Channel::removeUserQuit(Server const & server, User & user, std::vector<std
 	std::string reply = rpl_quit(user, reason);
 	user.sendReply(reply);
 	std::cout << reply << std::endl;
-	for(std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
+	for (std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
 		(*i)->sendReply(reply);
 
 }

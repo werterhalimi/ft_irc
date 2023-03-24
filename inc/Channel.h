@@ -15,7 +15,6 @@
 # define CHANNEL_H
 # include "Cmd.hpp"
 # include "ft_irc.hpp"
-# include <vector>
 # include "User.h"
 
 # define INVITE_ONLY_FLAG			0x00000001

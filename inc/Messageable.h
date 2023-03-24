@@ -12,6 +12,7 @@
 
 #ifndef MESSAGEABLE_H
 # define MESSAGEABLE_H
+
 # include "ft_irc.hpp"
 # include "User.h"
 
