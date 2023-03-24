@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rpl_mode.cpp                                       :+:      :+:    :+:   */
+/*   rpl_usermode.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,6 +12,7 @@
 
 # include "reply.h"
 # include "Cmd.hpp"
+# include "Channel.h"
 
 static std::string	updateUserMode(int flags, User & usr, bool value)
 {
@@ -54,16 +55,46 @@ static std::string	updateUserMode(int flags, User & usr, bool value)
 	return (stream.str());
 }
 
-std::string	rpl_mode(User & user, int modeToAdd, int modeToRemove)
+static std::string	updateChannelMode(int flags, Channel & channel, bool value)
+{
+	std::ostringstream stream;
+
+	if (flags && value)
+		stream << "+";
+	else if (flags)
+		stream << "-";
+	if (flags & INVITE_ONLY_FLAG)
+	{
+		channel.setInviteOnly(value);
+		stream << "i";
+	}
+	return (stream.str());
+}
+
+std::string	rpl_usermode(User & user, int modeToAdd, int modeToRemove)
 {
 	Cmd reply(user);
 
 	reply.setCmd("MODE");
 	reply.addParam(user.getNickname());
 	std::ostringstream stream;
-	stream << ":";
+	stream << ":"; // TODO needed ?
 	stream << updateUserMode(modeToAdd, user, true);
 	stream << updateUserMode(modeToRemove, user, false);
+	reply.addParam(stream.str());
+	return (reply.toString());
+}
+
+std::string	rpl_channelmode(Server const & server, Channel & channel, int modeToAdd, int modeToRemove)
+{
+	Cmd reply(server);
+
+	reply.setCmd("MODE");
+	reply.addParam(channel.getName());
+	std::ostringstream stream;
+	stream << ":"; // TODO needed ?
+	stream << updateChannelMode(modeToAdd, channel, true);
+	stream << updateChannelMode(modeToRemove, channel, false);
 	reply.addParam(stream.str());
 	return (reply.toString());
 }

@@ -18,6 +18,10 @@
 # include <vector>
 # include "User.h"
 
+# define INVITE_ONLY_FLAG			0x00000001
+
+# define CHANNEL_MODE_FLAG_LETTERS	"i" // TODO
+
 class Cmd;
 class Server;
 
@@ -36,6 +40,7 @@ class Channel
 		bool					hasUser(User & user) const;
 		bool					isFull() const;
 		bool					isInviteOnly() const;
+		void					setInviteOnly(bool flag);
 		Channel &				operator=(Channel const & src);
 		std::string	const &		getName() const;
 		size_t					getSlots() const;
@@ -43,12 +48,14 @@ class Channel
 		std::string const &		getTopic() const;
 		std::vector<User *> &	getUsers() const;
 		std::vector<User *> &	getBannedUsers() const;
+
 	private:
-		std::string					_name;
-		std::string 				_key;
-		std::vector<User *> *		_users;
-		std::vector<User *> *		_bannedUsers;
-		size_t						_slots;
-		std::string 				_topic;
+		unsigned int 			_boolFlags;
+		std::string				_name;
+		std::string 			_key;
+		std::vector<User *> *	_users;
+		std::vector<User *> *	_bannedUsers;
+		size_t					_slots;
+		std::string 			_topic;
 };
 #endif

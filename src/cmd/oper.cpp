@@ -31,7 +31,7 @@ std::string	oper(Cmd * cmd, Server & server, User & usr)
 			if (!usr.loginOperator(*it, params[1]))
 				return (err_passwdmismatch(server, usr));
 			usr.sendReply(rpl_youreoper(usr));
-			return (rpl_mode(usr, LOCAL_OPERATOR_FLAG, 0));
+			return (rpl_usermode(usr, LOCAL_OPERATOR_FLAG, 0));
 		}
 	}
 	return (err_nooperhost(usr));

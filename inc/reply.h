@@ -54,7 +54,7 @@ std::string	rpl_youreoper(User const & user);
 
 std::string	err_nooperhost(User const & user);
 
-std::string	rpl_mode(User & user, int modeToAdd, int modeToRemove);
+std::string	rpl_usermode(User & user, int modeToAdd, int modeToRemove);
 
 std::string	err_alreadyregistred(User const & user);
 
@@ -93,5 +93,9 @@ std::string	rpl_namreply(Server const & server, Channel const & channel, User co
 std::string	rpl_channelmodeis(Channel const & channel, User const & user);
 
 std::string	err_chanoprivsneeded(Channel const & channel, User const & user);
+
+std::string	err_unknownmode(User const & user, std::string const & mode);
+
+std::string	rpl_channelmode(Server const & server, Channel & channel, int modeToAdd, int modeToRemove);
 
 #endif

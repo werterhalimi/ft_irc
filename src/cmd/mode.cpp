@@ -48,6 +48,19 @@ static void	updateUserFlag(int *flagToAdd, int *flagToRemove, char c, User & usr
 	}
 }
 
+static void	updateChannelFlag(int *flagToAdd, int *flagToRemove, char c, Channel & channel, bool removeMode)
+{
+	switch (c)
+	{
+		case 'i':
+			*flagToAdd |= INVITE_ONLY_FLAG;
+			*flagToRemove &= ~INVITE_ONLY_FLAG;
+			break;
+		default:
+			break;
+	}
+}
+
 std::string	mode(Cmd * cmd, Server & server, User & usr)
 {
 	bool	plusSign = true;
@@ -67,7 +80,30 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 			return (rpl_channelmodeis(channel, usr));
 		if (!usr.isGlobalOperator()) // TODO which one ?
 			return (err_chanoprivsneeded(channel, usr));
-		// TODO
+		std::string validFlags = std::string(CHANNEL_MODE_FLAG_LETTERS);
+		std::vector<std::string>::const_iterator ite = params.end();
+		for (std::vector<std::string>::const_iterator it = params.begin() + 1; it < ite; ++it)
+		{
+			for (size_t i = 0; i < (*it).size(); ++i)
+			{
+				if ((*it)[i] == '+')
+					plusSign = true;
+				else if ((*it)[i] == '-')
+					plusSign = false;
+				else if (validFlags.find((*it)[i]) == std::string::npos)
+					usr.sendReply(err_unknownmode(usr, std::string(1, (*it)[i])));
+				else if (plusSign)
+					updateChannelFlag(&modeToAdd, &modeToRemove, (*it)[i], channel, false);
+				else
+					updateChannelFlag(&modeToRemove, &modeToAdd, (*it)[i], channel, true);
+			}
+		}
+		if (!modeToAdd && !modeToRemove)
+			return ("");
+		std::string reply = rpl_channelmode(server, channel, modeToAdd, modeToRemove);
+		std::vector<User *>::const_iterator iteu = channel.getUsers().end();
+		for (std::vector<User *>::const_iterator it = channel.getUsers().begin() + 1; it < iteu; ++it)
+			(*it)->sendReply(reply);
 		return ("");
 	}
 	else
@@ -80,11 +116,6 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		else if (params.size() == 1)
 			return (rpl_umodeis(usr));
 		std::string errorReply = err_umodeunknownflag(usr);
-//		Cmd errorReply(usr);
-//		errorReply.setCmd(ERR_UMODEUNKNOWNFLAG);
-
-//		errorReply.addParam(usr.getNickname());
-//		errorReply.addParam(":Unknown MODE flag");
 		std::string validFlags = std::string(USER_MODE_FLAG_LETTERS);
 		std::vector<std::string>::const_iterator ite = params.end();
 		for (std::vector<std::string>::const_iterator it = params.begin() + 1; it < ite; ++it)
@@ -105,6 +136,6 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		}
 		if (!modeToAdd && !modeToRemove)
 			return ("");
-		return (rpl_mode(usr, modeToAdd, modeToRemove));
+		return (rpl_usermode(usr, modeToAdd, modeToRemove));
 	}
 }

@@ -40,7 +40,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					rpl/rpl_quit.cpp				rpl/rpl_join.cpp \
 					rpl/rpl_topic.cpp				rpl/rpl_endofnames.cpp \
 					rpl/rpl_namreply.cpp			/rpl/rpl_channelmodeis.cpp \
-					rpl/err_chanoprivsneeded.cpp \
+					rpl/err_chanoprivsneeded.cpp	rpl/err_unknownmode.cpp \
                     utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			Operator.cpp

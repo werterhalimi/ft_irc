@@ -59,10 +59,9 @@ std::string const &	Channel::getTopic() const
 	return this->_topic;
 }
 
-//TODO
 bool	Channel::isInviteOnly() const
 {
-	return false;
+	return (this->_boolFlags & INVITE_ONLY_FLAG);
 }
 
 bool	Channel::isFull() const
@@ -155,4 +154,12 @@ size_t	Channel::getSlots() const
 std::string const &	Channel::getKey() const
 {
 	return this->_key;
+}
+
+void	Channel::setInviteOnly(bool flag)
+{
+	if (flag)
+		this->_boolFlags |= INVITE_ONLY_FLAG;
+	else
+		this->_boolFlags &= ~INVITE_ONLY_FLAG;
 }
