@@ -13,6 +13,17 @@
 # include "reply.h"
 # include "Cmd.hpp"
 
+std::string	err_needmoreparams(Server const & server, User const & user, Cmd const & cmd)
+{
+	Cmd reply(server);
+
+	reply.setCmd(ERR_NEEDMOREPARAMS);
+	reply.addParam(user.getNickname());
+	reply.addParam(cmd.getCmd());
+	reply.addParam(":Not enough parameters");
+	return (reply.toString());
+}
+
 std::string	err_needmoreparams(User const & user, Cmd const & cmd)
 {
 	Cmd reply(user);

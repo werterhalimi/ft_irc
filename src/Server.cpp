@@ -45,8 +45,8 @@ Server::Server(int port, std::string const & pass) :
 	#if LOG_LEVEL
 		std::cout << "Server port&path constructor @ " << this << std::endl;
 	#endif
-	Channel * channel = new Channel("#Default", 20);
-	this->_channels->push_back(channel);
+//	Channel * channel = new Channel("#Default", 20);
+//	this->_channels->push_back(channel);
 	time_t	time_now = time(NULL);
 	this->_time = gmtime(&time_now);
 }
@@ -128,14 +128,17 @@ void	Server::launch()
 		std::cout << "Length : " << (int)address.sin_len << std::endl;
 		std::cout << "Zeros : " << address.sin_zero << std::endl;
 		std::cout << "Sizeof Addr : " << sizeofAddress << std::endl;
+		std::cout << "Channels : " << std::endl;
+		std::vector<Channel *>::const_iterator ite = this->_channels->end();
+		for (std::vector<Channel *>::const_iterator it = this->_channels->begin(); it < ite; ++it)
+		{
+			std::cout << "\t\"" << (*it)->getName() << "\"" << std::endl;
+		}
 		std::cout << RESET_COLOR << std::endl;
 	#endif
 
 	if (bind(server_fd, (struct sockaddr *)(&address), sizeofAddress) < 0)
 		throw std::exception();
-
-	Operator *	admin = new Operator("ncotte", "127.0.0.1", "Born2beroot");
-	this->_operators->push_back(admin);
 
 	this->_kq_fd = kqueue();
 	// 1024 is out buffersize
@@ -164,7 +167,7 @@ void	Server::launch()
 			else if (event[i].filter == EVFILT_READ)
 			{
 				if ((user->getFd()) == -2)
-				{ 
+				{
 					char	buff[513];
 					buff_len = read((user->getFd()), buff, 513); // TODO size_t < 0 ?
 					buff[buff_len] = 0;
@@ -176,23 +179,21 @@ void	Server::launch()
 				}
 				else
 				{
-					char buff[513];
-					buff_len = read((user->getFd()), buff, 513); // TODO size_t < 0 ?
-					buff[buff_len] = 0;
-					std::cout << buff << std::endl;
-//					std::string		*sp = split(buff, "\r\n");
-					std::vector<std::string> sp = split(buff, "\r\n");
-//					int	iter = 0;
-//					while (!sp[iter].empty())
-					std::cout << CYAN << "Size : " << sp.size() << RESET_COLOR << std::endl;
-					std::vector<std::string>::const_iterator ite = sp.end();
-					for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
+					try
 					{
-//						Cmd cmd(sp[iter++], this);
-//						Cmd cmd(sp[iter++]);
-						std::cout << CYAN << "Exec : \"" << *it << "\"" << RESET_COLOR << std::endl;
-						Cmd cmd(*it);
-						cmd.execute(*this, *user);
+						std::vector<std::string> sp = readFd((user->getFd()));
+						std::cout << CYAN << "Size : " << sp.size() << RESET_COLOR << std::endl;
+						std::vector<std::string>::const_iterator ite = sp.end();
+						for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
+						{
+							std::cout << CYAN << "Exec : \"" << *it << "\"" << RESET_COLOR << std::endl;
+							Cmd cmd(*it);
+							cmd.execute(*this, *user);
+						}
+					}
+					catch (std::exception &e)
+					{
+						throw std::exception();
 					}
 					//delete sp;
 				}
@@ -345,11 +346,30 @@ void	Server::serverConfig(const char * path)
 	{
 		index = it->find("#", 0);
 		if (index != std::string::npos)
-			item = it->substr(0, it->find("#", 0));
+			item = it->substr(0, index);
 		else
 			item = *it;
-
-//		std::cout << "\"" << *it << "\"" << std::endl;
+		if (it->find("Channel:", 0) == 0)
+		{
+			try
+			{
+				this->_channels->push_back(new Channel(item));
+			}
+			catch (std::exception &e)
+			{
+				throw std::exception();
+			}
+		}
+		if (it->find("Operator:", 0) == 0)
+		{
+			try
+			{
+				this->_operators->push_back(new Operator(item));
+			}
+			catch (std::exception &e)
+			{
+				throw std::exception();
+			}
+		}
 	}
-	throw std::exception();
 }

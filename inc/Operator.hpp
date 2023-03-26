@@ -24,6 +24,7 @@ class Operator
 
 	public:
 		Operator(std::string const & name, std::string const & host, std::string const & password);
+		explicit Operator(std::string const & config);
 		~Operator();
 
 		bool	isValidHost(std::string const & host) const;

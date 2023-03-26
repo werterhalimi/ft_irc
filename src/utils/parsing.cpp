@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ping.cpp                                           :+:      :+:    :+:   */
+/*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:24 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 17:17:03 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/26 17:10:47 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/26 17:10:49 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
+# include "ft_irc.hpp"
 
-std::string	ping(Cmd * cmd, Server & server, User & usr)
+std::string	parsing(std::string const & src, std::string const & item)
 {
-	Cmd reply(server);
-
-	std::vector<std::string> params = cmd->getParams();
-	if (params.empty() || params[0].empty())
-		return (err_noorigin(server, usr));
-	reply.setCmd("PONG");
-	reply.addParam(params[0]);
-	return (reply.toString());
+	size_t	start = src.find(item + "=");
+	if (start == std::string::npos)
+		throw std::exception();
+	size_t	length = item.size() + 1;
+	size_t	end = src.find(',', start);
+	if (end == std::string::npos)
+		end = src.find('\n', start);
+	start += length;
+	end -= start;
+	return (src.substr(start, end));
 }

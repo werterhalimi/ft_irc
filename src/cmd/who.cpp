@@ -38,7 +38,7 @@ static bool user_match_mask(User & user, std::string const & mask)
 std::string	who(Cmd * cmd, Server & server, User & usr)
 {
 	std::vector<std::string>			params = cmd->getParams();
-	std::string							query = params.at(0);
+	std::string							query = params.at(0); // TODO !!! WARNING if no params given !!!
 	bool								end = false;
 	std::vector<User *>::const_iterator	it;
 	it = server.getUsers().begin();

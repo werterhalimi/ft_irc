@@ -13,6 +13,18 @@
 # include "reply.h"
 # include "Cmd.hpp"
 
+std::string	err_erroneusnickname(Server const & server, User const & user, std::string const & name)
+{
+	Cmd reply(server);
+
+	reply.setCmd(ERR_ERRONEUSNICKNAME);
+	reply.addParam(user.getNickname()); // TODO ?
+	reply.addParam(name);
+	reply.addParam(":Erroneous nickname");
+	return (reply.toString());
+}
+
+
 std::string	err_erroneusnickname(User const & user, std::string const & name)
 {
 	Cmd reply(user);

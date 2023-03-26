@@ -23,8 +23,9 @@ int main(int argc, char *argv[])
 	}
 	std::cout << GREEN << "Starting IRC server on port ";
 	std::cout << argv[1] << RESET_COLOR << std::endl;
-	char * pEnd;
-	Server server((int)std::strtol(argv[1], &pEnd, 10), std::string(argv[2]));
+	int port;
+	std::istringstream(argv[1]) >> port;
+	Server server(port, std::string(argv[2]));
 	try
 	{
 		server.launch();

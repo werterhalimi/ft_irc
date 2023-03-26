@@ -56,7 +56,7 @@ class Server
 		int							_port;
 		std::string					_pass;
 		std::string					_servername;
-		std::string					_hostname;
+		std::string					_hostname; // TODO use ?
 		std::vector<User *> *		_users;
 		std::vector<Operator *> *	_operators;
 		std::vector<Channel *> *	_channels;

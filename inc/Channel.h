@@ -29,6 +29,7 @@ class Channel
 	public:
 		Channel();
 		Channel(std::string const & name, int slot);
+		explicit Channel(std::string const & config);
 		Channel(Channel const & src);
 		~Channel();
 

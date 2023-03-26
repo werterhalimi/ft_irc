@@ -29,9 +29,28 @@ Channel::Channel(std::string const & name, int slots) :
 	_slots(slots)
 {
 	#if LOG_LEVEL
-		std::cout << "Channel name  constructor @ " << this << std::endl;
+		std::cout << "Channel name constructor @ " << this << std::endl;
 	#endif
-	this->_topic = "Default _topic";
+	this->_topic = "Default topic";
+}
+
+Channel::Channel(std::string const & config) :
+	_users(new std::vector<User *>()),
+	_bannedUsers(new std::vector<User *>())
+{
+	#if LOG_LEVEL
+		std::cout << "Channel config constructor @ " << this << std::endl;
+	#endif
+	try
+	{
+		this->_name = "#" + parsing(config, "name");
+		std::istringstream(parsing(config, "slots")) >> this->_slots;
+	}
+	catch (std::exception &e)
+	{
+		throw std::exception();
+	}
+	this->_topic = "Default topic";
 }
 
 Channel::Channel(Channel const & src) :

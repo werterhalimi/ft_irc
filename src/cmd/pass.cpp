@@ -16,9 +16,9 @@
 std::string	pass(Cmd * cmd, Server & server, User & usr)
 {
 	if (cmd->getParams().empty())
-		return (err_needmoreparams(usr, *cmd));
+		return (err_needmoreparams(server, usr, *cmd));
 	else if (usr.hasPass())
-		return (err_alreadyregistred(usr));
+		return (err_alreadyregistred(server, usr));
 	else if (cmd->getParams().back() != server.getPass())
 		return (err_passwdmismatch(server, usr));
 	usr.auth();

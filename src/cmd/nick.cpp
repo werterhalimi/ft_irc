@@ -31,16 +31,16 @@ static bool	validNickName(std::string nick)
 std::string	nick(Cmd * cmd, Server & server, User & usr)
 {
 	std::vector<std::string>	params = cmd->getParams();
-	std::string					nick = params.at(0);
 
 	if (!usr.hasPass())
 		return (err_passwdmismatch(server, usr));
-	else if (params.empty())
+	if (params.empty())
 		return (err_nonicknamegiven(server, usr));
-	else if (server.hasNick(nick))
-		return (err_nicknameinuse(usr, nick));
-	else if (!validNickName(nick))
-		return (err_erroneusnickname(usr, nick));
+	std::string	nick = params.at(0);
+	if (server.hasNick(nick))
+		return (err_nicknameinuse(server, usr, nick));
+	if (!validNickName(nick))
+		return (err_erroneusnickname(server, usr, nick));
 	usr.setNickname(nick);
 	if (usr.isLog())
 		usr.welcome(server);

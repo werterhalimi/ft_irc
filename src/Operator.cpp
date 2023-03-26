@@ -22,6 +22,23 @@ Operator::Operator(std::string const & name, std::string const & host, std::stri
 	#endif
 }
 
+Operator::Operator(std::string const & config)
+{
+	#if LOG_LEVEL
+		std::cout << "Operator config constructor @ " << this << std::endl;
+	#endif
+	try
+	{
+		this->_name = parsing(config, "name");
+		this->_host = parsing(config, "host");
+		this->_password = parsing(config, "password");
+	}
+	catch (std::exception &e)
+	{
+		throw std::exception();
+	}
+}
+
 Operator::~Operator()
 {
 	#if LOG_LEVEL

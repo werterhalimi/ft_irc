@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ping.cpp                                           :+:      :+:    :+:   */
+/*   readFd.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:24 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 17:17:03 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/26 19:24:38 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/26 19:24:41 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
+#include "ft_irc.hpp"
 
-std::string	ping(Cmd * cmd, Server & server, User & usr)
+std::vector<std::string>	readFd(int fd)
 {
-	Cmd reply(server);
+	char buff[513];
+	ssize_t read_return;
+	size_t buff_len = 0;
 
-	std::vector<std::string> params = cmd->getParams();
-	if (params.empty() || params[0].empty())
-		return (err_noorigin(server, usr));
-	reply.setCmd("PONG");
-	reply.addParam(params[0]);
-	return (reply.toString());
+	do
+	{
+		read_return = read(fd, buff + buff_len, 513);
+		if (read_return < 0)
+			throw std::exception();
+		buff_len += read_return;
+		buff[buff_len] = 0;
+	}
+	while (buff[buff_len - 1] != '\n' || buff[buff_len - 2] != '\r');
+	return (split(buff, "\r\n"));
 }
