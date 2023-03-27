@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:22:35 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 15:00:43 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 18:01:03 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 std::string	rpl_whoreply(Server const & server, User const & user, User const * target)
 {
 	Cmd	reply(server);
+	std::string	flags = "H";
 	reply.setCmd(RPL_WHOREPLY);
 	reply.addParam(user.getUsername());
 	if (target->getChannels()->empty())
@@ -27,7 +28,10 @@ std::string	rpl_whoreply(Server const & server, User const & user, User const * 
 	reply.addParam(target->getHostname());
 	reply.addParam(server.getName());
 	reply.addParam(target->getNickname());
-	reply.addParam("H");
+	if (target->isOperator())
+		flags.append("*");
+	reply.addParam(flags);
+
 	reply.addParam(":0");
 	reply.addParam(target->getRealname());
 	return (reply.toString());

@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 11:33:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/23 11:33:31 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/03/27 18:19:21 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,16 @@ std::string	rpl_namreply(Server const & server, Channel const & channel, User co
 	std::vector<User *> users = channel.getUsers();
 	if(!users.empty())
 	{
-		reply.addParam(":" + users.at(0)->getNickname());
+		reply.addParam(":");
 		std::vector<User *>::iterator ite = users.end();
-		for(std::vector<User *>::iterator it = users.begin() + 1; it != ite; it++)
-			reply.addParam((*it)->getNickname());
+		for(std::vector<User *>::iterator it = users.begin(); it != ite; it++)
+		{
+			std::cout << (*it)->getNickname() << " " <<(*it)->isOperator() << std::endl;
+			if ((*it)->isOperator())
+				reply.addParam("@" + (*it)->getNickname());
+			else
+				reply.addParam((*it)->getNickname());
+		}
 	}
 	// TODO break into multiples rpl
 //	reply.addParam(":End of Names list");
