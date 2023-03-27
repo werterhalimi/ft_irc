@@ -43,7 +43,6 @@
 
 std::vector<std::string>	split(std::string const & str, std::string const & sep);
 std::string					parsing(std::string const & src, std::string const & item);
-std::vector<std::string>	readFd(int fd);
 bool						isLetter(char const & c);
 bool						isDigit(char const & c);
 bool						isSpecial(char const & c);

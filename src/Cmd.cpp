@@ -132,7 +132,7 @@ void	Cmd::parse(std::string const &msg)
 	}
 	if (msg[index] == '\0')
 		return;
-	this->_params.push_back( msg.substr(index, end - index));
+	this->_params.push_back(msg.substr(index + 1, end - index - 1));
 }
 /*
 std::string	reply(User &user, std::string const & cmd, std::string const & msg)
@@ -157,7 +157,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
 		&pass,		&nick,		&user,		&privmsg,
 		&ping,		&pong, 	&mode,		&join,
-		&part,		&oper,		&quit
+		&part,		&oper,		&quit,		&kick
 	};
 	/*
 	 * ,		&oper,
@@ -196,7 +196,7 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 	static std::string	cmdNames[NB_CMD] = {
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
 		"PING", 	"PONG",	"MODE",	"JOIN",
-		"PART",	"OPER",	"QUIT"
+		"PART",	"OPER",	"QUIT",	"KICK"
 	};
 	/*
 		"SERVICE",	"SQUIT",

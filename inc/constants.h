@@ -19,6 +19,8 @@
 # define EXIT_ERROR				1
 # define EXIT_ERROR_NEG			1
 
+# define BUFFER_SIZE			513
+
 /* Colors */
 
 # define RESET_COLOR			"\033[0m"

@@ -36,7 +36,7 @@ class Server
 		void						handleLogin(User & user, struct kevent * event);
 		void						handleLogout(User & user, std::vector<std::string> reason);
 
-		Channel *					getChannelByName(std::string const & name);
+		Channel *					getChannelByName(std::string const & name) const;
 		bool						hasNick(std::string const & nick) const;
 		std::string					prefix() const;
 		int							getPort() const;

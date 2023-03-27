@@ -87,29 +87,25 @@ bool	Channel::isFull() const
 	return this->_users->size() >= this->_slots;
 }
 
-void	Channel::removeUser(Server const & server, User & user, std::string * reason)
+void	Channel::removeUser(User & user, std::string const & reply)
 {
-	(void) server;
+	std::vector<User *>::iterator ite = this->_users->end();
+	for (std::vector<User *>::const_iterator it = this->_users->begin(); it < ite; ++it)
+		(*it)->sendReply(reply);
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 	user.removeChannel(this);
-	std::string reply = rpl_part(*this, user, reason);
-	user.sendReply(reply);
-	for (std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
-		(*i)->sendReply(reply);
-
 }
 
-void	Channel::removeUserQuit(Server const & server, User & user, std::vector<std::string> & reason)
+void	Channel::removeUserQuit(User & user, std::vector<std::string> & reasons)
 {
-	(void) server;
+	std::string reply = rpl_quit(user, reasons);
+	std::vector<User *>::iterator ite = this->_users->end();
+	for (std::vector<User *>::iterator it = this->_users->begin(); it != ite; it++)
+		(*it)->sendReply(reply);
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 	user.removeChannel(this);
-	std::string reply = rpl_quit(user, reason);
-	user.sendReply(reply);
-	std::cout << reply << std::endl;
-	for (std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
-		(*i)->sendReply(reply);
-
+//	user.sendReply(reply);
+//	std::cout << reply << std::endl;
 }
 
 void	Channel::addUser(Server const & server, User & user)
@@ -162,6 +158,19 @@ std::vector<User *> &	Channel::getBannedUsers() const
 std::vector<User *> &	Channel::getUsers() const
 {
 	return *(this->_users);
+}
+
+User	* Channel::getUserByName(std::string const & name) const
+{
+	std::vector<User *>::const_iterator	it = this->_users->begin();
+	std::vector<User *>::const_iterator	ite = this->_users->end();
+	while (it != ite)
+	{
+		if ((*it)->getNickname() == name)
+			return (*it);
+		it++;
+	}
+	return (NULL);
 }
 
 size_t	Channel::getSlots() const

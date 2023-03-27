@@ -53,6 +53,8 @@ class User
 
 		void					welcome(Server const & server) const;
 
+		void					handleCmd(Server & server);
+
 		/* Setters */
 		void					addChannel(Channel * chan);
 		void					removeChannel(Channel * chan);
@@ -105,5 +107,8 @@ class User
 		std::string				_realname;
 		struct kevent *			_event;
 		std::vector<Channel *>*	_channels;
+		char					_buffer[513];
+		size_t					_bufferLength;
 };
+
 #endif

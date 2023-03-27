@@ -17,11 +17,14 @@
 User::User() :
 	_boolFlags(0),
 	_len(sizeof(struct sockaddr_in)),
-	_channels(new std::vector<Channel *>())
+	_channels(new std::vector<Channel *>()),
+	_bufferLength(0)
 {
 	#if LOG_LEVEL
 		std::cout << "User default constructor @ " << this << std::endl;
 	#endif
+	for (int i = 0; i < BUFFER_SIZE; ++i)
+		_buffer[i] = 0;
 }
 
 User::User(std::string const &username, std::string const &nickname, std::string const &hostname) :
@@ -29,11 +32,14 @@ User::User(std::string const &username, std::string const &nickname, std::string
 	_username(username),
 	_nickname(nickname),
 	_hostname(hostname),
-	_channels(new std::vector<Channel *>())
+	_channels(new std::vector<Channel *>()),
+	_bufferLength(0)
 {
 	#if LOG_LEVEL
 		std::cout << "User username, nickname & hostname constructor @ " << this << std::endl;
 	#endif
+	for (int i = 0; i < BUFFER_SIZE; ++i)
+		_buffer[i] = 0;
 }
 
 User::User(User const & src) :
@@ -81,6 +87,33 @@ void	User::sendReply(std::string const &buff) const
 		send(this->_fd, buff.c_str(), strlen(buff.c_str()), 0);
 		std::cout << RED << buff << RESET_COLOR << std::endl;
 	}
+}
+
+void	User::handleCmd(Server & server)
+{
+	ssize_t read_return;
+
+//	std::cout << CYAN << "Read" << RESET_COLOR << std::endl;
+	read_return = read(this->_fd, this->_buffer + this->_bufferLength, 513);
+	if (read_return < 0)
+		throw std::exception();
+	this->_bufferLength += read_return;
+	this->_buffer[this->_bufferLength] = 0;
+	if (this->_buffer[this->_bufferLength - 1] != '\n' || this->_buffer[this->_bufferLength - 2] != '\r')
+		return;
+//	std::cout << CYAN << "OK" << RESET_COLOR << std::endl;
+	std::vector<std::string> sp = split(this->_buffer, "\r\n");
+	std::cout << CYAN << "Size : " << sp.size() << RESET_COLOR << std::endl;
+	std::vector<std::string>::const_iterator ite = sp.end();
+	for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
+	{
+		std::cout << CYAN << "Exec : \"" << *it << "\"" << RESET_COLOR << std::endl;
+		Cmd cmd(*it);
+		cmd.execute(server, *this);
+	}
+	for (int i = 0; i < BUFFER_SIZE; ++i)
+		this->_buffer[i] = 0;
+	this->_bufferLength = 0;
 }
 
 std::string	User::prefix() const

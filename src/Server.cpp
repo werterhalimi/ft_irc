@@ -181,15 +181,7 @@ void	Server::launch()
 				{
 					try
 					{
-						std::vector<std::string> sp = readFd((user->getFd()));
-						std::cout << CYAN << "Size : " << sp.size() << RESET_COLOR << std::endl;
-						std::vector<std::string>::const_iterator ite = sp.end();
-						for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
-						{
-							std::cout << CYAN << "Exec : \"" << *it << "\"" << RESET_COLOR << std::endl;
-							Cmd cmd(*it);
-							cmd.execute(*this, *user);
-						}
+						user->handleCmd(*this);
 					}
 					catch (std::exception &e)
 					{
@@ -221,8 +213,7 @@ void	Server::handleLogout(User & user, std::vector<std::string> params)
 	std::vector<Channel *>::const_iterator it = user.getChannels()->begin();
 	std::vector<Channel *>::const_iterator ite = user.getChannels()->end();
 	while (it != ite)
-		(*(it++))->removeUserQuit(*this, user, params);
-
+		(*(it++))->removeUserQuit(user, params);
 	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
 	int	ret = kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL);
 	if (ret == -1)
@@ -243,7 +234,7 @@ bool	Server::hasNick(std::string const & nick) const
 	return (false);
 }
 
-Channel	* Server::getChannelByName(std::string const & name)
+Channel	* Server::getChannelByName(std::string const & name) const
 {
 	std::vector<Channel *>::const_iterator	it = this->_channels->begin();
 	std::vector<Channel *>::const_iterator	ite = this->_channels->end();

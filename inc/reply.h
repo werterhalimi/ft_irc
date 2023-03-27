@@ -108,4 +108,8 @@ std::string	err_unknownmode(User const & user, std::string const & mode);
 
 std::string	rpl_channelmode(Server const & server, Channel & channel, int modeToAdd, int modeToRemove);
 
+std::string	err_usernotinchannel(Channel const & channel, User const & user, std::string const & name);
+
+std::string	rpl_kick(Channel const & channel, User const & user, std::string const & name, std::string const & msg);
+
 #endif

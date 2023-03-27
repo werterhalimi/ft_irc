@@ -20,7 +20,7 @@
 # include "reply.h"
 
 # define NB_PARAMS	15
-# define NB_CMD		11
+# define NB_CMD		12
 
 class Server;
 
@@ -92,6 +92,8 @@ std::string	mode(Cmd *cmd, Server &server, User &currentUser);
 std::string	oper(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	quit(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	kick(Cmd * cmd, Server & server, User & usr);
 
 /*
 void	admin(Cmd *cmd, Server &server, User &currentUser);

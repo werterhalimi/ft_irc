@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   readFd.cpp                                         :+:      :+:    :+:   */
+/*   err_usernotinchannel.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/26 19:24:38 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/26 19:24:41 by ncotte           ###   ########.fr       */
+/*   Created: 2023/03/27 10:46:45 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/27 10:46:47 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
+# include "reply.h"
+# include "Cmd.hpp"
+# include "Channel.h"
 
-std::vector<std::string>	readFd(int fd)
+std::string	err_usernotinchannel(Channel const & channel, User const & user, std::string const & name)
 {
-	char buff[513];
-	ssize_t read_return;
-	size_t buff_len = 0;
+	Cmd reply(user);
 
-	do
-	{
-		read_return = read(fd, buff + buff_len, 513);
-		if (read_return < 0)
-			throw std::exception();
-		buff_len += read_return;
-		buff[buff_len] = 0;
-	}
-	while (buff[buff_len - 1] != '\n' || buff[buff_len - 2] != '\r');
-	return (split(buff, "\r\n"));
+	reply.setCmd(ERR_USERNOTINCHANNEL);
+	reply.addParam(user.getNickname());
+	reply.addParam(name);
+	reply.addParam(channel.getName());
+	reply.addParam(":They aren't on that channel");
+	return (reply.toString());
 }
