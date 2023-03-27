@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:59:26 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 17:06:35 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,21 @@ bool	Server::hasNick(std::string const & nick) const
 	}
 	return (false);
 }
+
+
+User	* Server::getUserByName(std::string const & name) const
+{
+	std::vector<User *>::const_iterator	it = this->_users->begin();
+	std::vector<User *>::const_iterator	ite = this->_users->end();
+	while (it != ite)
+	{
+		if ((*it)->getNickname() == name)
+			return (*it);
+		it++;
+	}
+	return (NULL);
+}
+
 
 Channel	* Server::getChannelByName(std::string const & name) const
 {

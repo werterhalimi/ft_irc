@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:05:03 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 17:03:07 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Server
 		void						handleLogout(User & user, std::vector<std::string> reason);
 
 		Channel *					getChannelByName(std::string const & name) const;
+		User *						getUserByName(std::string const & name) const;
 		bool						hasNick(std::string const & nick) const;
 		std::string					prefix() const;
 		int							getPort() const;

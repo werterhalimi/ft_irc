@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:59:16 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/23 18:05:34 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 16:59:28 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ class User;
 class Cmd;
 
 
+std::string	rpl_inviting(User const & sender, User const & target, std::string chan);
 std::string rpl_endofwho(Server const & server, std::string client, std::string mask);
 std::string	rpl_whoreply(Server const & server, User const & user, User const * target);
 std::string	err_passwdmismatch(Server const & server, User const & user);
@@ -77,6 +78,8 @@ std::string	err_badchannelkey(User const & user, std::string const & name);
 std::string	err_bannedfromchan(User const & user, std::string const & name, std::string const & mode);
 
 std::string	err_notonchannel(User const & user, std::string const & name);
+
+std::string	err_useronchannel(User const & user, std::string name);
 
 std::string	err_norecipient(User const & user, Cmd const & cmd);
 

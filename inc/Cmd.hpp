@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/27 14:54:34 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 17:11:25 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include "reply.h"
 
 # define NB_PARAMS	15
-# define NB_CMD		14
+# define NB_CMD		15
 
 class Server;
 
@@ -70,6 +70,8 @@ class Cmd
 //std::string	reply(User &user, std::string const & cmd, std::string const & msg);
 
 std::string	pass(Cmd *cmd, Server &server, User &currentUser);
+
+std::string	invite(Cmd *cmd, Server &server, User &currentUser);
 
 std::string	who(Cmd *cmd, Server &server, User &currentUser);
 

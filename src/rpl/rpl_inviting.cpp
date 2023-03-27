@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   err_nosuchnick.cpp                                 :+:      :+:    :+:   */
+/*   rpl_inviting.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
+/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/21 14:57:06 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/27 16:45:12 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/27 16:49:55 by shalimi           #+#    #+#             */
+/*   Updated: 2023/03/27 17:05:27 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "reply.h"
 # include "Cmd.hpp"
+# include "Channel.h"
 
-std::string	err_nosuchnick(User const & user, std::string const & name)
+std::string	rpl_inviting(User const & sender, User const & target, std::string chan)
 {
-	Cmd reply(user);
-
-	reply.setCmd(ERR_NOSUCHNICK);
-	reply.addParam(user.getNickname());
-	reply.addParam(name);
-	reply.addParam(":No such nick/channel");
+	Cmd reply(sender);
+	reply.setCmd(RPL_INVITING);
+	reply.addParam(target.getUsername());
+	reply.addParam(target.getNickname());
+	reply.addParam(chan);
 	return (reply.toString());
 }

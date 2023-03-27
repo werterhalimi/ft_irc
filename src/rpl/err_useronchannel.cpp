@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   err_nosuchnick.cpp                                 :+:      :+:    :+:   */
+/*   err_useronchannel.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
+/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/21 14:57:06 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/27 16:45:12 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/27 16:37:56 by shalimi           #+#    #+#             */
+/*   Updated: 2023/03/27 17:04:19 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "reply.h"
 # include "Cmd.hpp"
+# include "Channel.h"
 
-std::string	err_nosuchnick(User const & user, std::string const & name)
+std::string	err_useronchannel(User const & user, std::string channel)
 {
-	Cmd reply(user);
-
-	reply.setCmd(ERR_NOSUCHNICK);
-	reply.addParam(user.getNickname());
-	reply.addParam(name);
-	reply.addParam(":No such nick/channel");
-	return (reply.toString());
+	Cmd	cmd(user);
+	cmd.setCmd(ERR_USERONCHANNEL);
+	cmd.addParam(user.getUsername());
+	cmd.addParam(channel);
+	cmd.addParam(": is already on channel");
+	return (cmd.toString());
 }
