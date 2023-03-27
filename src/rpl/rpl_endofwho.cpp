@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:52 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/23 18:02:46 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 15:16:07 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,6 @@ std::string rpl_endofwho(Server const & server, std::string client, std::string 
 	reply.setCmd(RPL_ENDOFWHO);
 	reply.addParam(client);
 	reply.addParam(mask);
-	reply.addParam(":End of WHO list");
+	reply.addParam(":End of WHO list.");
 	return (reply.toString());
 }

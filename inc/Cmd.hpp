@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:52 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/23 19:34:04 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 14:54:34 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include "reply.h"
 
 # define NB_PARAMS	15
-# define NB_CMD		12
+# define NB_CMD		13
 
 class Server;
 

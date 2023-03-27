@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/23 18:46:29 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 15:00:58 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,7 @@ void	User::setNickname(std::string const & nickname)
 
 void	User::setRealname(std::string const & name)
 {
-	this->_realname = name.substr(2, name.size() - 1);
+	this->_realname = name.substr(1, name.size() - 1);
 }
 
 
