@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/27 17:10:41 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 17:56:02 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 		&pass,		&nick,		&user,		&privmsg,
 		&ping,		&pong, 	&mode,		&join,
 		&part,		&oper,		&quit,		&kick,
-		&topic,	&who, &invite
+		&topic,	&who, &invite, &cap
 	};
 	/*
 	 * ,		&oper,
@@ -180,6 +180,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 		{
 			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
 			{
+				if (_cmd == "CAP") return ;
 				currentUser.sendReply(err_passwdmismatch(server, currentUser));
 				continue ;
 			}
@@ -198,7 +199,7 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
 		"PING", 	"PONG",	"MODE",	"JOIN",
 		"PART",	"OPER",	"QUIT",	"KICK",
-		"TOPIC", 	"WHO", "INVITE"
+		"TOPIC", 	"WHO", "INVITE", "CAP"
 	};
 	/*
 		"SERVICE",	"SQUIT",

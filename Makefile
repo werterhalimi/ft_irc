@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/27 16:55:42 by shalimi          ###   ########.fr        #
+#    Updated: 2023/03/27 17:52:50 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					cmd/service.cpp		cmd/summon.cpp		cmd/userhost.cpp	cmd/whois.cpp \
                     cmd/error.cpp		cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
                     cmd/privmsg.cpp  	cmd/servlist.cpp	cmd/time.cpp		cmd/users.cpp \
-                    cmd/whowas.cpp \
+                    cmd/whowas.cpp		cmd/cap.cpp \
                     rpl/err_alreadyregistred.cpp	rpl/err_passwdmismatch.cpp \
                     rpl/err_erroneusnickname.cpp	rpl/err_umodeunknownflag.cpp \
                     rpl/err_needmoreparams.cpp		rpl/err_unknowncommand.cpp \
