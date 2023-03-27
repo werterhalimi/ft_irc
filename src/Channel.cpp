@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/22 18:56:05 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 15:32:21 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ void	Channel::removeUserQuit(User & user, std::vector<std::string> & reasons)
 
 void	Channel::addUser(Server const & server, User & user)
 {
+	this->_users->push_back(&user);
+	user.addChannel(this);
 	std::string reply = rpl_join(*this, user);
 
 	for(std::vector<User *>::iterator i = this->_users->begin(); i != this->_users->end(); i++)
@@ -128,8 +130,6 @@ void	Channel::addUser(Server const & server, User & user)
 	user.sendReply(rpl_namreply(server, *this, user));
 	user.sendReply(rpl_endofnames(server, *this, user));
 
-	this->_users->push_back(&user);
-	user.addChannel(this);
 }
 
 bool	Channel::hasUser(User & user) const

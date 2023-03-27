@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/23 19:33:57 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/27 14:55:01 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 		&pass,		&nick,		&user,		&privmsg,
 		&ping,		&pong, 	&mode,		&join,
 		&part,		&oper,		&quit,		&kick,
-		&topic
+		&topic,	&who
 	};
 	/*
 	 * ,		&oper,
@@ -198,7 +198,7 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
 		"PING", 	"PONG",	"MODE",	"JOIN",
 		"PART",	"OPER",	"QUIT",	"KICK",
-		"TOPIC"
+		"TOPIC", 	"WHO"
 	};
 	/*
 		"SERVICE",	"SQUIT",
