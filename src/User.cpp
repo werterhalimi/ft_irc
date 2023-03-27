@@ -99,7 +99,7 @@ void	User::handleCmd(Server & server)
 		throw std::exception();
 	this->_bufferLength += read_return;
 	this->_buffer[this->_bufferLength] = 0;
-	if (this->_buffer[this->_bufferLength - 1] != '\n' || this->_buffer[this->_bufferLength - 2] != '\r')
+	if (this->_bufferLength < 2 || this->_buffer[this->_bufferLength - 1] != '\n' || this->_buffer[this->_bufferLength - 2] != '\r')
 		return;
 //	std::cout << CYAN << "OK" << RESET_COLOR << std::endl;
 	std::vector<std::string> sp = split(this->_buffer, "\r\n");

@@ -18,6 +18,7 @@
 # include "User.h"
 
 # define INVITE_ONLY_FLAG			0x00000001
+# define PROTECTED_TOPIC_FLAG		0x00000002
 
 # define CHANNEL_MODE_FLAG_LETTERS	"i" // TODO
 
@@ -40,7 +41,9 @@ class Channel
 		bool					hasUser(User & user) const;
 		bool					isFull() const;
 		bool					isInviteOnly() const;
+		bool					isProtectedTopic() const;
 		void					setInviteOnly(bool flag);
+		void					setProtectedTopic(bool flag);
 		Channel &				operator=(Channel const & src);
 		std::string	const &		getName() const;
 		size_t					getSlots() const;
@@ -49,6 +52,7 @@ class Channel
 		std::vector<User *> &	getUsers() const;
 		User * 					getUserByName(std::string const & name) const;
 		std::vector<User *> &	getBannedUsers() const;
+		void					setTopic(std::string const & topic);
 
 	private:
 		unsigned int 			_boolFlags;

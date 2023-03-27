@@ -157,7 +157,8 @@ void	Cmd::execute(Server &server, User &currentUser)
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
 		&pass,		&nick,		&user,		&privmsg,
 		&ping,		&pong, 	&mode,		&join,
-		&part,		&oper,		&quit,		&kick
+		&part,		&oper,		&quit,		&kick,
+		&topic
 	};
 	/*
 	 * ,		&oper,
@@ -196,7 +197,8 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 	static std::string	cmdNames[NB_CMD] = {
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
 		"PING", 	"PONG",	"MODE",	"JOIN",
-		"PART",	"OPER",	"QUIT",	"KICK"
+		"PART",	"OPER",	"QUIT",	"KICK",
+		"TOPIC"
 	};
 	/*
 		"SERVICE",	"SQUIT",

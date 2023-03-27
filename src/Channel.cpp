@@ -77,9 +77,19 @@ std::string const &	Channel::getTopic() const
 	return this->_topic;
 }
 
+void	Channel::setTopic(std::string const & topic)
+{
+	this->_topic = topic;
+}
+
 bool	Channel::isInviteOnly() const
 {
 	return (this->_boolFlags & INVITE_ONLY_FLAG);
+}
+
+bool	Channel::isProtectedTopic() const
+{
+	return (this->_boolFlags & PROTECTED_TOPIC_FLAG);
 }
 
 bool	Channel::isFull() const
@@ -189,4 +199,12 @@ void	Channel::setInviteOnly(bool flag)
 		this->_boolFlags |= INVITE_ONLY_FLAG;
 	else
 		this->_boolFlags &= ~INVITE_ONLY_FLAG;
+}
+
+void	Channel::setProtectedTopic(bool flag)
+{
+	if (flag)
+		this->_boolFlags |= PROTECTED_TOPIC_FLAG;
+	else
+		this->_boolFlags &= ~PROTECTED_TOPIC_FLAG;
 }

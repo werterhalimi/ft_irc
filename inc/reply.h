@@ -96,6 +96,8 @@ std::string	rpl_join(Channel const & channel, User const & user);
 
 std::string	rpl_topic(Server const & server, Channel const & channel, User const & user);
 
+std::string	rpl_notopic(Server const & server, Channel const & channel, User const & user);
+
 std::string	rpl_endofnames(Server const & server, Channel const & channel, User const & user);
 
 std::string	rpl_namreply(Server const & server, Channel const & channel, User const & user);
