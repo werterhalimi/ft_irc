@@ -92,7 +92,7 @@ std::string	rpl_channelmode(Server const & server, Channel & channel, int modeTo
 	reply.setCmd("MODE");
 	reply.addParam(channel.getName());
 	std::ostringstream stream;
-	stream << ":"; // TODO needed ?
+//	stream << ":"; // TODO needed ?
 	stream << updateChannelMode(modeToAdd, channel, true);
 	stream << updateChannelMode(modeToRemove, channel, false);
 	reply.addParam(stream.str());

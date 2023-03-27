@@ -74,20 +74,24 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		return (err_needmoreparams(usr, *cmd));
 	if (params[0][0] == '#')
 	{
-		int id = server.getChannelID(params[0]);
-		if (id < 0)
+		Channel * channel = server.getChannelByName(params[0]);
+//		int id = server.getChannelID(params[0]);
+//		if (id < 0)
+		if (!channel)
 			return (err_nosuchchannel(usr, params[0]));
-		Channel channel = *server.getChannels()[id];
+//		Channel channel = *server.getChannels()[id];
 		if (params.size() == 1)
-			return (rpl_channelmodeis(channel, usr));
-		if (!usr.isGlobalOperator()) // TODO which one ?
-			return (err_chanoprivsneeded(channel, usr));
+			return (rpl_channelmodeis(*channel, usr));
+		if (!usr.isGlobalOperator() && !usr.isLocalOperator()) // TODO which one ?
+			return (err_chanoprivsneeded(*channel, usr));
 		std::string validFlags = std::string(CHANNEL_MODE_FLAG_LETTERS);
 		std::vector<std::string>::const_iterator ite = params.end();
 		for (std::vector<std::string>::const_iterator it = params.begin() + 1; it < ite; ++it)
 		{
+			std::cout << "MODE : " << *it << std::endl;
 			for (size_t i = 0; i < (*it).size(); ++i)
 			{
+				std::cout << "loop : " << i << std::endl;
 				if ((*it)[i] == '+')
 					plusSign = true;
 				else if ((*it)[i] == '-')
@@ -95,25 +99,29 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 				else if (validFlags.find((*it)[i]) == std::string::npos)
 					usr.sendReply(err_unknownmode(usr, std::string(1, (*it)[i])));
 				else if (plusSign)
-					updateChannelFlag(&modeToAdd, &modeToRemove, (*it)[i], channel, false);
+					updateChannelFlag(&modeToAdd, &modeToRemove, (*it)[i], *channel, false);
 				else
-					updateChannelFlag(&modeToRemove, &modeToAdd, (*it)[i], channel, true);
+					updateChannelFlag(&modeToRemove, &modeToAdd, (*it)[i], *channel, true);
 			}
 		}
+		std::cout << "END loop" << std::endl;
 		if (!modeToAdd && !modeToRemove)
 			return ("");
-		std::string reply = rpl_channelmode(server, channel, modeToAdd, modeToRemove);
-		std::vector<User *>::const_iterator iteu = channel.getUsers().end();
-		for (std::vector<User *>::const_iterator it = channel.getUsers().begin() + 1; it < iteu; ++it)
-			(*it)->sendReply(reply);
+		std::string reply = rpl_channelmode(server, *channel, modeToAdd, modeToRemove);
+		std::cout << "REPLY : " << reply << std::endl;
+		std::vector<User *>::const_iterator itue = channel->getUsers().end();
+		for (std::vector<User *>::const_iterator itu = channel->getUsers().begin(); itu < itue; ++itu)
+			(*itu)->sendReply(reply);
 		return ("");
 	}
 	else
 	{
-		int id = server.getUserID(params[0]);
-		if (id < 0)
+		User * target = server.getUserByName(params[0]);
+//		int id = server.getUserID(params[0]);
+//		if (id < 0)
+		if (!target)
 			return (err_nosuchnick(usr, params[0]));
-		else if (server.getUsers()[id]->getNickname() != usr.getNickname())
+		else if (target->getNickname() != usr.getNickname())
 			return (err_usersdontmatch(usr, params.size()));
 		else if (params.size() == 1)
 			return (rpl_umodeis(usr));
