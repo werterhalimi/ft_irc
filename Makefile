@@ -44,7 +44,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					rpl/rpl_endofwho.cpp			rpl/err_unknownmode.cpp \
 					rpl/err_usernotinchannel.cpp	rpl/rpl_kick.cpp \
 					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
-					utils/parsing.cpp	utils/readFd.cpp \
+					utils/parsing.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			Operator.cpp
 SRCS_DIR		:=	./src/
