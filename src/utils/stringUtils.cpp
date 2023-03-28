@@ -6,11 +6,21 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 18:30:50 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/15 18:38:11 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/28 23:49:53 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+
+std::string	nicknameFromPrefix(std::string const & prefix)
+{
+	std::string ret;
+	if (prefix.empty() || prefix[0] != ':') return ret;
+	size_t	index = prefix.find("!");
+	if (index == std::string::npos) return ret;
+	ret = prefix.substr(1, index - 1);
+	return ret;
+}
 
 bool	isLetter(char const & c)
 {

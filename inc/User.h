@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 17:08:50 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/28 23:00:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ class User
 		~User();
 
 
-		void				sendReply(std::string const & reply) const;
+		virtual void				sendReply(std::string const & reply) const;
 
 		User &	operator=(User const & src);
 		bool	operator==(User const & src);

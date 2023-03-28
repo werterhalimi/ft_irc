@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 17:03:07 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/28 23:15:20 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Server
 		Server &					operator=(Server const & src);
 
 		void						launch();
+		void						registerCustomUser(User & user);
 		void						handleLogin(User & user, struct kevent * event);
 		void						handleLogout(User & user, std::vector<std::string> reason);
 

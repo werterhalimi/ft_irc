@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:21 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/20 20:25:58 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/29 00:01:15 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 /* Utils */
 
 std::vector<std::string>	split(std::string const & str, std::string const & sep);
+std::vector<std::string>	split(std::string const & str, char const * sep);
 std::string					parsing(std::string const & src, std::string const & item);
 bool						isLetter(char const & c);
 bool						isDigit(char const & c);

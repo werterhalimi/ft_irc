@@ -6,12 +6,13 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:34 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/16 16:07:00 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/29 00:23:05 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
 #include "Server.h"
+#include "Bot.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +27,10 @@ int main(int argc, char *argv[])
 	int port;
 	std::istringstream(argv[1]) >> port;
 	Server server(port, std::string(argv[2]));
+
+	Bot bot("MAB", server);
+	server.registerCustomUser(bot);
+
 	try
 	{
 		server.launch();

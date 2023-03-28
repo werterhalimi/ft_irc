@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 17:06:35 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/28 23:15:00 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,11 @@ void	Server::launch()
 			}
 		}
 	}
+}
+
+void	Server::registerCustomUser(User & user)
+{
+	this->_users->push_back(&user);
 }
 
 void	Server::handleLogin(User & user, struct kevent * event)

@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/27 17:52:50 by shalimi          ###   ########.fr        #
+#    Updated: 2023/03/28 23:08:00 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					utils/parsing.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
-					User.cpp			Operator.cpp
+					User.cpp			Operator.cpp		Bot.cpp
 SRCS_DIR		:=	./src/
 SRCS			:=	$(addprefix $(SRCS_DIR),$(SRCS_FILES))
 
@@ -58,7 +58,7 @@ OBJS_SUB_DIR	:= 	$(OBJS_DIR)utils $(OBJS_DIR)cmd $(OBJS_DIR)rpl
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
 INCS_FILES		:=	constants.h	cmd.h	Cmd.hpp		ft_irc.hpp 	Server.h	Channel.h \
-					User.h		Operator.hpp	reply.h
+					User.h		Operator.hpp	reply.h	Bot.hpp
 INCS_DIR		:=	./inc/
 INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 
