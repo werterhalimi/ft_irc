@@ -15,7 +15,10 @@
 
 std::string quit(Cmd * cmd, Server & server, User & usr)
 {
-	usr.sendReply(rpl_error(usr, *cmd));
-	server.handleLogout(usr, cmd->getParams());
+	std::string reason;
+	std::vector<std::string> params = cmd->getParams();
+	if (!params.empty())
+		reason = params[0];
+	server.handleLogout(*cmd, usr, reason);
 	return (""); // TODO ?
 }

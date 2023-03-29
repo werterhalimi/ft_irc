@@ -13,13 +13,13 @@
 # include "reply.h"
 # include "Cmd.hpp"
 
-std::string	err_bannedfromchan(User const & user, std::string const & name, std::string const & mode)
+std::string	err_bannedfromchan(User const & user, std::string const & name)
 {
 	Cmd reply(user);
 
 	reply.setCmd(ERR_BANNEDFROMCHAN);
 	reply.addParam(user.getNickname());
 	reply.addParam(name);
-	reply.addParam(":Cannot join channel (+" + mode + ")");
+	reply.addParam(":Cannot join channel (+b)");
 	return (reply.toString());
 }

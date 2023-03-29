@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rpl_inviting.cpp                                   :+:      :+:    :+:   */
+/*   rpl_kill.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/27 16:49:55 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 17:05:27 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/29 18:54:22 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/29 18:54:23 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "reply.h"
 # include "Cmd.hpp"
 
-std::string	rpl_inviting(User const & sender, User const & target, std::string const & chan)
+std::string	rpl_kill(User const & userOp, User const & userKill, std::string const & reasons)
 {
-	Cmd reply(sender);
+	Cmd reply(userOp);
 
-	reply.setCmd(RPL_INVITING);
-	reply.addParam(target.getUsername());
-	reply.addParam(target.getNickname());
-	reply.addParam(chan);
+	reply.setCmd("KILL");
+	reply.addParam(userKill.getNickname());
+	reply.addParam(reasons);
 	return (reply.toString());
 }

@@ -13,12 +13,12 @@
 # include "reply.h"
 # include "Cmd.hpp"
 
-std::string	rpl_quit(User const & user, std::vector<std::string> const & reasons)
+std::string	rpl_quit(User const & user, std::string const & reasons)
 {
 	Cmd reply(user);
 
 	reply.setCmd("QUIT");
 	reply.addParam(":Quit:"); // TODO :Quit ?
-	reply.addParams(reasons);
+	reply.addParam(reasons);
 	return (reply.toString());
 }

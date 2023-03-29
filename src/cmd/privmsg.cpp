@@ -41,10 +41,10 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 					usr.sendReply(err_cannotsendtochan(usr, server.getChannels()[id]->getName()));
 				else
 				{
-					std::vector<User *>::const_iterator ite = userInChannel.end();
-					for (std::vector<User *>::const_iterator it = userInChannel.begin(); it < ite; ++it)
-						if ((*it)->getNickname() != usr.getNickname())
-							(*it)->sendReply(rpl_privmsg(usr, params));
+					std::vector<User *>::const_iterator itue = userInChannel.end();
+					for (std::vector<User *>::const_iterator itu = userInChannel.begin(); itu < itue; ++itu)
+						if (!(**itu == usr))
+							(*itu)->sendReply(rpl_privmsg(usr, params));
 				}
 			}
 		}

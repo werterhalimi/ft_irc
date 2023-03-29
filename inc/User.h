@@ -17,7 +17,6 @@
 # include "Operator.hpp"
 # include <vector>
 # include <netinet/in.h>
-//# include <stdio.h>
 # include <cstring>
 # include <iostream>
 # include <sstream>
@@ -49,11 +48,10 @@ class User
 		User(User const & src);
 		~User();
 
+		virtual void		sendReply(std::string const & reply) const;
 
-		virtual void				sendReply(std::string const & reply) const;
-
-		User &	operator=(User const & src);
-		bool	operator==(User const & src);
+		User &				operator=(User const & src);
+		bool				operator==(User const & src) const;
 
 		void				welcome(Server const & server) const;
 		void				handleCmd(Server & server);

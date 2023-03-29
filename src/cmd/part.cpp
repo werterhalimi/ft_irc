@@ -43,7 +43,7 @@ std::string part(Cmd * cmd, Server & server, User & usr)
 			std::string *	reason = NULL;
 			if (i < no_keys)
 				reason = &reasons[i];
-			channel->removeUser(usr, rpl_part(*channel, usr, reason));
+			channel->removeUser1Channel(usr, rpl_part(*channel, usr, reason));
 		}
 		i++;
 	}

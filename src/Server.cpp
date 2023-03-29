@@ -45,8 +45,6 @@ Server::Server(int port, std::string const & pass) :
 	#if LOG_LEVEL
 		std::cout << "Server port&path constructor @ " << this << std::endl;
 	#endif
-//	Channel * channel = new Channel("#Default", 20);
-//	this->_channels->push_back(channel);
 	time_t	time_now = time(NULL);
 	this->_time = gmtime(&time_now);
 }
@@ -159,6 +157,8 @@ void	Server::launch()
 			User * user = (User *)event[i].udata;
 			if(event[i].flags & EV_EOF)
 			{
+				this->_users->erase(std::find(this->_users->begin(), this->_users->end(), user));
+				std::cout << "Test" << std::endl;
 				EV_SET(&event_set, (int) event[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
                 if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
                     throw std::exception();
@@ -211,14 +211,16 @@ void	Server::handleLogin(User & user, struct kevent * event)
 	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD, 0, 0, &user);
 }
 
-void	Server::handleLogout(User & user, std::vector<std::string> params)
+void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & params)
 {
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
-
+	std::string reply = rpl_quit(user, params);
+	user.sendReply(reply);
 	std::vector<Channel *>::const_iterator it = user.getChannels()->begin();
 	std::vector<Channel *>::const_iterator ite = user.getChannels()->end();
 	while (it != ite)
-		(*(it++))->removeUserQuit(user, params);
+		(*(it++))->removeUser(user, reply);
+	user.sendReply(rpl_error(user, cmd));
 	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
 	int	ret = kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL);
 	if (ret == -1)

@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rpl_inviting.cpp                                   :+:      :+:    :+:   */
+/*   rpl_invite.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/27 16:49:55 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 17:05:27 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/29 14:04:54 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/29 14:04:55 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "reply.h"
 # include "Cmd.hpp"
 
-std::string	rpl_inviting(User const & sender, User const & target, std::string const & chan)
+std::string	rpl_invite(User const & sender, User const & target, std::string const & chan)
 {
 	Cmd reply(sender);
 
-	reply.setCmd(RPL_INVITING);
+	reply.setCmd("INVITE");
 	reply.addParam(target.getUsername());
 	reply.addParam(target.getNickname());
 	reply.addParam(chan);

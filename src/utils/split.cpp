@@ -30,7 +30,7 @@ std::vector<std::string> split(std::string const & str, std::string const & sep)
 		ret.push_back(tmp);
 		index = str.find(sep, start);
 	} while (index != std::string::npos);
-	if (start < str.size())
-		ret.push_back(str.substr(start, str.size()));
+//	if (start < str.size())
+//		ret.push_back(str.substr(start, str.size()));
 	return (ret);
 }

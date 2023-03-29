@@ -19,8 +19,10 @@
 
 # define INVITE_ONLY_FLAG			0x00000001
 # define PROTECTED_TOPIC_FLAG		0x00000002
+# define CLIENT_LIMIT_FLAG			0x00000004
+# define BAN_CHANNEL_FLAG			0x00000008
 
-# define CHANNEL_MODE_FLAG_LETTERS	"i" // TODO
+# define CHANNEL_MODE_FLAG_LETTERS	"itlb" // TODO ban
 
 class Cmd;
 class Server;
@@ -35,15 +37,21 @@ class Channel
 		~Channel();
 
 		void					addUser(Server const & server, User & user);
+		void					addInvitedUser(User * user);
 		void					removeUser(User & user, std::string const & reply);
-		void					removeUserQuit(User & user, std::vector<std::string> & reasons);
+		void					removeUser1Channel(User & user, std::string const & reply);
 		bool					isBanned(User const & user) const;
+		bool					isInvited(User const & user) const;
 		bool					hasUser(User & user) const;
 		bool					isFull() const;
 		bool					isInviteOnly() const;
 		bool					isProtectedTopic() const;
+		bool					isClientLimit() const;
+		bool					isBanChannel() const;
 		void					setInviteOnly(bool flag);
 		void					setProtectedTopic(bool flag);
+		void					setClientLimit(bool flag);
+		void					setBanChannel(bool flag);
 		Channel &				operator=(Channel const & src);
 		std::string	const &		getName() const;
 		size_t					getSlots() const;
@@ -52,6 +60,7 @@ class Channel
 		std::vector<User *> &	getUsers() const;
 		User * 					getUserByName(std::string const & name) const;
 		std::vector<User *> &	getBannedUsers() const;
+		std::vector<User *> &	getInvitedUsers() const;
 		void					setTopic(std::string const & topic);
 
 	private:
@@ -60,6 +69,7 @@ class Channel
 		std::string 			_key;
 		std::vector<User *> *	_users;
 		std::vector<User *> *	_bannedUsers;
+		std::vector<User *> *	_invitedUsers;
 		size_t					_slots;
 		std::string 			_topic;
 };

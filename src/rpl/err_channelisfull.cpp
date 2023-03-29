@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rpl_inviting.cpp                                   :+:      :+:    :+:   */
+/*   err_channelisfull.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/27 16:49:55 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 17:05:27 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/29 13:50:51 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/29 13:50:54 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "reply.h"
 # include "Cmd.hpp"
 
-std::string	rpl_inviting(User const & sender, User const & target, std::string const & chan)
+std::string	err_channelisfull(User const & user, std::string const & name)
 {
-	Cmd reply(sender);
+	Cmd reply(user);
 
-	reply.setCmd(RPL_INVITING);
-	reply.addParam(target.getUsername());
-	reply.addParam(target.getNickname());
-	reply.addParam(chan);
+	reply.setCmd(ERR_CHANNELISFULL);
+	reply.addParam(user.getNickname());
+	reply.addParam(name);
+	reply.addParam(":Cannot join channel (+l)");
 	return (reply.toString());
 }

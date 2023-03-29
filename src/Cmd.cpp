@@ -158,7 +158,8 @@ void	Cmd::execute(Server &server, User &currentUser)
 		&pass,		&nick,		&user,		&privmsg,
 		&ping,		&pong, 	&mode,		&join,
 		&part,		&oper,		&quit,		&kick,
-		&topic,	&who, &invite, &cap
+		&topic,	&who,		&invite,	&cap,
+		&kill
 	};
 	/*
 	 * ,		&oper,
@@ -199,7 +200,8 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
 		"PING", 	"PONG",	"MODE",	"JOIN",
 		"PART",	"OPER",	"QUIT",	"KICK",
-		"TOPIC", 	"WHO", "INVITE", "CAP"
+		"TOPIC", 	"WHO",		"INVITE",	"CAP",
+		"kill"
 	};
 	/*
 		"SERVICE",	"SQUIT",

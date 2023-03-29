@@ -22,8 +22,14 @@ std::string	rpl_channelmodeis(Channel const & channel, User const & user)
 	reply.addParam(channel.getName());
 	std::ostringstream stream;
 	stream << "+";
-//	if (channel.is...)
-//		stream << "a";
+	if (channel.isInviteOnly())
+		stream << "i";
+	if (channel.isProtectedTopic())
+		stream << "t";
+	if (channel.isClientLimit())
+		stream << "l";
+	if (channel.isBanChannel())
+		stream << "b";
 	reply.addParam(stream.str());
 	return (reply.toString());
 }

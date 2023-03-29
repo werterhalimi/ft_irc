@@ -35,7 +35,7 @@ class Server
 		void						launch();
 		void						registerCustomUser(User & user);
 		void						handleLogin(User & user, struct kevent * event);
-		void						handleLogout(User & user, std::vector<std::string> reason);
+		void						handleLogout(Cmd const & cmd, User & user, std::string const & reason);
 
 		Channel *					getChannelByName(std::string const & name) const;
 		User *						getUserByName(std::string const & name) const;

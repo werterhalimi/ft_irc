@@ -133,17 +133,15 @@ User &	User::operator=(User const & src)
 	return *this;
 }
 
-bool User::operator==(User const & src)
+bool User::operator==(User const & src) const
 {
-	return this->_hostname == src.getHostname();
+	return (this->_hostname == src.getHostname() && this->_username == src.getUsername());
 }
-
 
 std::string User::getRealname() const
 {
 	return this->_realname;
 }
-
 
 std::string User::getUsername() const
 {

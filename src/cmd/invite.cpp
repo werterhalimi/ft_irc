@@ -29,13 +29,10 @@ std::string	invite(Cmd * cmd, Server & server, User & usr)
 		return (err_nosuchnick(usr, params.at(0)));
 	if (channel->hasUser(*user))
 		return (err_useronchannel(*user, channel->getName()));
-	if (channel->isInviteOnly() && !usr.isOperator())
+	if (!usr.isGlobalOperator() && !usr.isLocalOperator())
 		return (err_chanoprivsneeded(*channel, usr));
+	channel->addInvitedUser(user);
 	usr.sendReply(rpl_inviting(usr, *user, channel->getName()));
-	Cmd invite(usr);
-	invite.setCmd("INVITE");
-	invite.addParam(user->getNickname());
-	invite.addParam(channel->getName());
-	user->sendReply(invite.toString());
+	user->sendReply(rpl_invite(usr, *user, channel->getName()));
 	return ("");
 }

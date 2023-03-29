@@ -29,9 +29,9 @@ Operator::Operator(std::string const & config)
 	#endif
 	try
 	{
-		this->_name = parsing(config, "name");
-		this->_host = parsing(config, "host");
-		this->_password = parsing(config, "password");
+		this->_name = parsing(config, "name", true);
+		this->_host = parsing(config, "host", true);
+		this->_password = parsing(config, "password", true);
 	}
 	catch (std::exception &e)
 	{

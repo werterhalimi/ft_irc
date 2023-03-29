@@ -41,7 +41,7 @@ std::string	kick(Cmd * cmd, Server & server, User & usr)
 		if (!userToKick)
 			usr.sendReply(err_usernotinchannel(*channel, usr, *it));
 		else
-			channel->removeUser(*userToKick, rpl_kick(*channel, usr, *it, msg));
+			channel->removeUser1Channel(*userToKick, rpl_kick(*channel, usr, *it, msg));
 	}
 	return ("");
 }

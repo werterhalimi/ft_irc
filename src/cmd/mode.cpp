@@ -58,6 +58,18 @@ static void	updateChannelFlag(int *flagToAdd, int *flagToRemove, char c, Channel
 			*flagToAdd |= INVITE_ONLY_FLAG;
 			*flagToRemove &= ~INVITE_ONLY_FLAG;
 			break;
+		case 't':
+			*flagToAdd |= PROTECTED_TOPIC_FLAG;
+			*flagToRemove &= ~PROTECTED_TOPIC_FLAG;
+			break;
+		case 'l':
+			*flagToAdd |= CLIENT_LIMIT_FLAG;
+			*flagToRemove &= ~CLIENT_LIMIT_FLAG;
+			break;
+		case 'b':
+			*flagToAdd |= BAN_CHANNEL_FLAG;
+			*flagToRemove &= ~BAN_CHANNEL_FLAG;
+			break;
 		default:
 			break;
 	}
@@ -75,11 +87,8 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 	if (params[0][0] == '#')
 	{
 		Channel * channel = server.getChannelByName(params[0]);
-//		int id = server.getChannelID(params[0]);
-//		if (id < 0)
 		if (!channel)
 			return (err_nosuchchannel(usr, params[0]));
-//		Channel channel = *server.getChannels()[id];
 		if (params.size() == 1)
 			return (rpl_channelmodeis(*channel, usr));
 		if (!usr.isGlobalOperator() && !usr.isLocalOperator()) // TODO which one ?
@@ -88,10 +97,8 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 		std::vector<std::string>::const_iterator ite = params.end();
 		for (std::vector<std::string>::const_iterator it = params.begin() + 1; it < ite; ++it)
 		{
-			std::cout << "MODE : " << *it << std::endl;
 			for (size_t i = 0; i < (*it).size(); ++i)
 			{
-				std::cout << "loop : " << i << std::endl;
 				if ((*it)[i] == '+')
 					plusSign = true;
 				else if ((*it)[i] == '-')
@@ -104,24 +111,22 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 					updateChannelFlag(&modeToRemove, &modeToAdd, (*it)[i], *channel, true);
 			}
 		}
-		std::cout << "END loop" << std::endl;
 		if (!modeToAdd && !modeToRemove)
 			return ("");
-		std::string reply = rpl_channelmode(server, *channel, modeToAdd, modeToRemove);
-		std::cout << "REPLY : " << reply << std::endl;
+		std::string reply = rpl_channelmode(*channel, usr, modeToAdd, modeToRemove);
 		std::vector<User *>::const_iterator itue = channel->getUsers().end();
 		for (std::vector<User *>::const_iterator itu = channel->getUsers().begin(); itu < itue; ++itu)
-			(*itu)->sendReply(reply);
+			if (!(**itu == usr))
+				(*itu)->sendReply(reply);
+		usr.sendReply(reply);
 		return ("");
 	}
 	else
 	{
 		User * target = server.getUserByName(params[0]);
-//		int id = server.getUserID(params[0]);
-//		if (id < 0)
 		if (!target)
 			return (err_nosuchnick(usr, params[0]));
-		else if (target->getNickname() != usr.getNickname())
+		else if (!(*target == usr))
 			return (err_usersdontmatch(usr, params.size()));
 		else if (params.size() == 1)
 			return (rpl_umodeis(usr));

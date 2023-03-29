@@ -15,7 +15,8 @@
 
 Channel::Channel() :
 	_users(new std::vector<User *>()),
-	_bannedUsers(new std::vector<User *>())
+	_bannedUsers(new std::vector<User *>()),
+	_invitedUsers(new std::vector<User *>())
 {
 	#if LOG_LEVEL
 		std::cout << "Channel default constructor @ " << this << std::endl;
@@ -26,6 +27,7 @@ Channel::Channel(std::string const & name, int slots) :
 	_name(name),
 	_users(new std::vector<User *>()),
 	_bannedUsers(new std::vector<User *>()),
+	_invitedUsers(new std::vector<User *>()),
 	_slots(slots)
 {
 	#if LOG_LEVEL
@@ -36,27 +38,30 @@ Channel::Channel(std::string const & name, int slots) :
 
 Channel::Channel(std::string const & config) :
 	_users(new std::vector<User *>()),
-	_bannedUsers(new std::vector<User *>())
+	_bannedUsers(new std::vector<User *>()),
+	_invitedUsers(new std::vector<User *>())
 {
 	#if LOG_LEVEL
 		std::cout << "Channel config constructor @ " << this << std::endl;
 	#endif
 	try
 	{
-		this->_name = "#" + parsing(config, "name");
-		std::istringstream(parsing(config, "slots")) >> this->_slots;
+		this->_name = "#" + parsing(config, "name", true);
+		std::istringstream(parsing(config, "slots", false)) >> this->_slots;
+		this->_topic = parsing(config, "topic", false);
+		this->_boolFlags = parsingFlags(config);
 	}
 	catch (std::exception &e)
 	{
 		throw std::exception();
 	}
-	this->_topic = "Default topic";
 }
 
 Channel::Channel(Channel const & src) :
 	_name(src.getName()),
 	_users(new std::vector<User *>(src.getUsers().begin(), src.getUsers().end())),
 	_bannedUsers(new std::vector<User *>(src.getBannedUsers().begin(), src.getBannedUsers().end())),
+	_invitedUsers(new std::vector<User *>(src.getInvitedUsers().begin(), src.getInvitedUsers().end())),
 	_slots(src.getSlots())
 {
 	#if LOG_LEVEL
@@ -92,30 +97,34 @@ bool	Channel::isProtectedTopic() const
 	return (this->_boolFlags & PROTECTED_TOPIC_FLAG);
 }
 
+bool	Channel::isClientLimit() const
+{
+	return (this->_boolFlags & CLIENT_LIMIT_FLAG);
+}
+
+bool	Channel::isBanChannel() const
+{
+	return (this->_boolFlags & BAN_CHANNEL_FLAG);
+}
+
 bool	Channel::isFull() const
 {
-	return this->_users->size() >= this->_slots;
+	return (this->isClientLimit() && this->_users->size() >= this->_slots);
 }
 
 void	Channel::removeUser(User & user, std::string const & reply)
 {
+	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
+	user.removeChannel(this);
 	std::vector<User *>::iterator ite = this->_users->end();
 	for (std::vector<User *>::const_iterator it = this->_users->begin(); it < ite; ++it)
 		(*it)->sendReply(reply);
-	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
-	user.removeChannel(this);
 }
 
-void	Channel::removeUserQuit(User & user, std::vector<std::string> & reasons)
+void	Channel::removeUser1Channel(User & user, std::string const & reply)
 {
-	std::string reply = rpl_quit(user, reasons);
-	std::vector<User *>::iterator ite = this->_users->end();
-	for (std::vector<User *>::iterator it = this->_users->begin(); it != ite; it++)
-		(*it)->sendReply(reply);
-	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
-	user.removeChannel(this);
-//	user.sendReply(reply);
-//	std::cout << reply << std::endl;
+	user.sendReply(reply);
+	this->removeUser(user, reply);
 }
 
 void	Channel::addUser(Server const & server, User & user)
@@ -129,7 +138,11 @@ void	Channel::addUser(Server const & server, User & user)
 	user.sendReply(rpl_topic(server, *this, user));
 	user.sendReply(rpl_namreply(server, *this, user));
 	user.sendReply(rpl_endofnames(server, *this, user));
+}
 
+void	Channel::addInvitedUser(User * user)
+{
+	this->_invitedUsers->push_back(user);
 }
 
 bool	Channel::hasUser(User & user) const
@@ -155,6 +168,14 @@ bool	Channel::isBanned(User const & user) const
 	return (it != this->_bannedUsers->end());
 }
 
+bool	Channel::isInvited(User const & user) const
+{
+	if (user.isGlobalOperator() || user.isLocalOperator())
+		return (true);
+	std::vector<User *>::const_iterator it = find (this->_invitedUsers->begin(), this->_invitedUsers->end(), &user);
+	return (it != this->_invitedUsers->end());
+}
+
 std::string const &	Channel::getName() const
 {
 	return this->_name;
@@ -163,6 +184,11 @@ std::string const &	Channel::getName() const
 std::vector<User *> &	Channel::getBannedUsers() const
 {
 	return *(this->_bannedUsers);
+}
+
+std::vector<User *> &	Channel::getInvitedUsers() const
+{
+	return *(this->_invitedUsers);
 }
 
 std::vector<User *> &	Channel::getUsers() const
@@ -207,4 +233,20 @@ void	Channel::setProtectedTopic(bool flag)
 		this->_boolFlags |= PROTECTED_TOPIC_FLAG;
 	else
 		this->_boolFlags &= ~PROTECTED_TOPIC_FLAG;
+}
+
+void	Channel::setClientLimit(bool flag)
+{
+	if (flag)
+		this->_boolFlags |= CLIENT_LIMIT_FLAG;
+	else
+		this->_boolFlags &= ~CLIENT_LIMIT_FLAG;
+}
+
+void	Channel::setBanChannel(bool flag)
+{
+	if (flag)
+		this->_boolFlags |= BAN_CHANNEL_FLAG;
+	else
+		this->_boolFlags &= ~BAN_CHANNEL_FLAG;
 }

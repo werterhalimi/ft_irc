@@ -43,7 +43,8 @@
 
 std::vector<std::string>	split(std::string const & str, std::string const & sep);
 std::vector<std::string>	split(std::string const & str, char const * sep);
-std::string					parsing(std::string const & src, std::string const & item);
+std::string					parsing(std::string const & src, std::string const & item, bool mandatory);
+int							parsingFlags(std::string const & src);
 bool						isLetter(char const & c);
 bool						isDigit(char const & c);
 bool						isSpecial(char const & c);

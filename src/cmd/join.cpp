@@ -56,12 +56,12 @@ std::string	join(Cmd * cmd, Server & server, User & usr)
 			if (!channel->getKey().empty() && i < no_keys && channel->getKey() != keys[i])
 				usr.sendReply(err_badchannelkey(usr, *it));
 		}
-		else if (channel->isBanned(usr))
-			usr.sendReply(err_bannedfromchan(usr, *it, "b"));
-		else if(channel->isFull())
-			usr.sendReply(err_bannedfromchan(usr, *it, "l"));
-		else if(channel->isInviteOnly())
-			usr.sendReply(err_bannedfromchan(usr, *it, "i"));
+		else if (channel->isBanChannel() && channel->isBanned(usr))
+			usr.sendReply(err_bannedfromchan(usr, *it));
+		else if (channel->isFull())
+			usr.sendReply(err_channelisfull(usr, *it));
+		else if (channel->isInviteOnly() && !channel->isInvited(usr))
+			usr.sendReply(err_inviteonlychan(usr, *it));
 		else
 			channel->addUser(server, usr);
 		i++;

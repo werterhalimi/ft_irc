@@ -44,7 +44,10 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					rpl/rpl_endofwho.cpp			rpl/err_unknownmode.cpp \
 					rpl/err_usernotinchannel.cpp	rpl/rpl_kick.cpp \
 					rpl/rpl_notopic.cpp				rpl/err_useronchannel.cpp \
-					rpl/rpl_inviting.cpp	\
+					rpl/rpl_inviting.cpp			rpl/rpl_channelmode.cpp \
+					rpl/err_channelisfull.cpp		rpl/err_inviteonlychan.cpp \
+					rpl/rpl_invite.cpp				rpl/err_noprivileges.cpp \
+					rpl/rpl_kill.cpp \
 					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					utils/parsing.cpp \
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
