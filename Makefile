@@ -71,6 +71,7 @@ CXX				:=	@c++-12
 CXXFLAGS		:=	-g -Wall -Wextra -Werror -std=c++98 -pedantic -I $(INCS_DIR)
 DEBUG			:=	-g3 -fsanitize=undefined
 LOG_LEVEL		:= -D LOG_LEVEL=1
+FULL_LOG_LEVEL	:= -D LOG_LEVEL=10
 RM				:=	@rm -f
 LEAKS			:=	@leaks -atExit --
 
@@ -109,7 +110,6 @@ $(NAME):		$(OBJS)
 sclean:
 				$(RM) $(OBJS)
 				$(RM) -r $(OBJS_DIR)
-#$(RM) -r $(OBJS_SUB_DIR) $(OBJS_DIR)
 
 clean:			sclean
 				@echo $(BOLD_BLUE)[CLEAN][$(NAME)]$(BOLD_GREEN)" : DONE"$(RESET_COLOR)
@@ -134,7 +134,7 @@ debug:			$(OBJS)
 				$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 				@echo $(BOLD_BLUE)[BUILD][$(NAME)]$(BOLD_YELLOW)[DEBUG]$(BOLD_GREEN)" : DONE"$(RESET_COLOR)
 
-fdebug:			CXXFLAGS += $(LOG_LEVEL)
+fdebug:			CXXFLAGS += $(FULL_LOG_LEVEL)
 fdebug:			CXXFLAGS += $(DEBUG)
 fdebug:			$(OBJS)
 				$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)

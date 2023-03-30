@@ -20,6 +20,6 @@ std::string	rpl_created(Server const & server, User const & user)
 
 	reply.setCmd(RPL_CREATED);
 	reply.addParam(user.getNickname());
-	reply.addParam(":This server was created " + printTime(server.getTime()));
+	reply.addParam(":This server was created " + printFullTime(server.getTime()));
 	return (reply.toString());
 }

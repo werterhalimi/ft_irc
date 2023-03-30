@@ -20,8 +20,8 @@ User::User() :
 	_channels(new std::vector<Channel *>()),
 	_bufferLength(0)
 {
-	#if LOG_LEVEL
-		std::cout << "User default constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "User default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	for (int i = 0; i < BUFFER_SIZE; ++i)
 		_buffer[i] = 0;
@@ -35,8 +35,8 @@ User::User(std::string const &username, std::string const &nickname, std::string
 	_channels(new std::vector<Channel *>()),
 	_bufferLength(0)
 {
-	#if LOG_LEVEL
-		std::cout << "User username, nickname & hostname constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "User username, nickname & hostname constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	for (int i = 0; i < BUFFER_SIZE; ++i)
 		_buffer[i] = 0;
@@ -49,15 +49,15 @@ User::User(User const & src) :
 	_hostname(src.getHostname()),
 	_channels((src.getChannels()))
 {
-	#if LOG_LEVEL
-		std::cout << "User copy constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "User copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
 User::~User()
 {
-	#if LOG_LEVEL
-		std::cout << "User default destructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "User default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	delete this->_channels;
 }
@@ -85,7 +85,16 @@ void	User::sendReply(std::string const &buff) const
 	if (!buff.empty())
 	{
 		send(this->_fd, buff.c_str(), strlen(buff.c_str()), 0);
-		std::cout << RED << buff << RESET_COLOR << std::endl;
+		#if LOG_LEVEL
+			std::vector<std::string> sp = split(buff, " ");
+			if (sp.size() > 1 && !sp[1].empty())
+			{
+				std::cout << GREEN;
+				if (sp[1][0] == '4' || sp[1][0] == '5')
+					std::cout << RED;
+			}
+			std::cout << buff << RESET_COLOR << std::endl;
+		#endif
 	}
 }
 
@@ -93,7 +102,6 @@ void	User::handleCmd(Server & server)
 {
 	ssize_t read_return;
 
-//	std::cout << CYAN << "Read" << RESET_COLOR << std::endl;
 	read_return = read(this->_fd, this->_buffer + this->_bufferLength, 513);
 	if (read_return < 0)
 		throw std::exception();
@@ -101,13 +109,13 @@ void	User::handleCmd(Server & server)
 	this->_buffer[this->_bufferLength] = 0;
 	if (this->_bufferLength < 2 || this->_buffer[this->_bufferLength - 1] != '\n' || this->_buffer[this->_bufferLength - 2] != '\r')
 		return;
-//	std::cout << CYAN << "OK" << RESET_COLOR << std::endl;
 	std::vector<std::string> sp = split(this->_buffer, "\r\n");
-	std::cout << CYAN << "Size : " << sp.size() << RESET_COLOR << std::endl;
 	std::vector<std::string>::const_iterator ite = sp.end();
 	for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
 	{
-		std::cout << CYAN << "Exec : \"" << *it << "\"" << RESET_COLOR << std::endl;
+		#if LOG_LEVEL
+			std::cout << CYAN << printCurrentTime() << "- " << this->_fd << " ( " << this->prefix() << ") - \"" << *it << "\"" << RESET_COLOR << std::endl;
+		#endif
 		Cmd cmd(*it);
 		cmd.execute(server, *this);
 	}

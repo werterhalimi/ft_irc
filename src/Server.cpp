@@ -18,8 +18,8 @@ Server::Server() :
 	_operators(new std::vector<Operator *>()),
 	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL
-		std::cout << "Server default constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
@@ -29,8 +29,8 @@ Server::Server(std::string const & name) :
 	_operators(new std::vector<Operator *>()),
 	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL
-		std::cout << "Server name constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server name constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
@@ -42,8 +42,8 @@ Server::Server(int port, std::string const & pass) :
 	_operators(new std::vector<Operator *>()),
 	_channels(new std::vector<Channel *>())
 {
-	#if LOG_LEVEL
-		std::cout << "Server port&path constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server port&path constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	time_t	time_now = time(NULL);
 	this->_time = gmtime(&time_now);
@@ -51,8 +51,8 @@ Server::Server(int port, std::string const & pass) :
 
 Server::Server(Server const & src) 
 {
-	#if LOG_LEVEL
-		std::cout << "Server copy constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	this->_port = src.getPort();
 	this->_pass = src.getPass();
@@ -65,8 +65,8 @@ Server::Server(Server const & src)
 
 Server::~Server()
 {
-	#if LOG_LEVEL
-		std::cout << "Server default destructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	delete this->_users;
 	delete this->_channels;
@@ -118,7 +118,7 @@ void	Server::launch()
 	address.sin_port = htons(this->_port);
 
 	#if LOG_LEVEL
-		std::cout << YELLOW << &address << std::endl;
+		std::cout << YELLOW << printCurrentTime() << ": SERVER @ " << &address << std::endl;
 		std::cout << "Family : " << (int)address.sin_family << std::endl;
 		std::cout << "Port : " << address.sin_port << std::endl;
 		std::cout << "Port : " << ntohs(address.sin_port) << std::endl;
@@ -127,11 +127,13 @@ void	Server::launch()
 		std::cout << "Zeros : " << address.sin_zero << std::endl;
 		std::cout << "Sizeof Addr : " << sizeofAddress << std::endl;
 		std::cout << "Channels : " << std::endl;
-		std::vector<Channel *>::const_iterator ite = this->_channels->end();
-		for (std::vector<Channel *>::const_iterator it = this->_channels->begin(); it < ite; ++it)
-		{
+		std::vector<Channel *>::const_iterator itce = this->_channels->end();
+		for (std::vector<Channel *>::const_iterator it = this->_channels->begin(); it < itce; ++it)
 			std::cout << "\t\"" << (*it)->getName() << "\"" << std::endl;
-		}
+		std::cout << "Operators : " << std::endl;
+		std::vector<Operator *>::const_iterator itoe = this->_operators->end();
+		for (std::vector<Operator *>::const_iterator it = this->_operators->begin(); it < itoe; ++it)
+			std::cout << "\t\"" << (*it)->getName() << "\"" << std::endl;
 		std::cout << RESET_COLOR << std::endl;
 	#endif
 
@@ -152,13 +154,15 @@ void	Server::launch()
 	{
 		int n = kevent(this->_kq_fd, NULL, 0, event, 1024, NULL);
 		if (n < 0) continue ;
-		for(int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			User * user = (User *)event[i].udata;
-			if(event[i].flags & EV_EOF)
+			if (event[i].flags & EV_EOF)
 			{
+				#if LOG_LEVEL
+					std::cout << YELLOW << "END OF CONNECTION" << RESET_COLOR << std::endl;
+				#endif
 				this->_users->erase(std::find(this->_users->begin(), this->_users->end(), user));
-				std::cout << "Test" << std::endl;
 				EV_SET(&event_set, (int) event[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
                 if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
                     throw std::exception();

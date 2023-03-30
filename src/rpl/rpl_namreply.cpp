@@ -30,7 +30,6 @@ std::string	rpl_namreply(Server const & server, Channel const & channel, User co
 		std::vector<User *>::iterator ite = users.end();
 		for(std::vector<User *>::iterator it = users.begin(); it != ite; it++)
 		{
-//			std::cout << (*it)->getNickname() << " " <<(*it)->isOperator() << std::endl;
 			if ((*it)->isOperator())
 				reply.addParam("@" + (*it)->getNickname());
 			else

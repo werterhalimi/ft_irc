@@ -18,11 +18,11 @@ int main(int argc, char *argv[])
 {
 	if (argc != 3)
 	{
-		std::cout << RED << "Invalid number of arguments.";
+		std::cout << BOLD_RED << "Invalid number of arguments.";
 		std::cout << " Usage: ./ircserv <port> <password>" << RESET_COLOR << std::endl;
 		return (EXIT_ERROR);
 	}
-	std::cout << GREEN << "Starting IRC server on port ";
+	std::cout << BOLD_GREEN << "Starting IRC server on port ";
 	std::cout << argv[1] << RESET_COLOR << std::endl;
 	int port;
 	std::istringstream(argv[1]) >> port;
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << RED << "Fatal error" << RESET_COLOR << std::endl;
+		std::cerr << BOLD_RED << "Fatal error" << RESET_COLOR << std::endl;
 		return (EXIT_ERROR);
 	}
 	return (EXIT_SUCCESS);

@@ -184,5 +184,4 @@
 # define ERR_UMODEUNKNOWNFLAG	"501"
 # define ERR_USERSDONTMATCH		"502"
 
-
 #endif

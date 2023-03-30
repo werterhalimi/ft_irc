@@ -48,6 +48,7 @@ int							parsingFlags(std::string const & src);
 bool						isLetter(char const & c);
 bool						isDigit(char const & c);
 bool						isSpecial(char const & c);
-std::string					printTime(struct tm * time);
+std::string					printCurrentTime();
+std::string					printFullTime(struct tm * time);
 
 #endif

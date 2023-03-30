@@ -12,18 +12,12 @@
 
 #include "Cmd.hpp"
 #include "cmd.h"
-/*
-Cmd::Cmd(std::string const &msg, Server * server) :_params(*(new std::vector<std::string>()))
-{
-	this->parse(msg);
-}
-*/
 
 Cmd::Cmd(std::string const &msg) :
 	_params(*(new std::vector<std::string>()))
 {
-	#if LOG_LEVEL
-		std::cout << "Cmd message constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd message constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	this->parse(msg);
 }
@@ -32,8 +26,8 @@ Cmd::Cmd(User const &user) :
 	_prefix(user.prefix()),
 	_params(*(new std::vector<std::string>()))
 {
-	#if LOG_LEVEL
-		std::cout << "Cmd user constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd user constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
@@ -41,30 +35,30 @@ Cmd::Cmd(Server const &server) :
 	_prefix(server.prefix()),
 	_params(*(new std::vector<std::string>()))
 {
-	#if LOG_LEVEL
-		std::cout << "Cmd server constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd server constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
 Cmd::~Cmd()
 {
-	#if LOG_LEVEL
-		std::cout << "Cmd default destructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	delete &(this->_params);
 }
 
 Cmd::Cmd()  :  _params(*(new std::vector<std::string>()))
 {
-	#if LOG_LEVEL
-		std::cout << "Cmd default constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
 Cmd::Cmd(Cmd const &cmd) : _params(*(new std::vector<std::string>()))
 {
-	#if LOG_LEVEL
-		std::cout << "Cmd copy constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	*this = cmd;
 }
@@ -89,7 +83,6 @@ std::string 	Cmd::toString() const
 		stream << " " << *it;
 	stream << "\r\n";
 	std::string str = stream.str();
-//	std::cout << "ToString" << str << std::endl;
 	return (str);
 }
 
@@ -134,24 +127,7 @@ void	Cmd::parse(std::string const &msg)
 		return;
 	this->_params.push_back(msg.substr(index + 1, end - index - 1));
 }
-/*
-std::string	reply(User &user, std::string const & cmd, std::string const & msg)
-{
-	std::string	toSend;
 
-	toSend.append(":");
-	toSend.append(user.getNickname());
-	toSend.append("@");
-	toSend.append(user.getUsername());
-	toSend.append("!");
-	toSend.append(user.getHostname());
-	toSend.append(" ");
-	toSend.append(cmd);
-	toSend.append(msg);
-	toSend.append("\r\n");
-	return (toSend);
-}
-*/
 void	Cmd::execute(Server &server, User &currentUser)
 {
 	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
@@ -162,15 +138,12 @@ void	Cmd::execute(Server &server, User &currentUser)
 		&kill
 	};
 	/*
-	 * ,		&oper,
-		&mode,		&service,	&quit,		&squit,
-		&join,		&part,		&topic,	&names,
-		&list,		&invite,	&kick,		&privmsg,
+	 * &service,		&squit, &names,
+		&list,		&privmsg,
 		&notice,	&motd,		&luser,	&version,
 		&stats,	&links,	&time,		&connect,
 		&trace,	&admin,	&info,		&servlist,
-		&squery,	&who,		&whois,	&whowas,
-		&kill,		&ping,	&pong,	&error,
+		&squery,	&whois,	&whowas, &error,
 		&away,	&rehash,	&die,		&restart,
 		&summon,	&_users,	&wallops,	&usehost,
 		&ison
@@ -189,9 +162,7 @@ void	Cmd::execute(Server &server, User &currentUser)
 			return;
 		}
 	}
-	std::cout << YELLOW << "UK" << RESET_COLOR << std::endl;
 	currentUser.sendReply(err_unknowncommand(server, currentUser, *this));
-	//throw std::exception();
 }
 
 std::string const	&Cmd::getCmdNames(size_t i) const
@@ -204,14 +175,12 @@ std::string const	&Cmd::getCmdNames(size_t i) const
 		"kill"
 	};
 	/*
-		"SERVICE",	"SQUIT",
-		"TOPIC",	"NAMES",
-		"LIST",	"INVITE",	"KICK",
+		"SERVICE",	"SQUIT", "NAMES",
+		"LIST",	"INVITE",
 		"NOTICE",	"MOTD",	"LUSERS",	"VERSION",
 		"STATS",	"LINKS",	"TIME",	"CONNECT",
 		"TRACE",	"ADMIN",	"INFO",	"SERVLIST",
-		"SQUERY",	"WHO",		"WHOIS",	"WHOWAS",
-		"KILL",		"ERROR",
+		"SQUERY",	"WHOIS",	"WHOWAS", "ERROR",
 		"AWAY",	"REHASH",	"DIE",	"RESTART",
 		"SUMMON",	"USERS",	"WALLOPS",	"USERHOST",
 		"ISON"

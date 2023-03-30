@@ -17,15 +17,15 @@ Operator::Operator(std::string const & name, std::string const & host, std::stri
 	_host(host),
 	_password(password)
 {
-	#if LOG_LEVEL
-		std::cout << "Operator name, host & password constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Operator name, host & password constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
 Operator::Operator(std::string const & config)
 {
-	#if LOG_LEVEL
-		std::cout << "Operator config constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Operator config constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	try
 	{
@@ -41,8 +41,8 @@ Operator::Operator(std::string const & config)
 
 Operator::~Operator()
 {
-	#if LOG_LEVEL
-		std::cout << "Operator default destructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Operator default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 

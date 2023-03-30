@@ -12,7 +12,20 @@
 
 #include "ft_irc.hpp"
 
-std::string		printTime(struct tm * time)
+std::string		printCurrentTime()
+{
+	time_t	time_now = time(NULL);
+	struct tm * time = gmtime(&time_now);
+	std::ostringstream stream;
+
+	stream << std::setfill('0');
+	stream << std::setw(2) << time->tm_hour << ":";
+	stream << std::setw(2) << time->tm_min << ":";
+	stream << std::setw(2) << time->tm_sec << " "; // GMT
+	return (stream.str());
+}
+
+std::string		printFullTime(struct tm * time)
 {
 	static std::string months[12] =
 	{

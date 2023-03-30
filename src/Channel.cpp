@@ -18,8 +18,8 @@ Channel::Channel() :
 	_bannedUsers(new std::vector<User *>()),
 	_invitedUsers(new std::vector<User *>())
 {
-	#if LOG_LEVEL
-		std::cout << "Channel default constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Channel default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
@@ -30,8 +30,8 @@ Channel::Channel(std::string const & name, int slots) :
 	_invitedUsers(new std::vector<User *>()),
 	_slots(slots)
 {
-	#if LOG_LEVEL
-		std::cout << "Channel name constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Channel name constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	this->_topic = "Default topic";
 }
@@ -41,8 +41,8 @@ Channel::Channel(std::string const & config) :
 	_bannedUsers(new std::vector<User *>()),
 	_invitedUsers(new std::vector<User *>())
 {
-	#if LOG_LEVEL
-		std::cout << "Channel config constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Channel config constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	try
 	{
@@ -64,15 +64,15 @@ Channel::Channel(Channel const & src) :
 	_invitedUsers(new std::vector<User *>(src.getInvitedUsers().begin(), src.getInvitedUsers().end())),
 	_slots(src.getSlots())
 {
-	#if LOG_LEVEL
-	std::cout << "Channel copy constructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+	std::cout << BOLD_BLUE << "Channel copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 }
 
 Channel::~Channel()
 {
-	#if LOG_LEVEL
-		std::cout << "Channel default destructor @ " << this << std::endl;
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Channel default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	delete this->_users;
 }
