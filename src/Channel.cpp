@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 00:23:52 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 16:13:26 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,15 @@ Channel::~Channel()
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Channel default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
+	std::vector<User *>::const_iterator	it = this->_users->begin();
+	while (it != this->_users->end())
+	{
+		(*it)->sendReply(rpl_part(*this, *(*it), 0));
+		it++;
+	}
 	delete this->_users;
+	delete this->_bannedUsers;
+	delete this->_invitedUsers;
 }
 
 std::string const &	Channel::getTopic() const
