@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:21 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/29 00:01:15 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 00:45:30 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@
 
 /* Utils */
 
+int	stoi(std::string str);
+std::string itos(int i);
 std::vector<std::string>	split(std::string const & str, std::string const & sep);
 std::vector<std::string>	split(std::string const & str, char const * sep);
 std::string					parsing(std::string const & src, std::string const & item, bool mandatory);

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/28 23:15:00 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 00:18:04 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ Server::~Server()
 	#if LOG_LEVEL
 		std::cout << "Server default destructor @ " << this << std::endl;
 	#endif
+	//TODO free contents
 	delete this->_users;
 	delete this->_channels;
 	delete this->_operators;
@@ -199,6 +200,12 @@ void	Server::registerCustomUser(User & user)
 	this->_users->push_back(&user);
 }
 
+void	Server::removeChannel(Channel const * channel)
+{
+	this->_channels->erase(std::find(this->_channels->begin(), this->_channels->end(), channel));
+	delete channel;
+}
+
 void	Server::handleLogin(User & user, struct kevent * event)
 {
 	this->_users->push_back(&user);
@@ -226,6 +233,11 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 	if (ret == -1)
 		return ; // ERROR
 	close(user.getFd());
+}
+
+void	Server::createChannel(std::string name, int slots)
+{
+	this->_channels->push_back(new Channel("#" + name, slots));
 }
 
 bool	Server::hasNick(std::string const & nick) const

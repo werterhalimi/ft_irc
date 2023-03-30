@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/28 23:15:20 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 00:15:53 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ class Server
 		void						registerCustomUser(User & user);
 		void						handleLogin(User & user, struct kevent * event);
 		void						handleLogout(Cmd const & cmd, User & user, std::string const & reason);
+		void						createChannel(std::string name, int slots);
+		void						removeChannel(Channel const * channel);
 
 		Channel *					getChannelByName(std::string const & name) const;
 		User *						getUserByName(std::string const & name) const;

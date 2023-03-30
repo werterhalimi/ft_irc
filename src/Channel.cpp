@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/27 15:32:21 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 00:23:52 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Channel::Channel(std::string const & name, int slots) :
 	_invitedUsers(new std::vector<User *>()),
 	_slots(slots)
 {
+	std::cout << this->_name << std::endl;
 	#if LOG_LEVEL
 		std::cout << "Channel name constructor @ " << this << std::endl;
 	#endif

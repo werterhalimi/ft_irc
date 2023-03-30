@@ -6,11 +6,12 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 23:04:28 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/29 00:28:27 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 00:46:34 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+#include <sstream>
 
 Bot::Bot(void) : User(){}
 Bot::Bot(std::string name, Server & server) : User(name, name, "BotLand"), _server(&server) {}
@@ -39,13 +40,60 @@ static std::vector<std::string>	messageToParams(std::string const & prefix)
 	return (split(tmp.back(), " "));
 }
 
-
+void	Bot::reply(User const * user, std::string message) const
+{
+	user->sendReply(rpl_privmsg(*this, user->getNickname(), message));
+}
 
 void	Bot::sendReply(std::string const & reply) const
 {
 	User *	sender = this->_server->getUserByName(nicknameFromPrefix(reply));
 	if (!sender) return ;
-	std::vector<std::string>	params = messageToParams(reply);	
-	(void) sender;
-	(void) params;
+	std::vector<std::string>	params = messageToParams(reply);
+	if (sender->isOperator())
+	{
+		std::cout << (params.size() != 3) << (params.at(0) != ("create")) << std::endl;
+		if (params.size() < 2 || (params[0] != "create" && params[0] != "delete"))
+			return this->reply(sender, std::string("Hello, I'm MAB. I accept the following commands: <create/delete> <channelName> <slots>"));
+		Channel *	channel;
+		if (params[0] == "create" && params.size() == 3)
+		{
+			std::string	name = params[1];
+			if (this->_server->getChannelByName(name))
+				return this->reply(sender, std::string("This channel already exist"));
+			this->_server->createChannel(name, stoi(params[2]));
+			return this->reply(sender, std::string("The channel was succesfully created"));
+		}
+		else if (params[0] == "delete")
+		{
+			std::string	name = params[1].substr(0, params[1].size() - 2);
+			channel = this->_server->getChannelByName(name);
+			std::cout << name << std::endl;
+			if (!channel)
+				return this->reply(sender, std::string("This channel doesn't exist"));
+			this->_server->removeChannel(channel);
+			return this->reply(sender, std::string("The channel was succesfully deleted"));
+		}
+		else
+			return this->reply(sender, std::string("Hello, I'm MAB. I accept the following commands: <create/delete> <channelName> <slots>"));
+	}
+	else
+	{
+		this->reply(sender, std::string("Hello, I'm MAB, the bot of this awsome server."));
+		this->reply(sender, std::string("Here is the list of the avalaible channels: "));
+		std::vector<Channel *>::const_iterator it = this->_server->getChannels().begin();
+		while (it != this->_server->getChannels().end())
+		{
+			std::string line("Name: ");
+			line.append((*it)->getName());
+			line.append(" User(s): ");
+			line.append(itos((*it)->getUsers().size()));
+			line.append("/");
+			line.append(itos((*it)->getSlots()));
+			line.append("\n");
+			this->reply(sender, line);
+			it++;
+		}
+		return ;
+	}
 }

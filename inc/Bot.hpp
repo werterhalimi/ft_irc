@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 23:01:41 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/29 00:26:00 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/29 20:47:06 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Bot : public User
 
 		Bot &	operator=(Bot const & src);	
 		void				sendReply(std::string const & reply) const;
+		void				reply(User const * user, std::string message) const;
 	private:
 		Server	*	_server;
 };
