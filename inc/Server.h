@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 17:44:02 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:55:17 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ class Server
 		std::vector<Channel *> *	_channels;
 		struct tm *					_time;
 		int							_kq_fd;
-		volatile bool						_running;
+		volatile bool				_running;
 };
 
 #endif

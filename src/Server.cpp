@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 18:27:14 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:55:59 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,13 @@ Server::~Server()
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
+	std::vector<User *>::const_iterator	it = this->_users->begin() + 1;
+	while (it != this->_users->end())
+	{
+		
+		(*it)->sendReply(rpl_error(*(*it), std::string(":The server is shutting down")));
+		it++;
+	}
 	
 	deleteVector(this->_users);
 	deleteVector(this->_channels);
