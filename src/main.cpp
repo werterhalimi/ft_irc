@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:34 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/29 00:23:05 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:23:23 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
 	std::istringstream(argv[1]) >> port;
 	Server server(port, std::string(argv[2]));
 
-	Bot bot("MAB", server);
-	server.registerCustomUser(bot);
+	Bot *bot = new Bot("MAB", server);
+	server.registerCustomUser(*bot);
 
 	try
 	{

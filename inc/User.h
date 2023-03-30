@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/28 23:00:55 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 17:22:39 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class User
 		User();
 		User(std::string const &username, std::string const &nickname, std::string const &hostname);
 		User(User const & src);
-		~User();
+		virtual ~User();
 
 		virtual void		sendReply(std::string const & reply) const;
 

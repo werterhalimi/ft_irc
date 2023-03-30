@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/28 23:08:00 by shalimi          ###   ########.fr        #
+#    Updated: 2023/03/30 17:13:51 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					rpl/rpl_invite.cpp				rpl/err_noprivileges.cpp \
 					rpl/rpl_kill.cpp \
 					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
-					utils/parsing.cpp \
+					utils/parsing.cpp	\
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \
 					User.cpp			Operator.cpp		Bot.cpp
 SRCS_DIR		:=	./src/

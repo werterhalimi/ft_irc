@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 23:04:28 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 00:46:34 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:29:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 Bot::Bot(void) : User(){}
 Bot::Bot(std::string name, Server & server) : User(name, name, "BotLand"), _server(&server) {}
+
 Bot::~Bot(void){}
+
 Bot::Bot(Bot const & src) : User(){ (void) src; }
 Bot &	Bot::operator=(Bot const & src)
 {
@@ -52,9 +54,14 @@ void	Bot::sendReply(std::string const & reply) const
 	std::vector<std::string>	params = messageToParams(reply);
 	if (sender->isOperator())
 	{
-		std::cout << (params.size() != 3) << (params.at(0) != ("create")) << std::endl;
+		if (params.size() == 1 && params[0] == "stop\r\n")
+			return this->_server->stop();
 		if (params.size() < 2 || (params[0] != "create" && params[0] != "delete"))
-			return this->reply(sender, std::string("Hello, I'm MAB. I accept the following commands: <create/delete> <channelName> <slots>"));
+		{
+			this->reply(sender, std::string("Hello, I'm MAB. I accept the following commands:"));
+			this->reply(sender, std::string("<create/delete> <channelName> <slots>"));
+			this->reply(sender, std::string("<stop>"));
+		}
 		Channel *	channel;
 		if (params[0] == "create" && params.size() == 3)
 		{
@@ -68,7 +75,6 @@ void	Bot::sendReply(std::string const & reply) const
 		{
 			std::string	name = params[1].substr(0, params[1].size() - 2);
 			channel = this->_server->getChannelByName(name);
-			std::cout << name << std::endl;
 			if (!channel)
 				return this->reply(sender, std::string("This channel doesn't exist"));
 			this->_server->removeChannel(channel);

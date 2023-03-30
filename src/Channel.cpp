@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 16:13:26 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:03:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ Channel::~Channel()
 		(*it)->sendReply(rpl_part(*this, *(*it), 0));
 		it++;
 	}
-	delete this->_users;
-	delete this->_bannedUsers;
-	delete this->_invitedUsers;
+	deleteVector(this->_users);
+	deleteVector(this->_invitedUsers);
+	deleteVector(this->_bannedUsers);
 }
 
 std::string const &	Channel::getTopic() const

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 00:18:04 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:27:14 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ Server::~Server()
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
-	//TODO free contents
-	delete this->_users;
-	delete this->_channels;
-	delete this->_operators;
+	
+	deleteVector(this->_users);
+	deleteVector(this->_channels);
+	deleteVector(this->_operators);
 }
 
 Server &	Server::operator=(Server const & src)
@@ -99,6 +99,7 @@ void	Server::launch()
 	struct kevent		event_set = {};
 	socklen_t			sizeofAddress = sizeof(address);
 
+	this->_running = true;
 	try
 	{
 		serverConfig("config/IRC.conf");
@@ -151,7 +152,7 @@ void	Server::launch()
 	if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
 		throw std::exception();
 //	int	no_cmd = 1;
-	while (true)
+	while (this->_running)
 	{
 		int n = kevent(this->_kq_fd, NULL, 0, event, 1024, NULL);
 		if (n < 0) continue ;
@@ -197,6 +198,13 @@ void	Server::launch()
 			}
 		}
 	}
+	close(this->_kq_fd);
+	std::cout << "Shutting down" << std::endl;
+}
+
+void	Server::stop(void)
+{
+	this->_running = false;
 }
 
 void	Server::registerCustomUser(User & user)

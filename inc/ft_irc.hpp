@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:21 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/30 00:45:30 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 18:26:22 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,15 @@ bool						isSpecial(char const & c);
 std::string					printCurrentTime();
 std::string					printFullTime(struct tm * time);
 
+template <typename T>
+void	deleteVector(std::vector<T> * vector)
+{
+	typename std::vector<T>::iterator it = vector->begin();
+	while (it != vector->end())
+	{
+		delete (*it);
+		it++;
+	}
+	delete vector;
+}
 #endif

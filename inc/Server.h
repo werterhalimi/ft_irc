@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:59:05 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 00:15:53 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 17:44:02 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class Server
 		int 						getChannelID(std::string const & name) const;
 		int 						getUserID(std::string const & nickname) const;
 		struct tm *					getTime() const;
+		void						stop(void);
 
 		void						serverConfig(const char * path);
 
@@ -66,6 +67,7 @@ class Server
 		std::vector<Channel *> *	_channels;
 		struct tm *					_time;
 		int							_kq_fd;
+		volatile bool						_running;
 };
 
 #endif
