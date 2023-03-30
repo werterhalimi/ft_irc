@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:59:16 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/27 16:59:28 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/29 20:07:24 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ std::string	err_notexttosend(User const & user);
 std::string	err_cannotsendtochan(User const & user, std::string const & name);
 
 std::string	rpl_privmsg(User const & user, std::vector<std::string> const & params);
+std::string	rpl_privmsg(User const & user, std::string target,  std::string const & param);
 
 std::string	rpl_error(User const & user, Cmd const & cmd);
 

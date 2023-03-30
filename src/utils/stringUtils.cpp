@@ -6,11 +6,30 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 18:30:50 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/28 23:49:53 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/30 00:47:16 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+#include <sstream>
+
+int	stoi(std::string str)
+{
+	int ret;
+	std::stringstream stream;
+	stream << str;
+	stream >> ret;
+	return ret;
+}
+
+std::string itos(int i)
+{
+	std::string ret;
+	std::stringstream stream;
+	stream << i;
+	stream >> ret;
+	return ret;
+}
 
 std::string	nicknameFromPrefix(std::string const & prefix)
 {

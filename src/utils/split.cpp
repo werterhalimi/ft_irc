@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:11:35 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/29 00:19:07 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/29 19:56:24 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ std::vector<std::string> split(std::string const & str, std::string const & sep)
 		ret.push_back(tmp);
 		index = str.find(sep, start);
 	} while (index != std::string::npos);
-//	if (start < str.size())
-//		ret.push_back(str.substr(start, str.size()));
+	if (start < str.size() - 1)
+		ret.push_back(str.substr(start, str.size()));
 	return (ret);
 }
