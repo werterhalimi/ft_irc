@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/30 18:04:07 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/31 18:07:36 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ void	Cmd::execute(Server &server, User &currentUser)
 			try
 			{
 				std::string	reply = executeFct[i](this, server, currentUser);
-				currentUser.sendReply(reply);
+				if (!reply.empty())
+					currentUser.sendReply(reply);
 				return;
 			}
 			catch (std::exception &e)
