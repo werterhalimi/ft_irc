@@ -19,7 +19,7 @@ std::string	rpl_namreply(Server const & server, Channel const & channel, User co
 
 	reply.setCmd(RPL_NAMREPLY);
 	reply.addParam(user.getNickname());
-	reply.addParam("="); //TODO all mode
+	reply.addParam("=");
 	reply.addParam(channel.getName());
 
 	std::vector<User *> users = channel.getUsers();
@@ -35,7 +35,5 @@ std::string	rpl_namreply(Server const & server, Channel const & channel, User co
 				reply.addParam((*it)->getNickname());
 		}
 	}
-	// TODO break into multiples rpl
-//	reply.addParam(":End of Names list");
 	return (reply.toString());
 }

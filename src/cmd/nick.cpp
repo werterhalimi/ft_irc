@@ -18,13 +18,14 @@ static bool	validNickName(std::string nick)
 	size_t		i = 1;
 	if (nick.size() > 9) return (false);
 	if (isLetter(nick[0]) || isSpecial(nick[0]))
+	{
 		while (i < nick.size())
 		{
-			if (!isLetter(nick[i]) && !isSpecial(nick[i]) \
-					&& !isDigit(nick[i]) && nick[i] != '-')
+			if (!isLetter(nick[i]) && !isSpecial(nick[i]) && !isDigit(nick[i]) && nick[i] != '-')
 				return (false);
 			i++;
 		}
+	}
 	return (true);
 }
 

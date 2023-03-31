@@ -19,8 +19,7 @@
 
 # include "constants.h"
 # include <iostream>
-# include <string>	// TODO which one ?
-# include <cstring> // TODO ?
+# include <cstring>
 # include <algorithm>
 # include <vector>
 # include <sys/event.h>
@@ -43,7 +42,7 @@
 
 /* Utils */
 
-int							stoi(std::string str);
+int							stoi(std::string const & str);
 std::string					itos(int i);
 std::vector<std::string>	split(std::string const & str, std::string const & sep);
 std::vector<std::string>	split(std::string const & str, char const * sep);

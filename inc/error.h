@@ -73,7 +73,7 @@ std::string	err_unknownmode(User const & user, std::string const & mode);
 
 std::string	err_usernotinchannel(Channel const & channel, User const & user, std::string const & name);
 
-std::string	err_useronchannel(User const & user, std::string name);
+std::string	err_useronchannel(User const & user, std::string const & name);
 
 std::string	err_usersdontmatch(User const & user, size_t size);
 

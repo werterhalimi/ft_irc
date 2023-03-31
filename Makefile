@@ -10,18 +10,12 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
-					cmd/part.cpp		cmd/quit.cpp		cmd/squery.cpp		cmd/topic.cpp \
-					cmd/version.cpp		cmd/away.cpp		cmd/invite.cpp		cmd/links.cpp \
-					cmd/names.cpp		cmd/pass.cpp		cmd/rehash.cpp		cmd/squit.cpp \
-					cmd/trace.cpp		cmd/wallops.cpp		cmd/connect.cpp		cmd/ison.cpp \
-					cmd/list.cpp		cmd/nick.cpp		cmd/ping.cpp		cmd/restart.cpp \
-					cmd/stats.cpp		cmd/user.cpp		cmd/who.cpp			cmd/die.cpp \
-					cmd/join.cpp		cmd/luser.cpp		cmd/notice.cpp		cmd/pong.cpp \
-					cmd/service.cpp		cmd/summon.cpp		cmd/userhost.cpp	cmd/whois.cpp \
-                    cmd/error.cpp		cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
-                    cmd/privmsg.cpp  	cmd/servlist.cpp	cmd/time.cpp		cmd/users.cpp \
-                    cmd/whowas.cpp		cmd/cap.cpp \
+SRCS_FILES		:=	cmd/kill.cpp		cmd/invite.cpp		cmd/pass.cpp \
+					cmd/part.cpp		cmd/quit.cpp		cmd/topic.cpp \
+					cmd/nick.cpp		cmd/ping.cpp		cmd/privmsg.cpp \
+					cmd/user.cpp		cmd/who.cpp			cmd/pong.cpp \
+                    cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
+                    cmd/join.cpp		cmd/cap.cpp \
                     rpl/err_alreadyregistred.cpp	rpl/err_passwdmismatch.cpp \
                     rpl/err_erroneusnickname.cpp	rpl/err_umodeunknownflag.cpp \
                     rpl/err_needmoreparams.cpp		rpl/err_unknowncommand.cpp \

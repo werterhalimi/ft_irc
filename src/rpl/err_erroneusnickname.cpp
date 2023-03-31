@@ -17,7 +17,7 @@ std::string	err_erroneusnickname(Server const & server, User const & user, std::
 	Cmd reply(server);
 
 	reply.setCmd(ERR_ERRONEUSNICKNAME);
-	reply.addParam(user.getNickname()); // TODO ?
+	reply.addParam(user.getNickname().empty() ? name : user.getNickname());
 	reply.addParam(name);
 	reply.addParam(":Erroneous nickname");
 	return (reply.toString());

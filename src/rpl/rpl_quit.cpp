@@ -17,7 +17,7 @@ std::string	rpl_quit(User const & user, std::string const & reasons)
 	Cmd reply(user);
 
 	reply.setCmd("QUIT");
-	reply.addParam(":Quit:"); // TODO :Quit ?
+	reply.addParam(":Quit:");
 	reply.addParam(reasons);
 	return (reply.toString());
 }

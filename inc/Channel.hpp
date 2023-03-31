@@ -20,7 +20,7 @@
 # define CLIENT_LIMIT_FLAG			0x00000004
 # define BAN_CHANNEL_FLAG			0x00000008
 
-# define CHANNEL_MODE_FLAG_LETTERS	"itlb" // TODO ban
+# define CHANNEL_MODE_FLAG_LETTERS	"itlb"
 
 class Server;
 

@@ -17,7 +17,6 @@ std::string	rpl_error(User const & user, Cmd const & cmd)
 	Cmd reply(user);
 
 	reply.setCmd("ERROR");
-//	reply.addParam(user.getNickname()); TODO ?
 	reply.setParams(cmd.getParams());
 	return (reply.toString());
 }
@@ -27,7 +26,6 @@ std::string	rpl_error(User const & user, std::string const & reason)
 	Cmd reply(user);
 
 	reply.setCmd("ERROR");
-//	reply.addParam(user.getNickname()); TODO ?
 	reply.addParam(reason);
 	return (reply.toString());
 }

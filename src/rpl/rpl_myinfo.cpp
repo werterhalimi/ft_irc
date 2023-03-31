@@ -19,6 +19,6 @@ std::string	rpl_myinfo(Server const & server, User const & user)
 
 	reply.setCmd(RPL_MYINFO);
 	reply.addParam(user.getNickname());
-	reply.addParam(":" + server.getName() + " 2.0 ras"); // TODO host name
+	reply.addParam(":" + server.getName() + " 2.0 ras");
 	return (reply.toString());
 }

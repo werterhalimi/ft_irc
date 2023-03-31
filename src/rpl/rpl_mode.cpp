@@ -60,7 +60,6 @@ std::string	rpl_usermode(User & user, int modeToAdd, int modeToRemove)
 	reply.setCmd("MODE");
 	reply.addParam(user.getNickname());
 	std::ostringstream stream;
-	stream << ":"; // TODO needed ?
 	stream << updateUserMode(modeToAdd, user, true);
 	stream << updateUserMode(modeToRemove, user, false);
 	reply.addParam(stream.str());

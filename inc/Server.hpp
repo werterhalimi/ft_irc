@@ -22,7 +22,6 @@ class Server
 		int							_port;
 		std::string					_pass;
 		std::string					_servername;
-		std::string					_hostname; // TODO use ?
 		std::vector<User *> *		_users;
 		std::vector<Operator *> *	_operators;
 		std::vector<Channel *> *	_channels;
@@ -53,7 +52,6 @@ class Server
 		int							getPort() const;
 		std::string					getPass() const;
 		std::string					getName() const;
-		std::string					getHostname() const;
 		std::vector<User *> &		getUsers() const;
 		std::vector<Operator *> &	getOperators() const;
 		std::vector<Channel *> &	getChannels() const;

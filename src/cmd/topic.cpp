@@ -45,6 +45,5 @@ std::string	topic(Cmd * cmd, Server & server, User & currentUser)
 	std::vector<User *>::const_iterator ite = users.end();
 	for (std::vector<User *>::const_iterator it = users.begin(); it < ite; ++it)
 		(*it)->sendReply(reply);
-//	currentUser.sendReply(rpl_topicwhotime); // TODO ?
 	return ("");
 }

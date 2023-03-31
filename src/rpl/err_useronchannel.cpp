@@ -13,7 +13,7 @@
 # include "Cmd.hpp"
 # include "Channel.hpp"
 
-std::string	err_useronchannel(User const & user, std::string channel)
+std::string	err_useronchannel(User const & user, std::string const & channel)
 {
 	Cmd	cmd(user);
 	cmd.setCmd(ERR_USERONCHANNEL);
