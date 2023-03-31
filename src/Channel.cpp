@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/31 16:28:09 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/31 19:10:46 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ Channel::~Channel()
 	#endif
 	std::vector<User *>::const_iterator	ite = this->_users->end();
 	for (std::vector<User *>::const_iterator it = this->_users->begin(); it != ite ; ++it)
-		(*it)->sendReply(rpl_part(*this, **it, NULL));
+	{
+		(*it)->sendReply(rpl_part(*this, **it, NULL));	
+	}
 	delete this->_bannedUsers;
 	delete this->_users;
 	delete this->_invitedUsers;

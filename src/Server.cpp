@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/31 18:05:26 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/31 19:12:05 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,8 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 	std::string reply = rpl_quit(user, params);
 	user.sendReply(reply);
 	std::vector<Channel *>::const_iterator ite = user.getChannels()->end();
-	for (std::vector<Channel *>::const_iterator it = user.getChannels()->begin(); it != ite; ++it)
-		(*(it++))->removeUser(user, reply);
+	for (std::vector<Channel *>::const_iterator it = user.getChannels()->begin(); it != ite; it++)
+		(*(it))->removeUser(user, reply);
 	user.sendReply(rpl_error(user, cmd));
 	try
 	{
@@ -208,6 +208,12 @@ void	Server::createChannel(std::string const & name, int slots)
 void	Server::removeChannel(Channel const * channel)
 {
 	this->_channels->erase(std::find(this->_channels->begin(), this->_channels->end(), channel));
+	std::vector<User *>::iterator it = channel->getUsers().begin();
+	while (it != channel->getUsers().end())
+	{
+		(*it)->getChannels()->erase(std::find((*it)->getChannels()->begin(), (*it)->getChannels()->end(), channel));
+		it++;
+	}
 	delete channel;
 }
 
