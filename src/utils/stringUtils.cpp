@@ -13,7 +13,7 @@
 #include "ft_irc.hpp"
 #include <sstream>
 
-int	stoi(std::string str)
+int	stoi(std::string const & str)
 {
 	int ret;
 	std::stringstream stream;
@@ -35,7 +35,7 @@ std::string	nicknameFromPrefix(std::string const & prefix)
 {
 	std::string ret;
 	if (prefix.empty() || prefix[0] != ':') return ret;
-	size_t	index = prefix.find("!");
+	size_t	index = prefix.find('!');
 	if (index == std::string::npos) return ret;
 	ret = prefix.substr(1, index - 1);
 	return ret;

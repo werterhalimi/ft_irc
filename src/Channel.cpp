@@ -56,12 +56,9 @@ Channel::~Channel()
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Channel default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
-	std::vector<User *>::const_iterator	it = this->_users->begin();
-	while (it != this->_users->end())
-	{
+	std::vector<User *>::const_iterator	ite = this->_users->end();
+	for (std::vector<User *>::const_iterator it = this->_users->begin(); it != ite ; ++it)
 		(*it)->sendReply(rpl_part(*this, **it, NULL));
-		it++;
-	}
 	delete this->_bannedUsers;
 	delete this->_users;
 	delete this->_invitedUsers;

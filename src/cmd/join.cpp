@@ -49,7 +49,6 @@ std::string	join(Cmd * cmd, Server & server, User & usr)
 			else
 				usr.sendReply(err_nosuchchannel(usr, *it));
 		}
-		// TODO TOOMANYCHANNEL ?
 		else if (!channel->getKey().empty())
 		{
 			if (!channel->getKey().empty() && i < no_keys && channel->getKey() != keys[i])

@@ -16,8 +16,8 @@
 std::string	rpl_join(Channel const & channel, User const & user)
 {
 	Cmd reply(user);
-	// TODO user name ?
+
 	reply.setCmd("JOIN");
-	reply.addParam(":" + channel.getName()); // TODO : ?
+	reply.addParam(":" + channel.getName());
 	return (reply.toString());
 }

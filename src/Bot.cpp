@@ -13,7 +13,10 @@
 #include "Bot.hpp"
 
 /* Static functions */
-static std::string				nicknameFromPrefix(std::string const & prefix);
+static void	stop(Bot const * bot, User const * sender, std::vector<std::string> const & params);
+static void	create(Bot const * bot, User const * sender, std::vector<std::string> const & params);
+static void	del(Bot const * bot, User const * sender, std::vector<std::string> const & params);
+static std::string	nicknameFromPrefix(std::string const & prefix);
 static std::vector<std::string>	messageToParams(std::string const & prefix);
 
 /* Public */
@@ -29,7 +32,7 @@ Bot::~Bot(){}
 
 /* Getter */
 
-Server &	Bot::getServer(void) const
+Server &	Bot::getServer() const
 {
 	return *(this->_server);
 }
@@ -54,7 +57,7 @@ void	Bot::sendReply(std::string const & reply) const
 	if (!sender) return ;
 	std::vector<std::string>	params = messageToParams(reply);
 
-	if (sender->isOperator() && params.size() >= 1)
+	if (sender->isOperator() && !params.empty())
 	{
 		for (int i = 0; i < NB_BOT_CMD; i++)
 		{
@@ -68,8 +71,8 @@ void	Bot::sendReply(std::string const & reply) const
 	}
 	this->reply(sender, std::string("Hello, I'm MAB, the bot of this awsome server."));
 	this->reply(sender, std::string("Here is the list of the avalaible channels: "));
-	std::vector<Channel *>::const_iterator it = this->_server->getChannels().begin();
-	while (it != this->_server->getChannels().end())
+	std::vector<Channel *>::const_iterator ite = this->_server->getChannels().end();
+	for (std::vector<Channel *>::const_iterator it = this->_server->getChannels().begin(); it != ite; it++)
 	{
 		std::string line("Name: ");
 		line.append((*it)->getName());
@@ -79,9 +82,7 @@ void	Bot::sendReply(std::string const & reply) const
 		line.append(itos((int)(*it)->getSlots()));
 		line.append("\n");
 		this->reply(sender, line);
-		it++;
 	}
-	return ;
 }
 
 /* Private */
@@ -110,18 +111,18 @@ Bot &	Bot::operator=(Bot const & src)
 
 /* Commands */
 
-void	stop(Bot const * bot, User const * sender, std::vector<std::string> const & params)
+static void	stop(Bot const * bot, User const * sender, std::vector<std::string> const & params)
 {
 	(void) sender;
 	(void) params;
 	return bot->getServer().stop();
 }
 
-void	create(Bot const * bot, User const * sender, std::vector<std::string> const & params)
+static void	create(Bot const * bot, User const * sender, std::vector<std::string> const & params)
 {
 	if (params.size() != 3)
 		return bot->reply(sender, std::string("Wrong input, try: create <NAME> <SLOTS>"));
-	std::string	name = params[1];
+	const std::string &	name = params[1];
 	if (bot->getServer().getChannelByName(name))
 		return bot->reply(sender, std::string("This channel already exist"));
 	bot->getServer().createChannel(name, stoi(params[2]));
@@ -129,12 +130,12 @@ void	create(Bot const * bot, User const * sender, std::vector<std::string> const
 
 }
 
-void	del(Bot const * bot, User const * sender, std::vector<std::string> const & params)
+static void	del(Bot const * bot, User const * sender, std::vector<std::string> const & params)
 {
 	Channel *	channel;
 	if(params.size() != 2)	
 		return bot->reply(sender, std::string("Wrong input, try: delete <NAME>"));
-	std::string	name = params[1];
+	const std::string &	name = params[1];
 	channel = bot->getServer().getChannelByName(name);
 	if (!channel)
 		return bot->reply(sender, std::string("This channel doesn't exist"));

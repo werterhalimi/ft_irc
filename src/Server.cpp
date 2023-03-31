@@ -168,9 +168,8 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 {
 	std::string reply = rpl_quit(user, params);
 	user.sendReply(reply);
-	std::vector<Channel *>::const_iterator it = user.getChannels()->begin();
 	std::vector<Channel *>::const_iterator ite = user.getChannels()->end();
-	while (it != ite)
+	for (std::vector<Channel *>::const_iterator it = user.getChannels()->begin(); it != ite; ++it)
 		(*(it++))->removeUser(user, reply);
 	user.sendReply(rpl_error(user, cmd));
 	try
@@ -187,14 +186,10 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 
 bool	Server::hasNick(std::string const & nick) const
 {
-	std::vector<User *>::const_iterator it = this->_users->begin();
 	std::vector<User *>::const_iterator ite = this->_users->end();
-	while (it != ite)
-	{
+	for (std::vector<User *>::const_iterator it = this->_users->begin(); it != ite; ++it)
 		if ((*it)->getNickname() == nick)
 			return (true);
-		it++;
-	}
 	return (false);
 }
 
@@ -236,11 +231,6 @@ std::string	Server::getPass() const
 std::string	Server::getName() const
 {
 	return this->_servername;
-}
-
-std::string	Server::getHostname() const
-{
-	return this->_hostname;
 }
 
 std::vector<User *> &	Server::getUsers() const
@@ -330,7 +320,6 @@ Server &	Server::operator=(Server const & src)
 		this->_port = src.getPort();
 		this->_pass = src.getPass();
 		this->_servername = src.getName();
-		this->_hostname = src.getHostname();
 		delete this->_users;
 		delete this->_channels;
 		delete this->_operators;

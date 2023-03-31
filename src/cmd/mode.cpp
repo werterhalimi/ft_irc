@@ -91,7 +91,7 @@ std::string	mode(Cmd * cmd, Server & server, User & usr)
 			return (err_nosuchchannel(usr, params[0]));
 		if (params.size() == 1)
 			return (rpl_channelmodeis(*channel, usr));
-		if (!usr.isGlobalOperator() && !usr.isLocalOperator()) // TODO which one ?
+		if (!usr.isGlobalOperator() && !usr.isLocalOperator())
 			return (err_chanoprivsneeded(*channel, usr));
 		std::string validFlags = std::string(CHANNEL_MODE_FLAG_LETTERS);
 		std::vector<std::string>::const_iterator ite = params.end();

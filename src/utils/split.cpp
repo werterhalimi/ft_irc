@@ -26,7 +26,6 @@ std::vector<std::string> split(std::string const & str, std::string const & sep)
 
 	while (start != str.size())
 	{
-
 		tmp = str.substr((start > str.size()) ? str.size() : start, index - start);
 		start = index + sep.size();
 		ret.push_back(tmp);

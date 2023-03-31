@@ -44,7 +44,4 @@ class Bot : public User
 		Bot &		operator=(Bot const & src);
 };
 
-void	del(Bot const * bot, User const * usr, std::vector<std::string> const & params);
-void	create(Bot const * bot, User const * usr, std::vector<std::string> const & params);
-void	stop(Bot const * bot, User const * usr, std::vector<std::string> const & params);
 #endif
