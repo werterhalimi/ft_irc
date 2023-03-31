@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 18:55:59 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/31 16:49:51 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,6 @@ void	Server::launch()
 				{
 					char	buff[513];
 					buff_len = read((user->getFd()), buff, 513);
-					if (buff_len < 0)
-						throw std::exception();
 					buff[buff_len] = 0;
 					User *usr = new User();
 					usr->setFd((int)event[i].ident);
