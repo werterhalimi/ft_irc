@@ -10,29 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.h"
-#include "Cmd.hpp"
+#include "Server.hpp"
 
-Server::Server() :
-	_users(new std::vector<User *>()),
-	_operators(new std::vector<Operator *>()),
-	_channels(new std::vector<Channel *>())
-{
-	#if LOG_LEVEL == 10
-		std::cout << BOLD_BLUE << "Server default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
-	#endif
-}
+/* Public */
 
-Server::Server(std::string const & name) :
-	_servername(name),
-	_users(new std::vector<User *>()),
-	_operators(new std::vector<Operator *>()),
-	_channels(new std::vector<Channel *>())
-{
-	#if LOG_LEVEL == 10
-		std::cout << BOLD_BLUE << "Server name constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
-	#endif
-}
+/* Constructors & Destructor */
 
 Server::Server(int port, std::string const & pass) :
 	_port(port),
@@ -40,7 +22,9 @@ Server::Server(int port, std::string const & pass) :
 	_servername("Default"),
 	_users(new std::vector<User *>()),
 	_operators(new std::vector<Operator *>()),
-	_channels(new std::vector<Channel *>())
+	_channels(new std::vector<Channel *>()),
+	_kq_fd(),
+	_running(true)
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server port&path constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
@@ -49,52 +33,20 @@ Server::Server(int port, std::string const & pass) :
 	this->_time = gmtime(&time_now);
 }
 
-Server::Server(Server const & src) 
-{
-	#if LOG_LEVEL == 10
-		std::cout << BOLD_BLUE << "Server copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
-	#endif
-	this->_port = src.getPort();
-	this->_pass = src.getPass();
-	this->_servername = src.getName();
-	this->_hostname = src.getHostname();
-	this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
-	this->_channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
-	this->_operators = new std::vector<Operator *>(src.getOperators().begin(), src.getOperators().end());
-}
-
 Server::~Server()
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
-	std::vector<User *>::const_iterator	it = this->_users->begin() + 1;
-	while (it != this->_users->end())
-	{
-		
-		(*it)->sendReply(rpl_error(*(*it), std::string(":The server is shutting down")));
-		it++;
-	}
-	
+	std::vector<User *>::const_iterator ite = this->_users->end();
+	for (std::vector<User *>::const_iterator it = this->_users->begin() + 1; it != ite; ++it)
+		(*it)->sendReply(rpl_error(*(*it), ":The server is shutting down"));
 	deleteVector(this->_users);
 	deleteVector(this->_channels);
 	deleteVector(this->_operators);
 }
 
-Server &	Server::operator=(Server const & src)
-{
-	this->_port = src.getPort();
-	this->_pass = src.getPass();
-	this->_servername = src.getName();
-	this->_hostname = src.getHostname();
-	delete this->_users;
-	delete this->_channels;
-	delete this->_operators;
-	this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
-	this->_channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
-	this->_operators = new std::vector<Operator *>(src.getOperators().begin(), src.getOperators().end());
-	return *this;
-}
+/* Functions */
 
 void	Server::launch()
 {
@@ -106,7 +58,6 @@ void	Server::launch()
 	struct kevent		event_set = {};
 	socklen_t			sizeofAddress = sizeof(address);
 
-	this->_running = true;
 	try
 	{
 		serverConfig("config/IRC.conf");
@@ -209,34 +160,6 @@ void	Server::launch()
 	std::cout << "Shutting down" << std::endl;
 }
 
-void	Server::stop(void)
-{
-	this->_running = false;
-}
-
-void	Server::registerCustomUser(User & user)
-{
-	this->_users->push_back(&user);
-}
-
-void	Server::removeChannel(Channel const * channel)
-{
-	this->_channels->erase(std::find(this->_channels->begin(), this->_channels->end(), channel));
-	delete channel;
-}
-
-void	Server::handleLogin(User & user, struct kevent * event)
-{
-	this->_users->push_back(&user);
-
-	int fd = accept(user.getFd(), (struct sockaddr *) user.getAddressPtr(), user.getSocklenPtr());
-	if (fd < 0)
-		return ;
-	user.setFd(fd);
-	user.setKEvent(event);
-	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD, 0, 0, &user);
-}
-
 void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & params)
 {
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
@@ -254,10 +177,7 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 	close(user.getFd());
 }
 
-void	Server::createChannel(std::string name, int slots)
-{
-	this->_channels->push_back(new Channel("#" + name, slots));
-}
+/* Checkers */
 
 bool	Server::hasNick(std::string const & nick) const
 {
@@ -272,38 +192,30 @@ bool	Server::hasNick(std::string const & nick) const
 	return (false);
 }
 
+/* Specific setters */
 
-User	* Server::getUserByName(std::string const & name) const
+void	Server::registerCustomUser(User & user)
 {
-	std::vector<User *>::const_iterator	it = this->_users->begin();
-	std::vector<User *>::const_iterator	ite = this->_users->end();
-	while (it != ite)
-	{
-		if ((*it)->getNickname() == name)
-			return (*it);
-		it++;
-	}
-	return (NULL);
+	this->_users->push_back(&user);
 }
 
-
-Channel	* Server::getChannelByName(std::string const & name) const
+void	Server::createChannel(std::string const & name, int slots)
 {
-	std::vector<Channel *>::const_iterator	it = this->_channels->begin();
-	std::vector<Channel *>::const_iterator	ite = this->_channels->end();
-	while (it != ite)
-	{
-		if ((*it)->getName() == name)
-			return (*it);
-		it++;
-	}
-	return (NULL);
+	this->_channels->push_back(new Channel("#" + name, slots));
 }
 
-std::string	Server::prefix() const
+void	Server::removeChannel(Channel const * channel)
 {
-	return (":" + this->getName() + " ");
+	this->_channels->erase(std::find(this->_channels->begin(), this->_channels->end(), channel));
+	delete channel;
 }
+
+void	Server::stop()
+{
+	this->_running = false;
+}
+
+/* Getters */
 
 int	Server::getPort() const
 {
@@ -340,6 +252,13 @@ std::vector<Channel *> &	Server::getChannels() const
 	return *(this->_channels);
 }
 
+struct tm *	Server::getTime() const
+{
+	return (this->_time);
+}
+
+/* Specific getters */
+
 int	Server::getChannelID(std::string const & name) const
 {
 	int	id = 0;
@@ -367,9 +286,96 @@ int	Server::getUserID(std::string const & nickname) const
 	return (EXIT_ERROR_NEG);
 }
 
-struct tm *	Server::getTime() const
+User *	Server::getUserByName(std::string const & name) const
 {
-	return (this->_time);
+	std::vector<User *>::const_iterator	ite = this->_users->end();
+	for (std::vector<User *>::const_iterator it = this->_users->begin(); it < ite; ++it)
+		if ((*it)->getNickname() == name)
+			return (*it);
+	return (NULL);
+}
+
+Channel	* Server::getChannelByName(std::string const & name) const
+{
+	std::vector<Channel *>::const_iterator	ite = this->_channels->end();
+	for (std::vector<Channel *>::const_iterator it = this->_channels->begin(); it < ite; ++it)
+		if ((*it)->getName() == name)
+			return (*it);
+	return (NULL);
+}
+
+std::string	Server::getPrefix() const
+{
+	return (":" + this->getName() + " ");
+}
+
+/* Private */
+
+/* Constructors */
+
+Server::Server() :
+	_port(),
+	_users(new std::vector<User *>()),
+	_operators(new std::vector<Operator *>()),
+	_channels(new std::vector<Channel *>()),
+	_time(),
+	_kq_fd(),
+	_running()
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+}
+
+Server::Server(Server const & src) :
+	_port(),
+	_users(),
+	_operators(),
+	_channels(),
+	_time(),
+	_kq_fd(),
+	_running()
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Server copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+	*this = src;
+}
+
+/* Overload operators */
+
+Server &	Server::operator=(Server const & src)
+{
+	if (this != &src)
+	{
+		this->_port = src.getPort();
+		this->_pass = src.getPass();
+		this->_servername = src.getName();
+		this->_hostname = src.getHostname();
+		delete this->_users;
+		delete this->_channels;
+		delete this->_operators;
+		this->_users = new std::vector<User *>(src.getUsers().begin(), src.getUsers().end());
+		this->_channels = new std::vector<Channel *>(src.getChannels().begin(), src.getChannels().end());
+		this->_operators = new std::vector<Operator *>(src.getOperators().begin(), src.getOperators().end());
+		this->_time = src.getTime();
+		this->_kq_fd = src._kq_fd;
+		this->_running = src._running;
+	}
+	return *this;
+}
+
+/* Functions */
+
+void	Server::handleLogin(User & user, struct kevent * event)
+{
+	int fd = accept(user.getFd(), (struct sockaddr *) user.getAddressPtr(), user.getSocklenPtr());
+	if (fd < 0)
+		return ;
+	this->_users->push_back(&user);
+	user.setFd(fd);
+	user.setKEvent(event);
+	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD, 0, 0, &user);
 }
 
 void	Server::serverConfig(const char * path)

@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "Channel.h"
-#include "Server.h"
+#include "Server.hpp"
 
 static bool	isNameValid(std::string const & name)
 {

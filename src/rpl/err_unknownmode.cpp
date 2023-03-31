@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
 
 std::string	err_unknownmode(User const & user, std::string const & mode)

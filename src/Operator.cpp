@@ -12,6 +12,10 @@
 
 #include "Operator.hpp"
 
+/* Public */
+
+/* Constructors & Destructor */
+
 Operator::Operator(std::string const & name, std::string const & host, std::string const & password) :
 	_name(name),
 	_host(host),
@@ -46,6 +50,8 @@ Operator::~Operator()
 	#endif
 }
 
+/* Checkers */
+
 bool	Operator::isValidHost(std::string const & host) const
 {
 	return (host == this->_host);
@@ -56,7 +62,41 @@ bool	Operator::isValidPassword(std::string const & password) const
 	return (password == this->_password);
 }
 
+/* Getters */
+
 std::string const &	Operator::getName() const
 {
 	return (this->_name);
+}
+
+/* Private */
+
+/* Constructors */
+
+Operator::Operator()
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Operator name, host & password constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+}
+
+Operator::Operator(Operator const & src)
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Operator name, host & password constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+	*this = src;
+}
+
+/* Overload operators */
+
+Operator &	Operator::operator=(Operator const & src)
+{
+	if (this != &src)
+	{
+		this->_name = src._name;
+		this->_host = src._host;
+		this->_password = src._password;
+	}
+	return *this;
 }

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
 
 std::string	rpl_umodeis(User const & user)

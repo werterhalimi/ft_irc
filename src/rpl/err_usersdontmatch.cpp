@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
 
 std::string	err_usersdontmatch(User const & user, size_t size)

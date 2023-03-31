@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
-# include "Channel.h"
+# include "Channel.hpp"
 
 static std::string	updateChannelMode(int flags, Channel & channel, bool value)
 {

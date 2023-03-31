@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.h                                           :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,50 +13,11 @@
 #ifndef SERVER_H
 # define SERVER_H
 
-# include "ft_irc.hpp"
-# include "User.h"
-# include "Channel.h"
-# include <utility>
-# include <stdexcept>
-//# include <stdio.h>
-//# include <string.h>
+# include "Channel.hpp"
 
 class Server
 {
-	public:
-		Server();
-		explicit Server(std::string const & name); // TODO Used ?
-		Server(int port, std::string const & pass);
-		Server(Server const & src);
-		~Server();
-
-		Server &					operator=(Server const & src);
-
-		void						launch();
-		void						registerCustomUser(User & user);
-		void						handleLogin(User & user, struct kevent * event);
-		void						handleLogout(Cmd const & cmd, User & user, std::string const & reason);
-		void						createChannel(std::string name, int slots);
-		void						removeChannel(Channel const * channel);
-
-		Channel *					getChannelByName(std::string const & name) const;
-		User *						getUserByName(std::string const & name) const;
-		bool						hasNick(std::string const & nick) const;
-		std::string					prefix() const;
-		int							getPort() const;
-		std::string					getPass() const;
-		std::string					getName() const;
-		std::string					getHostname() const;
-		std::vector<User *> &		getUsers() const;
-		std::vector<Operator *> &	getOperators() const;
-		std::vector<Channel *> &	getChannels() const;
-		int 						getChannelID(std::string const & name) const;
-		int 						getUserID(std::string const & nickname) const;
-		struct tm *					getTime() const;
-		void						stop(void);
-
-		void						serverConfig(const char * path);
-
+	/* Attributes */
 	private:
 		int							_port;
 		std::string					_pass;
@@ -68,6 +29,54 @@ class Server
 		struct tm *					_time;
 		int							_kq_fd;
 		volatile bool				_running;
+
+	/* Member functions */
+	public:
+		/* Constructors & Destructor */
+		Server(int port, std::string const & pass);
+		~Server();
+
+		/* Functions */
+		void						launch();
+		void						handleLogout(Cmd const & cmd, User & user, std::string const & reason);
+
+		/* Checkers */
+		bool						hasNick(std::string const & nick) const;
+
+		/* Specific setters */
+		void						registerCustomUser(User & user);
+		void						createChannel(std::string const & name, int slots);
+		void						removeChannel(Channel const * channel);
+		void						stop();
+
+		/* Getters */
+		int							getPort() const;
+		std::string					getPass() const;
+		std::string					getName() const;
+		std::string					getHostname() const;
+		std::vector<User *> &		getUsers() const;
+		std::vector<Operator *> &	getOperators() const;
+		std::vector<Channel *> &	getChannels() const;
+		struct tm *					getTime() const;
+
+		/* Specific getters */
+		Channel *					getChannelByName(std::string const & name) const;
+		User *						getUserByName(std::string const & name) const;
+		int 						getChannelID(std::string const & name) const; // TODO ?
+		int 						getUserID(std::string const & nickname) const; // TODO ?
+		std::string					getPrefix() const;
+
+	private:
+		/* Constructors */
+		Server();
+		Server(Server const & src);
+
+		/* Overload operators */
+		Server &					operator=(Server const & src);
+
+		/* Functions */
+		void						handleLogin(User & user, struct kevent * event);
+		void						serverConfig(const char * path);
 };
 
 #endif

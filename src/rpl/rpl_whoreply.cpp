@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
-# include "Server.h"
+# include "Server.hpp"
 
 std::string	rpl_whoreply(Server const & server, User const & user, User const * target)
 {

@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
-# include "Channel.h"
+# include "Channel.hpp"
 
 std::string	rpl_channelmodeis(Channel const & channel, User const & user)
 {

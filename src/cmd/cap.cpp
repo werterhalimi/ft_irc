@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "Channel.h"
-#include "Server.h"
 
 std::string	cap(Cmd * cmd, Server & server, User & usr)
 {

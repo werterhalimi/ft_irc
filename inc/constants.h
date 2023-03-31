@@ -17,9 +17,13 @@
 
 # define EXIT_SUCCESS			0
 # define EXIT_ERROR				1
-# define EXIT_ERROR_NEG			1
+# define EXIT_ERROR_NEG			-1
+
+/* Const */
 
 # define BUFFER_SIZE			513
+# define NB_PARAMS				15
+# define NB_CMD					17
 
 /* Colors */
 

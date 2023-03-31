@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "Server.h"
+#include "Server.hpp"
 
 static void	updateUserFlag(int *flagToAdd, int *flagToRemove, char c, User & usr, bool removeMode)
 {

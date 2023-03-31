@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
-# include "Server.h"
+# include "Server.hpp"
 
 std::string	rpl_yourhost(Server const & server, User const & user)
 {

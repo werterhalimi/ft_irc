@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
 
 std::string	err_nicknameinuse(Server const & server, User const & user, std::string const & name)
@@ -19,17 +18,6 @@ std::string	err_nicknameinuse(Server const & server, User const & user, std::str
 
 	reply.setCmd(ERR_NICKNAMEINUSE);
 	reply.addParam(user.getNickname()); // TODO ?
-	reply.addParam(name);
-	reply.addParam(":Nickname is already in use");
-	return (reply.toString());
-}
-
-std::string	err_nicknameinuse(User const & user, std::string const & name)
-{
-	Cmd reply(user);
-
-	reply.setCmd(ERR_NICKNAMEINUSE);
-	reply.addParam(user.getNickname());
 	reply.addParam(name);
 	reply.addParam(":Nickname is already in use");
 	return (reply.toString());

@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "User.h"
-#include "Server.h"
-#include "reply.h"
+#include "User.hpp"
+#include "Server.hpp"
 
 User::User() :
 	_boolFlags(0),

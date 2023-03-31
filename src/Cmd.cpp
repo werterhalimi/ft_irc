@@ -11,7 +11,14 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "cmd.h"
+#include "Server.hpp"
+
+/* Static functions */
+static size_t	findLength(std::string const &msg, size_t index, size_t end);
+
+/* Public */
+
+/* Constructors & Destructor */
 
 Cmd::Cmd(std::string const &msg) :
 	_params(*(new std::vector<std::string>()))
@@ -32,7 +39,7 @@ Cmd::Cmd(User const &user) :
 }
 
 Cmd::Cmd(Server const &server) :
-	_prefix(server.prefix()),
+	_prefix(server.getPrefix()),
 	_params(*(new std::vector<std::string>()))
 {
 	#if LOG_LEVEL == 10
@@ -48,31 +55,7 @@ Cmd::~Cmd()
 	delete &(this->_params);
 }
 
-Cmd::Cmd()  :  _params(*(new std::vector<std::string>()))
-{
-	#if LOG_LEVEL == 10
-		std::cout << BOLD_BLUE << "Cmd default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
-	#endif
-}
-
-Cmd::Cmd(Cmd const &cmd) : _params(*(new std::vector<std::string>()))
-{
-	#if LOG_LEVEL == 10
-		std::cout << BOLD_BLUE << "Cmd copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
-	#endif
-	*this = cmd;
-}
-
-Cmd	&Cmd::operator=(Cmd const &cmd)
-{
-	if (this != &cmd)
-	{
-		this->_cmd = cmd.getCmd();
-		for (size_t i = 0; i < NB_PARAMS; ++i)
-			this->_params.push_back(cmd.getOneParam(i));
-	}
-	return (*this);
-}
+/* Functions */
 
 std::string 	Cmd::toString() const
 {
@@ -86,15 +69,114 @@ std::string 	Cmd::toString() const
 	return (str);
 }
 
-static size_t	findLength(std::string const &msg, size_t index, size_t end)
+void	Cmd::execute(Server &server, User &currentUser)
 {
-	size_t	length;
+	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
+		&pass,		&nick,		&user,		&privmsg,
+		&ping,		&pong, 	&mode,		&join,
+		&part,		&oper,		&quit,		&kick,
+		&topic,	&who,		&invite,	&cap,
+		&kill
+	};
+	static std::string	cmdNames[NB_CMD] = {
+		"PASS",	"NICK",		"USER",		"PRIVMSG",
+		"PING", 	"PONG",	"MODE",	"JOIN",
+		"PART",	"OPER",	"QUIT",	"KICK",
+		"TOPIC", 	"WHO",		"INVITE",	"CAP",
+		"kill"
+	};
 
-	length = msg.find(' ', index + 1);
-	if (length == std::string::npos)
-		return (end - index);
-	return (length - index);
+	for (size_t i = 0; i < NB_CMD; ++i)
+	{
+		if (_cmd == cmdNames[i])
+		{
+			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
+			{
+				if (_cmd == "CAP") return ;
+				currentUser.sendReply(err_passwdmismatch(server, currentUser));
+				continue ;
+			}
+			currentUser.sendReply(executeFct[i](this, server, currentUser));
+			return;
+		}
+	}
+	currentUser.sendReply(err_unknowncommand(server, currentUser, *this));
 }
+
+/* Setters */
+
+void	Cmd::setCmd(std::string const &cmd)
+{
+	this->_cmd = cmd;
+}
+
+void	Cmd::setParams(std::vector<std::string> const &params)
+{
+	this->_params = params;
+}
+
+/* Specific setters */
+
+void	Cmd::addParam(std::string const &param)
+{
+	this->_params.push_back(param);
+}
+
+/* Getters */
+
+std::string const	&Cmd::getCmd() const
+{
+	return (this->_cmd);
+}
+
+std::vector<std::string> const	&Cmd::getParams() const
+{
+	return (this->_params);
+}
+
+/* Specific getters */
+
+std::string const	&Cmd::getOneParam(size_t i) const
+{
+	return (this->_params[i]);
+}
+
+/* Private */
+
+/* Constructors */
+
+Cmd::Cmd() :
+	_params(*(new std::vector<std::string>()))
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+}
+
+Cmd::Cmd(Cmd const &cmd) :
+	_params(*(new std::vector<std::string>()))
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Cmd copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+	*this = cmd;
+}
+
+/* Overload operators */
+
+Cmd	&Cmd::operator=(Cmd const &cmd)
+{
+	if (this != &cmd)
+	{
+		this->_params = cmd._params;
+		this->_cmd = cmd.getCmd();
+		for (size_t i = 0; i < NB_PARAMS; ++i)
+			this->_params.push_back(cmd.getOneParam(i));
+	}
+	return (*this);
+}
+
+/* Functions */
 
 void	Cmd::parse(std::string const &msg)
 {
@@ -128,93 +210,14 @@ void	Cmd::parse(std::string const &msg)
 	this->_params.push_back(msg.substr(index + 1, end - index - 1));
 }
 
-void	Cmd::execute(Server &server, User &currentUser)
-{
-	static std::string	(*executeFct[NB_CMD])(Cmd *cmd, Server &servr, User &currentUsr) = {
-		&pass,		&nick,		&user,		&privmsg,
-		&ping,		&pong, 	&mode,		&join,
-		&part,		&oper,		&quit,		&kick,
-		&topic,	&who,		&invite,	&cap,
-		&kill
-	};
-	/*
-	 * &service,		&squit, &names,
-		&list,		&privmsg,
-		&notice,	&motd,		&luser,	&version,
-		&stats,	&links,	&time,		&connect,
-		&trace,	&admin,	&info,		&servlist,
-		&squery,	&whois,	&whowas, &error,
-		&away,	&rehash,	&die,		&restart,
-		&summon,	&_users,	&wallops,	&usehost,
-		&ison
-	};*/
-	for (size_t i = 0; i < NB_CMD; ++i)
-	{
-		if (_cmd == this->getCmdNames(i))
-		{
-			if ((i != 0 && !currentUser.hasPass()) || (i > 2 && !currentUser.isLog()))
-			{
-				if (_cmd == "CAP") return ;
-				currentUser.sendReply(err_passwdmismatch(server, currentUser));
-				continue ;
-			}
-			currentUser.sendReply(executeFct[i](this, server, currentUser));
-			return;
-		}
-	}
-	currentUser.sendReply(err_unknowncommand(server, currentUser, *this));
-}
+/* Static functions */
 
-std::string const	&Cmd::getCmdNames(size_t i) const
+static size_t	findLength(std::string const &msg, size_t index, size_t end)
 {
-	static std::string	cmdNames[NB_CMD] = {
-		"PASS",	"NICK",		"USER",		"PRIVMSG",
-		"PING", 	"PONG",	"MODE",	"JOIN",
-		"PART",	"OPER",	"QUIT",	"KICK",
-		"TOPIC", 	"WHO",		"INVITE",	"CAP",
-		"kill"
-	};
-	/*
-		"SERVICE",	"SQUIT", "NAMES",
-		"LIST",	"INVITE",
-		"NOTICE",	"MOTD",	"LUSERS",	"VERSION",
-		"STATS",	"LINKS",	"TIME",	"CONNECT",
-		"TRACE",	"ADMIN",	"INFO",	"SERVLIST",
-		"SQUERY",	"WHOIS",	"WHOWAS", "ERROR",
-		"AWAY",	"REHASH",	"DIE",	"RESTART",
-		"SUMMON",	"USERS",	"WALLOPS",	"USERHOST",
-		"ISON"
-	};*/
+	size_t	length;
 
-	return (cmdNames[i]);
-}
-
-std::string const	&Cmd::getCmd() const
-{
-	return (this->_cmd);
-}
-
-std::vector<std::string> const	&Cmd::getParams() const
-{
-	return (this->_params);
-}
-
-std::string const	&Cmd::getOneParam(size_t i) const
-{
-	return (this->_params[i]);
-}
-
-void	Cmd::setCmd(std::string const &cmd)
-{
-	this->_cmd = cmd;
-}
-
-void	Cmd::addParam(std::string const &param)
-{
-	this->_params.push_back(param);
-}
-
-void	Cmd::addParams(std::vector<std::string> const &params)
-{
-	this->_params = params;
+	length = msg.find(' ', index + 1);
+	if (length == std::string::npos)
+		return (end - index);
+	return (length - index);
 }

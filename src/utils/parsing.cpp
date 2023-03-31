@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 # include "ft_irc.hpp"
-# include "Channel.h"
+# include "Channel.hpp"
 
 int	parsingFlags(std::string const & src)
 {

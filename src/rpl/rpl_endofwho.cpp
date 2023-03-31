@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "reply.h"
-#include "Server.h"
+#include "Cmd.hpp"
 
-std::string rpl_endofwho(Server const & server, std::string client, std::string mask)
+std::string rpl_endofwho(Server const & server, std::string const & client, std::string const & mask)
 {
 	Cmd	reply(server);
 	reply.setCmd(RPL_ENDOFWHO);

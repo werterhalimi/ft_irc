@@ -11,38 +11,25 @@
 /* ************************************************************************** */
 
 #include "Bot.hpp"
-#include <sstream>
 
-Bot::Bot(void) : User(){}
-Bot::Bot(std::string name, Server & server) : User(name, name, "BotLand"), _server(&server) {}
+/* Static functions */
+static std::string				nicknameFromPrefix(std::string const & prefix);
+static std::vector<std::string>	messageToParams(std::string const & prefix);
 
-Bot::~Bot(void){}
+/* Public */
 
-Bot::Bot(Bot const & src) : User(){ (void) src; }
-Bot &	Bot::operator=(Bot const & src)
-{
-	(void) src;
-	return *this;
-}
+/* Constructors & Destructor */
 
+Bot::Bot(std::string const & name, Server & server) :
+	User(name, name, "BotLand"),
+	_server(&server)
+{}
 
-static std::string	nicknameFromPrefix(std::string const & prefix)
-{
-	std::string ret;
-	if (prefix.empty() || prefix[0] != ':') return ret;
-	size_t	index = prefix.find("!");
-	if (index == std::string::npos) return ret;
-	ret = prefix.substr(1, index - 1);
-	return ret;
-}
+Bot::~Bot(){}
 
-static std::vector<std::string>	messageToParams(std::string const & prefix)
-{
-	std::vector<std::string>	tmp = split(prefix, ":");
-	return (split(tmp.back(), " "));
-}
+/* Functions */
 
-void	Bot::reply(User const * user, std::string message) const
+void	Bot::reply(User const * user, std::string const & message) const
 {
 	user->sendReply(rpl_privmsg(*this, user->getNickname(), message));
 }
@@ -93,13 +80,55 @@ void	Bot::sendReply(std::string const & reply) const
 			std::string line("Name: ");
 			line.append((*it)->getName());
 			line.append(" User(s): ");
-			line.append(itos((*it)->getUsers().size()));
+			line.append(itos((int)(*it)->getUsers().size()));
 			line.append("/");
-			line.append(itos((*it)->getSlots()));
+			line.append(itos((int)(*it)->getSlots()));
 			line.append("\n");
 			this->reply(sender, line);
 			it++;
 		}
 		return ;
 	}
+}
+
+/* Private */
+
+/* Constructors */
+
+Bot::Bot() : User(), _server() {}
+
+Bot::Bot(Bot const & src) :
+	User(src), _server()
+{
+	*this = src;
+}
+
+/* Overload operators */
+
+Bot &	Bot::operator=(Bot const & src)
+{
+	if (this != & src)
+	{
+		User::operator=(src);
+		this->_server = src._server;
+	}
+	return *this;
+}
+
+/* Static functions */
+
+static std::string	nicknameFromPrefix(std::string const & prefix)
+{
+	std::string ret;
+	if (prefix.empty() || prefix[0] != ':') return ret;
+	size_t	index = prefix.find('!');
+	if (index == std::string::npos) return ret;
+	ret = prefix.substr(1, index - 1);
+	return ret;
+}
+
+static std::vector<std::string>	messageToParams(std::string const & prefix)
+{
+	std::vector<std::string>	tmp = split(prefix, ":");
+	return (split(tmp.back(), " "));
 }

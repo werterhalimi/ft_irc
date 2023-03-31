@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "Server.h"
+#include "Server.hpp"
 
 std::string	pass(Cmd * cmd, Server & server, User & usr)
 {

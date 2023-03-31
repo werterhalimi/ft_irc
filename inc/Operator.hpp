@@ -17,27 +17,33 @@
 
 class Operator
 {
+	/* Attributes */
 	private:
-		std::string	_name;
-		std::string	_host;
-		std::string	_password;
+		std::string			_name;
+		std::string			_host;
+		std::string			_password;
 
+	/* Member functions */
 	public:
+		/* Constructors & Destructor */
 		Operator(std::string const & name, std::string const & host, std::string const & password);
 		explicit Operator(std::string const & config);
 		~Operator();
 
-		bool	isValidHost(std::string const & host) const;
-		bool	isValidPassword(std::string const & password) const;
+		/* Checkers */
+		bool				isValidHost(std::string const & host) const;
+		bool				isValidPassword(std::string const & password) const;
 
+		/* Getters */
 		std::string const &	getName() const;
 
 	private:
+		/* Constructors */
 		Operator();
+		Operator(Operator const & src);
 
-		Operator(Operator const &op);
-
-		Operator	&operator=(Operator const &op);
+		/* Overload operators */
+		Operator &			operator=(Operator const & src);
 };
 
 #endif

@@ -60,8 +60,8 @@ OBJS_DIR		:=	./bin/
 OBJS_SUB_DIR	:= 	$(OBJS_DIR)utils $(OBJS_DIR)cmd $(OBJS_DIR)rpl
 OBJS			:=	$(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
-INCS_FILES		:=	constants.h	cmd.h	Cmd.hpp		ft_irc.hpp 	Server.h	Channel.h \
-					User.h		Operator.hpp	reply.h	Bot.hpp
+INCS_FILES		:=	constants.h	cmd.h	Cmd.hpp		ft_irc.hpp 	Server.hpp	Channel.hpp \
+					User.hpp		Operator.hpp	reply.h	Bot.hpp error.h
 INCS_DIR		:=	./inc/
 INCS		 	:=	$(addprefix $(INCS_DIR),$(INCS_FILES))
 

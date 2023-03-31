@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   User.h                                             :+:      :+:    :+:   */
+/*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,19 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef USER_H
 # define USER_H
-# include "ft_irc.hpp"
+
 # include "Operator.hpp"
-# include <vector>
-# include <netinet/in.h>
-# include <cstring>
-# include <iostream>
-# include <sstream>
-# include <sys/socket.h>
-# include <arpa/inet.h>
-# include <unistd.h>
 
 # define PASS_FLAG				0x00000001
 # define NICK_FLAG				0x00000002
@@ -42,6 +33,20 @@ class Channel;
 
 class User
 {
+	private:
+		unsigned int 			_boolFlags;
+		struct sockaddr_in		_addr;
+		socklen_t 				_len;
+		int						_fd;
+		std::string				_username;
+		std::string				_nickname;
+		std::string				_hostname;
+		std::string				_realname;
+		struct kevent *			_event;
+		std::vector<Channel *>*	_channels;
+		char					_buffer[513];
+		int						_bufferLength;
+
 	public:
 		User();
 		User(std::string const &username, std::string const &nickname, std::string const &hostname);
@@ -96,19 +101,5 @@ class User
 		bool				isGlobalOperator() const;
 		bool				isLocalOperator() const;
 		bool				isOperator() const;
-
-	private:
-		unsigned int 			_boolFlags;
-		struct sockaddr_in		_addr;
-		socklen_t 				_len;
-		int						_fd;
-		std::string				_username;
-		std::string				_nickname;
-		std::string				_hostname;
-		std::string				_realname;
-		struct kevent *			_event;
-		std::vector<Channel *>*	_channels;
-		char					_buffer[513];
-		int						_bufferLength;
 };
 #endif

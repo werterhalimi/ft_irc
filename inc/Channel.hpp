@@ -1,8 +1,7 @@
-/*	
- *	o ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Channel.h                                          :+:      :+:    :+:   */
+/*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,9 +12,8 @@
 
 #ifndef CHANNEL_H
 # define CHANNEL_H
+
 # include "Cmd.hpp"
-# include "ft_irc.hpp"
-# include "User.h"
 
 # define INVITE_ONLY_FLAG			0x00000001
 # define PROTECTED_TOPIC_FLAG		0x00000002
@@ -24,45 +22,11 @@
 
 # define CHANNEL_MODE_FLAG_LETTERS	"itlb" // TODO ban
 
-class Cmd;
 class Server;
 
 class Channel
 {
-	public:
-		Channel();
-		Channel(std::string const & name, int slot);
-		explicit Channel(std::string const & config);
-		Channel(Channel const & src);
-		~Channel();
-
-		void					addUser(Server const & server, User & user);
-		void					addInvitedUser(User * user);
-		void					removeUser(User & user, std::string const & reply);
-		void					removeUser1Channel(User & user, std::string const & reply);
-		bool					isBanned(User const & user) const;
-		bool					isInvited(User const & user) const;
-		bool					hasUser(User & user) const;
-		bool					isFull() const;
-		bool					isInviteOnly() const;
-		bool					isProtectedTopic() const;
-		bool					isClientLimit() const;
-		bool					isBanChannel() const;
-		void					setInviteOnly(bool flag);
-		void					setProtectedTopic(bool flag);
-		void					setClientLimit(bool flag);
-		void					setBanChannel(bool flag);
-		Channel &				operator=(Channel const & src);
-		std::string	const &		getName() const;
-		size_t					getSlots() const;
-		std::string const &		getKey() const;
-		std::string const &		getTopic() const;
-		std::vector<User *> &	getUsers() const;
-		User * 					getUserByName(std::string const & name) const;
-		std::vector<User *> &	getBannedUsers() const;
-		std::vector<User *> &	getInvitedUsers() const;
-		void					setTopic(std::string const & topic);
-
+	/* Attributes */
 	private:
 		unsigned int 			_boolFlags;
 		std::string				_name;
@@ -72,5 +36,55 @@ class Channel
 		std::vector<User *> *	_invitedUsers;
 		size_t					_slots;
 		std::string 			_topic;
+
+	/* Member functions */
+	public:
+		/* Constructors & Destructor */
+		Channel(std::string const & name, int slot);
+		explicit Channel(std::string const & config);
+		~Channel();
+
+		/* Checkers */
+		bool					hasUser(User & user) const;
+		bool					isFull() const;
+		bool					isBanned(User const & user) const;
+		bool					isInvited(User const & user) const;
+
+		/* Setters */
+		void					setTopic(std::string const & topic);
+
+		/* Specific setters */
+		void					setInviteOnly(bool flag);
+		void					setProtectedTopic(bool flag);
+		void					setClientLimit(bool flag);
+		void					setBanChannel(bool flag);
+		void					addUser(Server const & server, User & user);
+		void					addInvitedUser(User * user);
+		void					removeUser(User & user, std::string const & reply);
+		void					removeUser1Channel(User & user, std::string const & reply);
+
+		/* Getters */
+		std::string	const &		getName() const;
+		std::string const &		getKey() const;
+		std::vector<User *> &	getUsers() const;
+		std::vector<User *> &	getBannedUsers() const;
+		std::vector<User *> &	getInvitedUsers() const;
+		size_t					getSlots() const;
+		std::string const &		getTopic() const;
+
+		/* Specific getters */
+		bool					isInviteOnly() const;
+		bool					isProtectedTopic() const;
+		bool					isClientLimit() const;
+		bool					isBanChannel() const;
+		User * 					getUserByName(std::string const & name) const;
+
+	private:
+		/* Constructors */
+		Channel();
+		Channel(Channel const & src);
+
+		/* Overload operators */
+		Channel &				operator=(Channel const & src);
 };
 #endif

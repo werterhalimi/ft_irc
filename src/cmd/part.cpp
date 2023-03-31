@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "Channel.h"
-#include "Server.h"
+#include "Server.hpp"
 
 std::string part(Cmd * cmd, Server & server, User & usr)
 {

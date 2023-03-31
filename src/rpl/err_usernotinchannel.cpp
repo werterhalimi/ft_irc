@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
-# include "Channel.h"
+# include "Channel.hpp"
 
 std::string	err_usernotinchannel(Channel const & channel, User const & user, std::string const & name)
 {

@@ -12,23 +12,32 @@
 
 #ifndef BOT_CPP
 # define BOT_CPP
-# include "User.h"
-# include "Server.h"
 
-class Server;
+# include "Server.hpp"
 
 class Bot : public User
 {
+	/* Attributes */
+	private:
+		Server *	_server;
+
+	/* Member functions */
 	public:
-		Bot(void);
-		Bot(std::string name, Server & server);
-		~Bot(void);
+		/* Constructors & Destructor */
+		Bot(std::string const & name, Server & server);
+		~Bot();
+
+		/* Functions */
+		void		sendReply(std::string const & reply) const;
+		void		reply(User const * user, std::string const & message) const;
+
+	private:
+		/* Constructors */
+		Bot();
 		Bot(Bot const & src);
 
-		Bot &	operator=(Bot const & src);	
-		void				sendReply(std::string const & reply) const;
-		void				reply(User const * user, std::string message) const;
-	private:
-		Server	*	_server;
+		/* Overload operators */
+		Bot &		operator=(Bot const & src);
 };
+
 #endif

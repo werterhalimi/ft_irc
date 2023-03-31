@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
-#include "Server.h"
 #include "Bot.hpp"
 
 int main(int argc, char *argv[])

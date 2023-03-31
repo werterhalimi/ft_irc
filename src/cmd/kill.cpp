@@ -11,47 +11,22 @@
 /* ************************************************************************** */
 
 #include "Cmd.hpp"
-#include "Server.h"
+#include "Server.hpp"
 
-std::string	kill(Cmd * cmd, Server & server, User & usr)
+std::string	kill(Cmd * cmd, Server & server, User & currentUser)
 {
 	std::vector<std::string> params = cmd->getParams();
 
 	if (params.size() < 2)
-		return (err_needmoreparams(usr, *cmd));
+		return (err_needmoreparams(currentUser, *cmd));
 	std::string	userName = params[0];
 	User *	userKill = server.getUserByName(userName);
-	if (!usr.isGlobalOperator() && !usr.isLocalOperator())
-		return (err_noprivileges(usr));
+	if (!currentUser.isGlobalOperator() && !currentUser.isLocalOperator())
+		return (err_noprivileges(currentUser));
 	if (!userKill)
-		return (err_nosuchnick(usr, userName)); // TODO ?
-//	std::string quitMsg = rpl_kill(usr, *userKill, params[1]);
-	userKill->sendReply(rpl_kill(usr, *userKill, params[1]));
+		return (err_nosuchnick(currentUser, userName)); // TODO ?
+	userKill->sendReply(rpl_kill(currentUser, *userKill, params[1]));
 	server.handleLogout(*cmd, *userKill, params[1]);
-
-/*	Channel *	channel = server.getChannelByName(channelName);
-	if (!channel)
-		return (err_nosuchchannel(usr, channelName));
-	if (!usr.isGlobalOperator() && !usr.isLocalOperator())
-		return (err_chanoprivsneeded(*channel, usr));
-	if (!channel->hasUser(usr))
-		return (err_notonchannel(usr, channelName));
-	std::string msg = params.back();
-	std::vector<std::string>::const_iterator ite = params.end();
-	if (msg[0] != ':')
-		msg = ":" + usr.getNickname();
-	else
-		ite--;
-	User *	userToKick;
-	std::vector<User *>	users = channel->getUsers();
-	for (std::vector<std::string>::const_iterator it = params.begin() + 1; it < ite; ++it)
-	{
-		userToKick = channel->getUserByName(*it);
-		if (!userToKick)
-			usr.sendReply(err_usernotinchannel(*channel, usr, *it));
-		else
-			channel->removeUser(*userToKick, rpl_kick(*channel, usr, *it, msg));
-	}
-*/	return ("");
+	return ("");
 }
 

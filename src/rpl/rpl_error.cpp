@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "reply.h"
 # include "Cmd.hpp"
 
 std::string	rpl_error(User const & user, Cmd const & cmd)
@@ -19,11 +18,11 @@ std::string	rpl_error(User const & user, Cmd const & cmd)
 
 	reply.setCmd("ERROR");
 //	reply.addParam(user.getNickname()); TODO ?
-	reply.addParams(cmd.getParams());
+	reply.setParams(cmd.getParams());
 	return (reply.toString());
 }
 
-std::string	rpl_error(User const & user, std::string reason)
+std::string	rpl_error(User const & user, std::string const & reason)
 {
 	Cmd reply(user);
 
