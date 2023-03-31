@@ -33,73 +33,91 @@ class Channel;
 
 class User
 {
+	/* Attributes */
 	private:
-		unsigned int 			_boolFlags;
-		struct sockaddr_in		_addr;
-		socklen_t 				_len;
-		int						_fd;
-		std::string				_username;
-		std::string				_nickname;
-		std::string				_hostname;
-		std::string				_realname;
-		struct kevent *			_event;
-		std::vector<Channel *>*	_channels;
-		char					_buffer[513];
-		int						_bufferLength;
+		unsigned int 				_boolFlags;
+		struct sockaddr_in			_addr;
+		socklen_t 					_len;
+		int							_fd;
+		std::string					_username;
+		std::string					_nickname;
+		std::string					_hostname;
+		std::string					_realname;
+		struct kevent *				_event;
+		std::vector<Channel *> *	_channels;
+		char						_buffer[513];
+		int							_bufferLength;
 
+	/* Member functions */
 	public:
+		/* Constructors & Destructor */
 		User();
 		User(std::string const &username, std::string const &nickname, std::string const &hostname);
-		User(User const & src);
 		virtual ~User();
 
-		virtual void		sendReply(std::string const & reply) const;
+		/* Overload operators */
+		bool						operator==(User const & src) const;
 
-		User &				operator=(User const & src);
-		bool				operator==(User const & src) const;
+		/* Functions */
+		virtual void				sendReply(std::string const & reply) const;
+		void						welcome(Server const & server) const;
+		void						handleCmd(Server & server);
 
-		void				welcome(Server const & server) const;
-		void				handleCmd(Server & server);
+		/* Checkers */
+		bool						isLog() const;
+		bool						loginOperator(Operator const * op, std::string const &password);
 
 		/* Setters */
-		void				addChannel(Channel * chan);
-		void				removeChannel(Channel * chan);
-		void				setKEvent(struct kevent * event);
-		void				auth();
-		void				setFd(int i);
-		void				setUsername(std::string const &user);
-		void				setRealname(std::string const &user);
-		void				setNickname(std::string const &nick);
-		void				setHostname();
-		void				setAway(bool flag);
-		void				setInvisible(bool flag);
-		void				setWallops(bool flag);
-		void				setRestricted(bool flag);
-		void				setGlobalOperator(bool flag);
-		void				setLocalOperator(bool flag);
-		bool				loginOperator(Operator const * op, std::string const &password);
+		void						setKEvent(struct kevent * event);
+		void						setFd(int i);
+		void						setUsername(std::string const &user);
+		void						setNickname(std::string const &nick);
+		void						setRealname(std::string const &user);
+		void						setHostname();
+
+		/* Specific setters */
+		void						auth();
+		void						setAway(bool flag);
+		void						setInvisible(bool flag);
+		void						setWallops(bool flag);
+		void						setRestricted(bool flag);
+		void						setGlobalOperator(bool flag);
+		void						setLocalOperator(bool flag);
+		void						addChannel(Channel * chan);
+		void						removeChannel(Channel * chan);
 
 		/* Getters */
-		struct kevent *		getKEvent() const;
-		bool				hasNick() const;
-		bool				hasUser() const;
-		bool				isLog() const;
-		int &				getFd();
-		socklen_t *			getSocklenPtr();
-		struct sockaddr_in *	getAddressPtr();
-		std::vector<Channel *>*	getChannels() const;
-		std::string getHostname() const;
-		std::string getRealname() const;
-		std::string getNickname() const;
-		std::string	getUsername() const;
-		std::string	prefix() const;
-		bool				hasPass() const;
-		bool				isAway() const;
-		bool				isInvisible() const;
-		bool				isWallops() const;
-		bool				isRestricted() const;
-		bool				isGlobalOperator() const;
-		bool				isLocalOperator() const;
-		bool				isOperator() const;
+		struct kevent *				getKEvent() const;
+		int 						getFd() const;
+		socklen_t *					getSocklenPtr();
+		struct sockaddr_in *		getAddressPtr();
+		std::vector<Channel *> *	getChannels() const;
+		std::string 				getRealname() const;
+		std::string					getUsername() const;
+		std::string 				getNickname() const;
+		std::string 				getHostname() const;
+		std::string					prefix() const;
+
+		/* Specific getters */
+		bool						hasPass() const;
+		bool						hasNick() const;
+		bool						hasUser() const;
+		bool						isAway() const;
+		bool						isInvisible() const;
+		bool						isWallops() const;
+		bool						isRestricted() const;
+		bool						isGlobalOperator() const;
+		bool						isLocalOperator() const;
+		bool						isOperator() const;
+
+	protected:
+		/* Constructors */
+		User(User const & src);
+
+		/* Overload operators */
+		User &						operator=(User const & src);
+
+		/* Specific setters */
+		void						initBuffer();
 };
 #endif

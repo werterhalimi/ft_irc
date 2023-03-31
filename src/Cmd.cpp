@@ -96,8 +96,17 @@ void	Cmd::execute(Server &server, User &currentUser)
 				currentUser.sendReply(err_passwdmismatch(server, currentUser));
 				continue ;
 			}
-			currentUser.sendReply(executeFct[i](this, server, currentUser));
-			return;
+			try
+			{
+				std::string	reply = executeFct[i](this, server, currentUser);
+				currentUser.sendReply(reply);
+				return;
+			}
+			catch (std::exception &e)
+			{
+				currentUser.sendReply(err_unknownerror(server, currentUser, *this));
+				return;
+			}
 		}
 	}
 	currentUser.sendReply(err_unknowncommand(server, currentUser, *this));

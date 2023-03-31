@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quit.cpp                                           :+:      :+:    :+:   */
+/*   err_unknownerror.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 13:40:42 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/22 18:30:08 by shalimi          ###   ########.fr       */
+/*   Created: 2023/03/31 15:59:23 by ncotte            #+#    #+#             */
+/*   Updated: 2023/03/31 15:59:25 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cmd.hpp"
-#include "Server.hpp"
+# include "Cmd.hpp"
 
-std::string quit(Cmd * cmd, Server & server, User & usr)
+std::string	err_unknownerror(Server const & server, User const & user, Cmd const & cmd)
 {
-	std::string reason;
-	std::vector<std::string> params = cmd->getParams();
-	if (!params.empty())
-		reason = params[0];
-	try
-	{
-		server.handleLogout(*cmd, usr, reason);
-	}
-	catch (std::exception &e)
-	{
-		throw std::exception();
-	}
-	return (""); // TODO ?
+	Cmd reply(server);
+
+	reply.setCmd(ERR_UNKNOWNERROR);
+	reply.addParam(user.getNickname());
+	reply.addParam(cmd.getCmd());
+	reply.addParam(":error");
+	return (reply.toString());
 }
+

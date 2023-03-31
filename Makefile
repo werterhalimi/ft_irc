@@ -47,7 +47,7 @@ SRCS_FILES		:=	cmd/admin.cpp		cmd/info.cpp		cmd/kill.cpp		cmd/motd.cpp \
 					rpl/rpl_inviting.cpp			rpl/rpl_channelmode.cpp \
 					rpl/err_channelisfull.cpp		rpl/err_inviteonlychan.cpp \
 					rpl/rpl_invite.cpp				rpl/err_noprivileges.cpp \
-					rpl/rpl_kill.cpp \
+					rpl/rpl_kill.cpp				rpl/err_unknownerror.cpp \
 					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					utils/parsing.cpp	\
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \

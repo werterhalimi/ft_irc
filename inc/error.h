@@ -67,6 +67,8 @@ std::string	err_umodeunknownflag(User const & user);
 
 std::string	err_unknowncommand(Server const & server, User const & user, Cmd const & cmd);
 
+std::string	err_unknownerror(Server const & server, User const & user, Cmd const & cmd);
+
 std::string	err_unknownmode(User const & user, std::string const & mode);
 
 std::string	err_usernotinchannel(Channel const & channel, User const & user, std::string const & name);

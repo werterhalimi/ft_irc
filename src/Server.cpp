@@ -51,10 +51,10 @@ Server::~Server()
 void	Server::launch()
 {
 	int					server_fd;
-	int 				buff_len;
+	ssize_t				buff_len;
 	int					opt = 1;
     struct sockaddr_in	address = {};
-	struct kevent		event[1024];
+	struct kevent		event[KEVENT_BUFFER_SIZE];
 	struct kevent		event_set = {};
 	socklen_t			sizeofAddress = sizeof(address);
 
@@ -66,9 +66,6 @@ void	Server::launch()
 	{
 		throw std::exception();
 	}
-	// AF_INET == ipv4
-	// SOCK_STREAM == tcp
-	// 0 is the default protocol
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		throw std::exception();
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
@@ -101,18 +98,16 @@ void	Server::launch()
 		throw std::exception();
 
 	this->_kq_fd = kqueue();
-	// 1024 is out buffersize
-	if (listen(server_fd, 1024) < 0)
+	if (listen(server_fd, KEVENT_BUFFER_SIZE) < 0)
 		throw std::exception();
 	User	empty;
 	empty.setFd(-2);
 	EV_SET(&event_set, server_fd, EVFILT_READ, EV_ADD, 0, 0, &empty);
 	if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
 		throw std::exception();
-//	int	no_cmd = 1;
 	while (this->_running)
 	{
-		int n = kevent(this->_kq_fd, NULL, 0, event, 1024, NULL);
+		int n = kevent(this->_kq_fd, NULL, 0, event, KEVENT_BUFFER_SIZE, NULL);
 		if (n < 0) continue ;
 		for (int i = 0; i < n; i++)
 		{
@@ -122,22 +117,34 @@ void	Server::launch()
 				#if LOG_LEVEL
 					std::cout << YELLOW << "END OF CONNECTION" << RESET_COLOR << std::endl;
 				#endif
-				this->_users->erase(std::find(this->_users->begin(), this->_users->end(), user));
-				EV_SET(&event_set, (int) event[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-                if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
-                    throw std::exception();
-				close(user->getFd());
+				try
+				{
+					this->userLogout(*user);
+				}
+				catch (std::exception &e)
+				{
+					throw std::exception();
+				}
 			}
 			else if (event[i].filter == EVFILT_READ)
 			{
 				if ((user->getFd()) == -2)
 				{
 					char	buff[513];
-					buff_len = read((user->getFd()), buff, 513); // TODO size_t < 0 ?
+					buff_len = read((user->getFd()), buff, 513);
+					if (buff_len < 0)
+						throw std::exception();
 					buff[buff_len] = 0;
 					User *usr = new User();
 					usr->setFd((int)event[i].ident);
-					handleLogin(*usr, &event_set);
+					try
+					{
+						this->handleLogin(*usr, &event_set);
+					}
+					catch (std::exception &e)
+					{
+						throw std::exception();
+					}
 					if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
 						throw std::exception();
 				}
@@ -151,7 +158,6 @@ void	Server::launch()
 					{
 						throw std::exception();
 					}
-					//delete sp;
 				}
 			}
 		}
@@ -162,7 +168,6 @@ void	Server::launch()
 
 void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & params)
 {
-	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 	std::string reply = rpl_quit(user, params);
 	user.sendReply(reply);
 	std::vector<Channel *>::const_iterator it = user.getChannels()->begin();
@@ -170,11 +175,14 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 	while (it != ite)
 		(*(it++))->removeUser(user, reply);
 	user.sendReply(rpl_error(user, cmd));
-	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
-	int	ret = kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL);
-	if (ret == -1)
-		return ; // ERROR
-	close(user.getFd());
+	try
+	{
+		this->userLogout(user);
+	}
+	catch (std::exception &e)
+	{
+		throw std::exception();
+	}
 }
 
 /* Checkers */
@@ -258,33 +266,6 @@ struct tm *	Server::getTime() const
 }
 
 /* Specific getters */
-
-int	Server::getChannelID(std::string const & name) const
-{
-	int	id = 0;
-	std::vector<Channel *>::const_iterator ite = this->_channels->end();
-	for (std::vector<Channel *>::const_iterator it = this->_channels->begin(); it < ite; ++it)
-	{
-		if ((*it)->getName() == name)
-			return (id);
-		id++;
-	}
-	return (EXIT_ERROR_NEG);
-}
-
-int	Server::getUserID(std::string const & nickname) const
-{
-	int	id = 0;
-
-	std::vector<User *>::const_iterator ite = this->_users->end();
-	for (std::vector<User *>::const_iterator it = this->_users->begin(); it < ite; ++it)
-	{
-		if ((*it)->getNickname() == nickname)
-			return (id);
-		id++;
-	}
-	return (EXIT_ERROR_NEG);
-}
 
 User *	Server::getUserByName(std::string const & name) const
 {
@@ -371,11 +352,21 @@ void	Server::handleLogin(User & user, struct kevent * event)
 {
 	int fd = accept(user.getFd(), (struct sockaddr *) user.getAddressPtr(), user.getSocklenPtr());
 	if (fd < 0)
-		return ;
+		throw std::exception();
 	this->_users->push_back(&user);
 	user.setFd(fd);
 	user.setKEvent(event);
 	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD, 0, 0, &user);
+}
+
+void	Server::userLogout(User & user)
+{
+	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
+	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
+	if (kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL) < 0)
+		throw std::exception();
+	close(user.getFd());
+	delete &user;
 }
 
 void	Server::serverConfig(const char * path)
