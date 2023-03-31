@@ -26,7 +26,14 @@ std::string	kill(Cmd * cmd, Server & server, User & currentUser)
 	if (!userKill)
 		return (err_nosuchnick(currentUser, userName)); // TODO ?
 	userKill->sendReply(rpl_kill(currentUser, *userKill, params[1]));
-	server.handleLogout(*cmd, *userKill, params[1]);
+	try
+	{
+		server.handleLogout(*cmd, *userKill, params[1]);
+	}
+	catch (std::exception &e)
+	{
+		throw std::exception();
+	}
 	return ("");
 }
 

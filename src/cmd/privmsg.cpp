@@ -20,25 +20,19 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 		return (err_norecipient(usr, *cmd));
 	if (params.size() == 1)
 		return (err_notexttosend(usr));
-//	std::string tmp = params.back();
-//	if (tmp[0] != ':')
-//	{
-//		params.pop_back();
-//		params.push_back(std::string(":" + tmp));
-//	}
 	std::vector<std::string>::const_iterator ite = params.end();
 	for (std::vector<std::string>::const_iterator it = params.begin(); it < ite - 1; ++it)
 	{
 		if ((*it)[0] == '#')
 		{
-			int id = server.getChannelID(*it);
-			if (id < 0)
+			Channel * channel = server.getChannelByName(*it);
+			if (!channel)
 				return (err_nosuchnick(usr, *it));
 			else
 			{
-				std::vector<User *> userInChannel = server.getChannels()[id]->getUsers();
+				std::vector<User *> userInChannel = channel->getUsers();
 				if (std::find(userInChannel.begin(), userInChannel.end(), &usr) == userInChannel.end())
-					usr.sendReply(err_cannotsendtochan(usr, server.getChannels()[id]->getName()));
+					usr.sendReply(err_cannotsendtochan(usr, channel->getName()));
 				else
 				{
 					std::vector<User *>::const_iterator itue = userInChannel.end();
@@ -50,15 +44,13 @@ std::string	privmsg(Cmd * cmd, Server & server, User & usr)
 		}
 		else if ((*it)[0] != '$')
 		{
-			int id = server.getUserID(*it);
-			if (id < 0)
+			User * user = server.getUserByName(*it);
+			if (!user)
 				return (err_nosuchnick(usr, *it));
 			else
-				server.getUsers()[id]->sendReply(rpl_privmsg(usr, params));
+				user->sendReply(rpl_privmsg(usr, params));
 		}
 	}
-
-//	server.send(user, reply.)
 	return ("");
 }
 

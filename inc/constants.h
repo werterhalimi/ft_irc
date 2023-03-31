@@ -21,7 +21,8 @@
 
 /* Const */
 
-# define BUFFER_SIZE			513
+# define READ_BUFFER_SIZE		513
+# define KEVENT_BUFFER_SIZE		1024
 # define NB_PARAMS				15
 # define NB_CMD					17
 
@@ -134,6 +135,7 @@
 
 /* Errors */
 
+# define ERR_UNKNOWNERROR		"400"
 # define ERR_NOSUCHNICK			"401"
 # define ERR_NOSUCHSERVER		"402"
 # define ERR_NOSUCHCHANNEL		"403"

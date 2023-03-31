@@ -62,8 +62,6 @@ class Server
 		/* Specific getters */
 		Channel *					getChannelByName(std::string const & name) const;
 		User *						getUserByName(std::string const & name) const;
-		int 						getChannelID(std::string const & name) const; // TODO ?
-		int 						getUserID(std::string const & nickname) const; // TODO ?
 		std::string					getPrefix() const;
 
 	private:
@@ -76,6 +74,7 @@ class Server
 
 		/* Functions */
 		void						handleLogin(User & user, struct kevent * event);
+		void						userLogout(User & user);
 		void						serverConfig(const char * path);
 };
 
