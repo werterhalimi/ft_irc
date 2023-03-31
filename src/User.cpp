@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 18:27:14 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/03/31 16:26:35 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ User::~User()
 	#if LOG_LEVEL == 1
 		std::cout << BOLD_BLUE << "User default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
-	deleteVector<Channel *>(this->_channels);
+	delete this->_channels;
 }
 
 void	User::setKEvent(struct kevent * event)
