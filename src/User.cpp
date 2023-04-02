@@ -54,7 +54,7 @@ User::User(std::string const &username, std::string const &nickname, std::string
 
 User::~User()
 {
-	#if LOG_LEVEL == 1
+	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "User default destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
 	#endif
 	delete this->_channels;
@@ -101,23 +101,26 @@ void	User::handleCmd(Server & server)
 
 	read_return = read(this->_fd, this->_buffer + this->_bufferLength, 513);
 	if (read_return < 0)
+	{
+		std::cerr << BOLD_RED << "Error: User: handleCmd: read" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
 	this->_bufferLength += (int)read_return;
 	this->_buffer[this->_bufferLength] = 0;
 	if (this->_bufferLength < 2 || this->_buffer[this->_bufferLength - 1] != '\n' || this->_buffer[this->_bufferLength - 2] != '\r')
 		return;
 	std::vector<std::string> sp = split(this->_buffer, "\r\n");
+	this->initBuffer();
+	this->_bufferLength = 0;
 	std::vector<std::string>::const_iterator ite = sp.end();
 	for (std::vector<std::string>::const_iterator it = sp.begin(); it < ite; ++it)
 	{
 		#if LOG_LEVEL
-				std::cout << CYAN << printCurrentTime() << "- " << this->_fd << " ( " << this->prefix() << ") - \"" << *it << "\"" << RESET_COLOR << std::endl;
+			std::cout << CYAN << printCurrentTime() << "- " << this->_fd << " ( " << this->prefix() << ") - \"" << *it << "\"" << RESET_COLOR << std::endl;
 		#endif
 		Cmd cmd(*it);
 		cmd.execute(server, *this);
 	}
-	this->initBuffer();
-	this->_bufferLength = 0;
 }
 
 /* Checkers */

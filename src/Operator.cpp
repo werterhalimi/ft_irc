@@ -39,6 +39,7 @@ Operator::Operator(std::string const & config)
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << BOLD_RED << "\t in Operator config constructor" << RESET_COLOR << std::endl;
 		throw std::exception();
 	}
 }

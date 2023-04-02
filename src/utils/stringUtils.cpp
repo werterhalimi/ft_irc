@@ -63,3 +63,8 @@ bool	isSpecial(char const & c)
 		return (true);
 	return (false);
 }
+
+bool	isEmpty(std::string const & str)
+{
+	return (str.find_first_not_of(" \t\n") == std::string::npos);
+}

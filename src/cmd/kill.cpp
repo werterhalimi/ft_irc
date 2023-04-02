@@ -28,10 +28,11 @@ std::string	kill(Cmd * cmd, Server & server, User & currentUser)
 	userKill->sendReply(rpl_kill(currentUser, *userKill, params[1]));
 	try
 	{
-		server.handleLogout(*cmd, *userKill, params[1]);
+		server.userLogout(*cmd, *userKill, params[1]);
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << BOLD_RED << "\t in kill command" << RESET_COLOR << std::endl;
 		throw std::exception();
 	}
 	return ("");

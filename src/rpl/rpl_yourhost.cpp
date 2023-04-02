@@ -19,6 +19,6 @@ std::string	rpl_yourhost(Server const & server, User const & user)
 
 	reply.setCmd(RPL_YOURHOST);
 	reply.addParam(user.getNickname());
-	reply.addParam(":Your host is " + server.getName() + ", running version 1.0.0");
+	reply.addParam(":Your host is " + server.getName() + ", running version " + SERVER_VERSION);
 	return (reply.toString());
 }

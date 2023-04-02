@@ -26,9 +26,18 @@ static std::vector<std::string>	messageToParams(std::string const & prefix);
 Bot::Bot(std::string const & name, Server & server) :
 	User(name, name, "BotLand"),
 	_server(&server)
-{}
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Bot name & server constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+}
 
-Bot::~Bot(){}
+Bot::~Bot()
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Bot destructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+}
 
 /* Getter */
 
@@ -89,11 +98,22 @@ void	Bot::sendReply(std::string const & reply) const
 
 /* Constructors */
 
-Bot::Bot() : User(), _server() {}
+Bot::Bot() :
+	User(),
+	_server()
+{
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Bot default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
+}
 
 Bot::Bot(Bot const & src) :
-	User(src), _server()
+	User(src),
+	_server()
 {
+	#if LOG_LEVEL == 10
+		std::cout << BOLD_BLUE << "Bot copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
+	#endif
 	*this = src;
 }
 

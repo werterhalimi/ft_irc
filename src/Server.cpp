@@ -24,7 +24,8 @@ Server::Server(int port, std::string const & pass) :
 	_operators(new std::vector<Operator *>()),
 	_channels(new std::vector<Channel *>()),
 	_kq_fd(),
-	_running(true)
+	_running(true),
+	_event()
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server port&path constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
@@ -51,11 +52,8 @@ Server::~Server()
 void	Server::launch()
 {
 	int					server_fd;
-	ssize_t				buff_len;
 	int					opt = 1;
     struct sockaddr_in	address = {};
-	struct kevent		event[KEVENT_BUFFER_SIZE];
-	struct kevent		event_set = {};
 	socklen_t			sizeofAddress = sizeof(address);
 
 	try
@@ -64,12 +62,20 @@ void	Server::launch()
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << BOLD_RED << "\t in Server: launch" << RESET_COLOR << std::endl;
 		throw std::exception();
 	}
+
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	{
+		std::cerr << BOLD_RED << "Error: Server: launch: socket" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+	{
+		std::cerr << BOLD_RED << "Error: Server: launch: setsockopt" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(this->_port);
@@ -95,78 +101,41 @@ void	Server::launch()
 	#endif
 
 	if (bind(server_fd, (struct sockaddr *)(&address), sizeofAddress) < 0)
+	{
+		std::cerr << BOLD_RED << "Error: Server: launch: bind" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
 
 	this->_kq_fd = kqueue();
 	if (listen(server_fd, KEVENT_BUFFER_SIZE) < 0)
+	{
+		std::cerr << BOLD_RED << "Error: Server: launch: listen" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
+
 	User	empty;
 	empty.setFd(-2);
-	EV_SET(&event_set, server_fd, EVFILT_READ, EV_ADD, 0, 0, &empty);
-	if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
-		throw std::exception();
-	while (this->_running)
+	EV_SET(&this->_event, server_fd, EVFILT_READ, EV_ADD, 0, 0, &empty);
+	if (kevent(this->_kq_fd, &this->_event, 1, NULL, 0, NULL) == -1)
 	{
-		int n = kevent(this->_kq_fd, NULL, 0, event, KEVENT_BUFFER_SIZE, NULL);
-		if (n < 0) continue ;
-		for (int i = 0; i < n; i++)
-		{
-			User * user = (User *)event[i].udata;
-			if (event[i].flags & EV_EOF)
-			{
-				#if LOG_LEVEL
-					std::cout << YELLOW << "END OF CONNECTION" << RESET_COLOR << std::endl;
-				#endif
-				try
-				{
-					this->userLogout(*user);
-				}
-				catch (std::exception &e)
-				{
-					throw std::exception();
-				}
-			}
-			else if (event[i].filter == EVFILT_READ)
-			{
-				if ((user->getFd()) == -2)
-				{
-					char	buff[513];
-					buff_len = read((user->getFd()), buff, 513);
-					buff[buff_len] = 0;
-					User *usr = new User();
-					usr->setFd((int)event[i].ident);
-					try
-					{
-						this->handleLogin(*usr, &event_set);
-					}
-					catch (std::exception &e)
-					{
-						throw std::exception();
-					}
-					if (kevent(this->_kq_fd, &event_set, 1, NULL, 0, NULL) == -1)
-						throw std::exception();
-				}
-				else
-				{
-					try
-					{
-						user->handleCmd(*this);
-					}
-					catch (std::exception &e)
-					{
-						throw std::exception();
-					}
-				}
-			}
-		}
+		std::cerr << BOLD_RED << "Error: Server: launch: kevent" << RESET_COLOR << std::endl;
+		throw std::exception();
 	}
-	close(this->_kq_fd);
-	std::cout << "Shutting down" << std::endl;
+	std::cout << BOLD_GREEN << "Server: " << this->getName() << " running" << RESET_COLOR << std::endl;
+	try
+	{
+		this->run();
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << BOLD_RED << "\t in Server: launch" << RESET_COLOR << std::endl;
+		throw std::exception();
+	}
 }
 
-void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & params)
+void	Server::userLogout(Cmd const & cmd, User & user, std::string const & reason)
 {
-	std::string reply = rpl_quit(user, params);
+	std::string reply = rpl_quit(user, reason);
 	user.sendReply(reply);
 	std::vector<Channel *>::const_iterator ite = user.getChannels()->end();
 	for (std::vector<Channel *>::const_iterator it = user.getChannels()->begin(); it != ite; it++)
@@ -174,10 +143,11 @@ void	Server::handleLogout(Cmd const & cmd, User & user, std::string const & para
 	user.sendReply(rpl_error(user, cmd));
 	try
 	{
-		this->userLogout(user);
+		this->handleLogout(user);
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << BOLD_RED << "\t in Server: userLogout" << RESET_COLOR << std::endl;
 		throw std::exception();
 	}
 }
@@ -208,12 +178,9 @@ void	Server::createChannel(std::string const & name, int slots)
 void	Server::removeChannel(Channel const * channel)
 {
 	this->_channels->erase(std::find(this->_channels->begin(), this->_channels->end(), channel));
-	std::vector<User *>::iterator it = channel->getUsers().begin();
-	while (it != channel->getUsers().end())
-	{
+	std::vector<User *>::const_iterator ite = channel->getUsers().end();
+	for (std::vector<User *>::const_iterator it = channel->getUsers().begin(); it != ite; ++it)
 		(*it)->getChannels()->erase(std::find((*it)->getChannels()->begin(), (*it)->getChannels()->end(), channel));
-		it++;
-	}
 	delete channel;
 }
 
@@ -295,7 +262,8 @@ Server::Server() :
 	_channels(new std::vector<Channel *>()),
 	_time(),
 	_kq_fd(),
-	_running()
+	_running(),
+	_event()
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
@@ -309,7 +277,8 @@ Server::Server(Server const & src) :
 	_channels(),
 	_time(),
 	_kq_fd(),
-	_running()
+	_running(),
+	_event()
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "Server copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
@@ -341,23 +310,100 @@ Server &	Server::operator=(Server const & src)
 
 /* Functions */
 
-void	Server::handleLogin(User & user, struct kevent * event)
+void	Server::run()
 {
-	int fd = accept(user.getFd(), (struct sockaddr *) user.getAddressPtr(), user.getSocklenPtr());
-	if (fd < 0)
-		throw std::exception();
-	this->_users->push_back(&user);
-	user.setFd(fd);
-	user.setKEvent(event);
-	EV_SET(event,user.getFd(), EVFILT_READ, EV_ADD, 0, 0, &user);
+	struct kevent	event[KEVENT_BUFFER_SIZE];
+
+	while (this->_running)
+	{
+		int n = kevent(this->_kq_fd, NULL, 0, event, KEVENT_BUFFER_SIZE, NULL);
+		if (n < 0) continue ;
+		for (int i = 0; i < n; i++)
+		{
+			User * user = (User *)event[i].udata;
+			if (event[i].flags & EV_EOF)
+			{
+				try
+				{
+					this->handleLogout(*user);
+				}
+				catch (std::exception &e)
+				{
+					std::cerr << BOLD_RED << "\t in Server: run" << RESET_COLOR << std::endl;
+					throw std::exception();
+				}
+			}
+			else if (event[i].filter == EVFILT_READ)
+			{
+				if ((user->getFd()) == -2)
+				{
+					try
+					{
+						this->handleLogin(*user, (int)event[i].ident);
+					}
+					catch (std::exception &e)
+					{
+						std::cerr << BOLD_RED << "\t in Server: run" << RESET_COLOR << std::endl;
+						throw std::exception();
+					}
+				}
+				else
+				{
+					try
+					{
+						user->handleCmd(*this);
+					}
+					catch (std::exception &e)
+					{
+						std::cerr << BOLD_RED << "\t in Server: run" << RESET_COLOR << std::endl;
+						throw std::exception();
+					}
+				}
+			}
+		}
+	}
+	close(this->_kq_fd);
+	std::cout << BOLD_YELLOW << "Shutting down" << RESET_COLOR << std::endl;
 }
 
-void	Server::userLogout(User & user)
+void	Server::handleLogin(User & user, int fdEvent)
 {
+	#if LOG_LEVEL
+		std::cout << BOLD_WHITE << "NEW CONNECTION" << RESET_COLOR << std::endl;
+	#endif
+	char	buff[1];
+	read(user.getFd(), buff, 1);
+	User *userLogin = new User();
+	userLogin->setFd(fdEvent);
+	int fd = accept(userLogin->getFd(), (struct sockaddr *) userLogin->getAddressPtr(), userLogin->getSocklenPtr());
+	if (fd < 0)
+	{
+		std::cerr << BOLD_RED << "Error: Server: handleLogin: accept" << RESET_COLOR << std::endl;
+		throw std::exception();
+	}
+	this->_users->push_back(userLogin);
+	userLogin->setFd(fd);
+	userLogin->setKEvent(&this->_event);
+	EV_SET(&this->_event, userLogin->getFd(), EVFILT_READ, EV_ADD, 0, 0, userLogin);
+	if (kevent(this->_kq_fd, &this->_event, 1, NULL, 0, NULL) < 0)
+	{
+		std::cerr << BOLD_RED << "Error: Server: handleLogin: kevent" << RESET_COLOR << std::endl;
+		throw std::exception();
+	}
+}
+
+void	Server::handleLogout(User & user)
+{
+	#if LOG_LEVEL
+		std::cout << BOLD_CYAN << "END OF CONNECTION" << RESET_COLOR << std::endl;
+	#endif
 	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
 	EV_SET(user.getKEvent() ,user.getFd(), EVFILT_READ, EV_DELETE, 0, 0, &user);
 	if (kevent(this->_kq_fd, user.getKEvent(), 1, NULL, 0, NULL) < 0)
+	{
+		std::cerr << BOLD_RED << "Error: Server: handleLogout: kevent" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
 	close(user.getFd());
 	delete &user;
 }
@@ -368,7 +414,11 @@ void	Server::serverConfig(const char * path)
 
 	configFile.open(path, std::fstream::in);
 	if (!configFile || !configFile.is_open())
-		throw std::exception();
+	{
+		std::cerr << BOLD_YELLOW << "Warning: Server: config: Unable to open config file -> using default config" << RESET_COLOR << std::endl;
+		this->_servername = "Default";
+		return;
+	}
 	std::string	fileStr((std::istreambuf_iterator<char>(configFile)), \
                 	std::istreambuf_iterator<char>());
 	configFile.close();
@@ -383,7 +433,19 @@ void	Server::serverConfig(const char * path)
 			item = it->substr(0, index);
 		else
 			item = *it;
-		if (it->find("Channel:", 0) == 0)
+		if (item.find("Server:", 0) == 0)
+		{
+			try
+			{
+				this->_servername = parsing(item, "name", true);
+			}
+			catch (std::exception &e)
+			{
+				std::cerr << BOLD_RED << "\t in Server: serverConfig" << RESET_COLOR << std::endl;
+				throw std::exception();
+			}
+		}
+		else if (item.find("Channel:", 0) == 0)
 		{
 			try
 			{
@@ -391,10 +453,11 @@ void	Server::serverConfig(const char * path)
 			}
 			catch (std::exception &e)
 			{
+				std::cerr << BOLD_RED << "\t in Server: serverConfig" << RESET_COLOR << std::endl;
 				throw std::exception();
 			}
 		}
-		if (it->find("Operator:", 0) == 0)
+		else if (item.find("Operator:", 0) == 0)
 		{
 			try
 			{
@@ -402,8 +465,16 @@ void	Server::serverConfig(const char * path)
 			}
 			catch (std::exception &e)
 			{
+				std::cerr << BOLD_RED << "\t in Server: serverConfig" << RESET_COLOR << std::endl;
 				throw std::exception();
 			}
 		}
+		else if (!isEmpty(item))
+		{
+			std::cerr << BOLD_RED << "Error: Server: serverConfig: Unknown parameter" << RESET_COLOR << std::endl;
+			throw std::exception();
+		}
 	}
+	if (this->_servername.empty())
+		this->_servername = "Default";
 }

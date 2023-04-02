@@ -28,6 +28,7 @@ class Server
 		struct tm *					_time;
 		int							_kq_fd;
 		volatile bool				_running;
+		struct kevent				_event;
 
 	/* Member functions */
 	public:
@@ -37,7 +38,7 @@ class Server
 
 		/* Functions */
 		void						launch();
-		void						handleLogout(Cmd const & cmd, User & user, std::string const & reason);
+		void						userLogout(Cmd const & cmd, User & user, std::string const & reason);
 
 		/* Checkers */
 		bool						hasNick(std::string const & nick) const;
@@ -71,8 +72,9 @@ class Server
 		Server &					operator=(Server const & src);
 
 		/* Functions */
-		void						handleLogin(User & user, struct kevent * event);
-		void						userLogout(User & user);
+		void						run();
+		void						handleLogin(User & user, int fdEvent);
+		void						handleLogout(User & user);
 		void						serverConfig(const char * path);
 };
 

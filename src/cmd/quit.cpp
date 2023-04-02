@@ -21,10 +21,11 @@ std::string quit(Cmd * cmd, Server & server, User & usr)
 		reason = params[0];
 	try
 	{
-		server.handleLogout(*cmd, usr, reason);
+		server.userLogout(*cmd, usr, reason);
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << BOLD_RED << "\t in quit command" << RESET_COLOR << std::endl;
 		throw std::exception();
 	}
 	return (""); 

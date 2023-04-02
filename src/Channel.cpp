@@ -47,6 +47,7 @@ Channel::Channel(std::string const & config) :
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << BOLD_RED << "\t in Channel config constructor" << RESET_COLOR << std::endl;
 		throw std::exception();
 	}
 }

@@ -30,7 +30,10 @@ std::string	parsing(std::string const & src, std::string const & item, bool mand
 {
 	size_t	start = src.find(item + "=");
 	if (start == std::string::npos && mandatory)
+	{
+		std::cerr << BOLD_RED << "Error: parsing: mandatory parameter missing" << RESET_COLOR << std::endl;
 		throw std::exception();
+	}
 	else if (start == std::string::npos)
 		return ("");
 	size_t	length = item.size() + 1;
