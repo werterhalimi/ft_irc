@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:45:21 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/30 18:26:22 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:05:22 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,15 @@ void	deleteVector(std::vector<T> * vector)
 		it++;
 	}
 	delete vector;
+}
+
+template <typename T>
+void	removeFromVector(typename std::vector<T> & vec, T el)
+{
+	typename std::vector<T>::iterator	pos = std::find(vec.begin(), vec.end(), el);
+	if (pos == vec.end())
+		return ;
+	vec.erase(pos);
 }
 
 #endif

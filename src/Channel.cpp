@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:33:59 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/31 19:10:46 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:10:26 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,9 @@ void	Channel::addInvitedUser(User * user)
 
 void	Channel::removeUser(User & user, std::string const & reply)
 {
-	this->_users->erase(std::find(this->_users->begin(), this->_users->end(), &user));
+	removeFromVector<User *>(this->getUsers(), &user);
+	removeFromVector<User *>(this->getInvitedUsers(), &user);
+	removeFromVector<User *>(this->getBannedUsers(), &user);
 	user.removeChannel(this);
 	for (std::vector<User *>::const_iterator it = this->_users->begin(); it < this->_users->end(); ++it)
 		(*it)->sendReply(reply);
