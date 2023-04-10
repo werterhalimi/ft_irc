@@ -16,7 +16,7 @@
 std::string	notice(Cmd * cmd, Server & server, User & usr)
 {
 	std::vector<std::string> params = cmd->getParams();
-	if (params.empty() || (params.size() == 1 && params[1][0] == ':'))
+	if (params.empty() || (params.size() == 1 && params[0][0] == ':'))
 		return (err_norecipient(usr, *cmd));
 	if (params.size() == 1)
 		return (err_notexttosend(usr));

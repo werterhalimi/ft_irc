@@ -25,7 +25,7 @@
 # define KEVENT_BUFFER_SIZE		1024
 # define NB_PARAMS				15
 # define NB_CMD					18
-# define SERVER_VERSION			"1.0.0"
+# define SERVER_VERSION			"1.1.0"
 
 /* Colors */
 

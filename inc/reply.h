@@ -49,9 +49,9 @@ std::string	rpl_privmsg(User const & user, std::vector<std::string> const & para
 
 std::string	rpl_notice(User const & user, std::vector<std::string> const & params);
 
-std::string	rpl_privmsg(User const & user, std::string target,  std::string const & param);
+std::string	rpl_privmsg(User const & user, std::string const & target,  std::string const & param);
 
-std::string	rpl_notice(User const & user, std::string target,  std::string const & param);
+std::string	rpl_notice(User const & user, std::string const & target,  std::string const & param);
 
 std::string	rpl_quit(User const & user, std::string const & reasons);
 

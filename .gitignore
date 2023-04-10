@@ -1,6 +1,6 @@
 .idea
 **/.DS_Store
-ft_irc-en.pdf
+*.pdf
 bin/
 *.o
 ircserv

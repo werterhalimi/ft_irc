@@ -12,7 +12,7 @@
 
 # include "Cmd.hpp"
 
-std::string	rpl_privmsg(User const & user, std::string target, std::string const &param)
+std::string	rpl_privmsg(User const & user, std::string const & target, std::string const &param)
 {
 	Cmd reply(user);
 
