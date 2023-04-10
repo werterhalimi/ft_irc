@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 13:58:47 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/13 15:43:55 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:23:39 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ class Server;
 class User;
 
 std::string	cap(Cmd * cmd, Server & server, User & currentUser);
+
+std::string	notice(Cmd * cmd, Server & server, User & currentUser);
 
 std::string	invite(Cmd * cmd, Server & server, User & currentUser);
 

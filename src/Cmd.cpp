@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:12:29 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/31 18:07:36 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:27:18 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,14 @@ void	Cmd::execute(Server &server, User &currentUser)
 		&ping,		&pong, 	&mode,		&join,
 		&part,		&oper,		&quit,		&kick,
 		&topic,	&who,		&invite,	&cap,
-		&kill
+		&kill, &notice
 	};
 	static std::string	cmdNames[NB_CMD] = {
 		"PASS",	"NICK",		"USER",		"PRIVMSG",
 		"PING", 	"PONG",	"MODE",	"JOIN",
 		"PART",	"OPER",	"QUIT",	"KICK",
 		"TOPIC", 	"WHO",		"INVITE",	"CAP",
-		"kill"
+		"kill", "NOTICE"
 	};
 
 	for (size_t i = 0; i < NB_CMD; ++i)

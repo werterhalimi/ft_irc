@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/07 16:24:58 by ncotte            #+#    #+#              #
-#    Updated: 2023/03/30 17:13:51 by shalimi          ###   ########.fr        #
+#    Updated: 2023/04/10 15:24:41 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ SRCS_FILES		:=	cmd/kill.cpp		cmd/invite.cpp		cmd/pass.cpp \
 					cmd/nick.cpp		cmd/ping.cpp		cmd/privmsg.cpp \
 					cmd/user.cpp		cmd/who.cpp			cmd/pong.cpp \
                     cmd/kick.cpp		cmd/mode.cpp		cmd/oper.cpp \
-                    cmd/join.cpp		cmd/cap.cpp \
+                    cmd/join.cpp		cmd/cap.cpp			cmd/notice.cpp \
                     rpl/err_alreadyregistred.cpp	rpl/err_passwdmismatch.cpp \
                     rpl/err_erroneusnickname.cpp	rpl/err_umodeunknownflag.cpp \
                     rpl/err_needmoreparams.cpp		rpl/err_unknowncommand.cpp \
@@ -42,6 +42,7 @@ SRCS_FILES		:=	cmd/kill.cpp		cmd/invite.cpp		cmd/pass.cpp \
 					rpl/err_channelisfull.cpp		rpl/err_inviteonlychan.cpp \
 					rpl/rpl_invite.cpp				rpl/err_noprivileges.cpp \
 					rpl/rpl_kill.cpp				rpl/err_unknownerror.cpp \
+					rpl/rpl_notice.cpp	\
 					utils/split.cpp		utils/stringUtils.cpp	utils/printTime.cpp \
 					utils/parsing.cpp	\
 					Cmd.cpp				main.cpp			Server.cpp			Channel.cpp \

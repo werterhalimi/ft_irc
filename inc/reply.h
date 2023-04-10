@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:59:16 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/30 18:55:17 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:24:11 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,12 @@ std::string	rpl_myinfo(Server const & server, User const & user);
 std::string	rpl_part(Channel const & channel, User const & user, std::string * reason);
 
 std::string	rpl_privmsg(User const & user, std::vector<std::string> const & params);
+
+std::string	rpl_notice(User const & user, std::vector<std::string> const & params);
+
 std::string	rpl_privmsg(User const & user, std::string target,  std::string const & param);
+
+std::string	rpl_notice(User const & user, std::string target,  std::string const & param);
 
 std::string	rpl_quit(User const & user, std::string const & reasons);
 

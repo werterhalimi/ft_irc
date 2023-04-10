@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:47:22 by ncotte            #+#    #+#             */
-/*   Updated: 2023/03/07 16:47:24 by ncotte           ###   ########.fr       */
+/*   Updated: 2023/04/10 15:23:27 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define READ_BUFFER_SIZE		513
 # define KEVENT_BUFFER_SIZE		1024
 # define NB_PARAMS				15
-# define NB_CMD					17
+# define NB_CMD					18
 # define SERVER_VERSION			"1.0.0"
 
 /* Colors */
