@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 15:58:44 by shalimi           #+#    #+#             */
-/*   Updated: 2023/04/10 15:15:21 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:47:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,6 +326,7 @@ void	Server::run()
 				try
 				{
 					Cmd	cmd(*this);
+					user->setCrash();
 					this->userLogout(cmd,*user, "Connection crash");
 				}
 				catch (std::exception &e)

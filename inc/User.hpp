@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:07:33 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/30 17:22:39 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:48:04 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class User
 		std::vector<Channel *> *	_channels;
 		char						_buffer[513];
 		int							_bufferLength;
+		bool						_crash;
 
 	/* Member functions */
 	public:
@@ -68,6 +69,7 @@ class User
 		bool						loginOperator(Operator const * op, std::string const &password);
 
 		/* Setters */
+		void						setCrash();
 		void						setKEvent(struct kevent * event);
 		void						setFd(int i);
 		void						setUsername(std::string const &user);

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 16:41:03 by shalimi           #+#    #+#             */
-/*   Updated: 2023/03/31 16:26:35 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/04/10 15:48:23 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ User::User() :
 	_event(),
 	_channels(new std::vector<Channel *>()),
 	_buffer(),
-	_bufferLength(0)
+	_bufferLength(0),
+	_crash(false)
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "User default constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
@@ -44,7 +45,8 @@ User::User(std::string const &username, std::string const &nickname, std::string
 	_event(),
 	_channels(new std::vector<Channel *>()),
 	_buffer(),
-	_bufferLength(0)
+	_bufferLength(0),
+	_crash(false)
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "User username, nickname & hostname constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
@@ -71,7 +73,7 @@ bool User::operator==(User const & src) const
 
 void	User::sendReply(std::string const &buff) const
 {
-	if (!buff.empty())
+	if (!buff.empty() && !this->_crash)
 	{
 		send(this->_fd, buff.c_str(), strlen(buff.c_str()), 0);
 		#if LOG_LEVEL
@@ -138,6 +140,11 @@ bool	User::loginOperator(Operator const * op, std::string const &password)
 }
 
 /* Setters */
+
+void	User::setCrash()
+{
+	this->_crash = true;
+}
 
 void	User::setKEvent(struct kevent * event)
 {
@@ -358,7 +365,8 @@ User::User(User const & src) :
 	_event(),
 	_channels(),
 	_buffer(),
-	_bufferLength()
+	_bufferLength(),
+	_crash(false)
 {
 	#if LOG_LEVEL == 10
 		std::cout << BOLD_BLUE << "User copy constructor @ " << BOLD_MAGENTA << this << RESET_COLOR << std::endl;
